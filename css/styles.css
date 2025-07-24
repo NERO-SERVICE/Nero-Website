@@ -10948,7 +10948,15 @@ header.masthead {
   padding-bottom: 6rem;
   text-align: center;
   color: #fff;
-  background-image: url("../assets/img/header-bg.png");
+  /* 그라데이션(위쪽 어두움 → 아래쪽 투명) + 원본 이미지 */
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.3) 70%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    url("../assets/img/header-bg.png");
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: center center;
@@ -11128,7 +11136,7 @@ header.masthead .masthead-heading {
   color: white;
   border: 7px solid #e9ecef;
   border-radius: 100%;
-  background-color: #ffc800;
+  background-color: #d0ee17;
 }
 .timeline > li .timeline-image h4, .timeline > li .timeline-image .h4 {
   font-size: 10px;
@@ -11409,4 +11417,15 @@ body#page-invest .footer-right a {
 }
 body#page-invest .footer-right a:hover {
   color: #d0ee17 !important;
+}
+
+@media (max-width: 600px) {
+  header.masthead .masthead-heading {
+    font-size: 2rem;       /* 글자 크기 줄이기 */
+    line-height: 2.25rem;  /* 가독성 확보 */
+    white-space: nowrap;   /* 줄바꿈 방지 */
+    overflow: hidden;      /* 넘치는 텍스트 숨기기 */
+    text-overflow: ellipsis; /* 넘칠 경우 말줄임 */
+    margin-bottom: 1.5rem; /* 여백 조정 */
+  }
 }
