@@ -1,12 +1,409 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nero Website</title>
-</head>
-<body>
-  <h1>🚀 Welcome to Nero Website</h1>
-  <p>이 페이지는 Netlify로 배포된 테스트 페이지입니다.</p>
-</body>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>네로</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="css/styles.css" rel="stylesheet" />
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand" href="#page-top"><img src="assets/img/navbar-logo.svg" alt="..." /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars ms-1"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                        <!--<li class="nav-item"><a class="nav-link" href="#services">Services</a></li>-->
+                        <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                        <!--<li class="nav-item"><a class="nav-link" href="#team">Team</a></li>-->
+                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link" href="invest.html">공고</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Masthead-->
+        <header class="masthead">
+            <div class="container">
+                <div class="masthead-heading text-uppercase">데이터로 정신건강의 표준을 만든다</div>
+                <div class="masthead-subheading">Create a Mental Health Standard with Data</div>
+                <a class="btn btn-primary btn-xl text-uppercase" href="#portfolio">더 알아보기</a>
+            </div>
+        </header>
+        <!-- Services-->
+        <!-- <section class="page-section" id="services">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Services</h2>
+                    <h3 class="section-subheading text-muted">약 복용 여부로 두려워하지 마세요</h3>
+                </div>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="my-3">보험료 인하</h4>
+                        <p class="text-muted">꾸준히 복용 기록만 남긴다면, 보험 가입이 일반인들보다 더 쉽고 저렴해질 수 있어요</p>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="my-3">간편한 이용</h4>
+                        <p class="text-muted">앱을 사용하는 것만으로 정신질환 만성관리를 더욱 손쉽게 도와줘요.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <span class="fa-stack fa-4x">
+                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                            <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
+                        </span>
+                        <h4 class="my-3">철저한 보안</h4>
+                        <p class="text-muted">내 기록이 모르는 곳에 사용될까봐 걱정되시나요? 암호화를 통한 보안으로 정보 유출을 철저히 막습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+        <!-- Portfolio Grid-->
+        <section class="page-section bg-light" id="portfolio">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Portfolio</h2>
+                    <h3 class="section-subheading text-muted">네로의 발자취</h3>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-sm-6 mb-4">
+                        <!-- Portfolio item 1-->
+                        <div class="portfolio-item">
+                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal1">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="assets/img/portfolio/1.png" alt="..." />
+                            </a>
+                            <div class="portfolio-caption">
+                                <div class="portfolio-caption-heading">Nero CARE 출시</div>
+                                <div class="portfolio-caption-subheading text-muted">iOS/Android 서비스 운영</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 mb-4">
+                        <!-- Portfolio item 2-->
+                        <div class="portfolio-item">
+                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal2">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="assets/img/portfolio/2.png" alt="..." />
+                            </a>
+                            <div class="portfolio-caption">
+                                <div class="portfolio-caption-heading">2025 예비창업패키지 선정</div>
+                                <div class="portfolio-caption-subheading text-muted">벤처기업협회 주관 소셜벤처 분야</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 mb-4">
+                        <!-- Portfolio item 3-->
+                        <div class="portfolio-item">
+                            <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal3">
+                                <div class="portfolio-hover">
+                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                </div>
+                                <img class="img-fluid" src="assets/img/portfolio/3.png" alt="..." />
+                            </a>
+                            <div class="portfolio-caption">
+                                <div class="portfolio-caption-heading">보건의료빅데이터 경진대회 수상</div>
+                                <div class="portfolio-caption-subheading text-muted">제품&서비스분야 건강보험심사평가원장상</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- About-->
+        <section class="page-section" id="about">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">About</h2>
+                    <h3 class="section-subheading text-muted">네로의 여정</h3>
+                </div>
+                <ul class="timeline">
+                    <li>
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/1.png" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>2024.9</h4>
+                                <h4 class="subheading">연세대학교 워크스테이션 선정</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">연세대학교 워크스테이션 소셜벤처분야</p></div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/2.png" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>2024.10</h4>
+                                <h4 class="subheading">Nero CARE 앱 출시</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">약물 복용 및 부작용을 기록하고 만성적으로 관리할 수 있도록 도와주는 토탈 케어 앱 서비스 출시</p></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/3.png" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>2024.12</h4>
+                                <h4 class="subheading">국민체육진흥공단 공공데이터 활용 경진대회 수상</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">AI 건강비서 관련 기능 구현 및 업데이트</p></div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/4.png" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>2025.3</h4>
+                                <h4 class="subheading">한국장학재단 창업기숙사 입주 기업 선정</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">한국장학재단 서울센터</p></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/5.png" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>2025.5</h4>
+                                <h4 class="subheading">벤처기업협회 예비창업패키지 선정</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">소셜벤처 분야</p></div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/6.png" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>2025.7</h4>
+                                <h4 class="subheading">보건의료빅데이터 활용 창업경진대회 제품&서비스 수상</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">보건복지부, 건강보험심사평가원 주관 총 상금 2160만원</p></div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="timeline-image"><img class="rounded-circle img-fluid" src="assets/img/about/7.png" alt="..." /></div>
+                        <div class="timeline-panel">
+                            <div class="timeline-heading">
+                                <h4>2025.7</h4>
+                                <h4 class="subheading">(주)네로 법인설립</h4>
+                            </div>
+                            <div class="timeline-body"><p class="text-muted">법인설립절차 완료</p></div>
+                        </div>
+                    </li>
+                    <li class="timeline-inverted">
+                        <div class="timeline-image">
+                            <h4>
+                                Be Part
+                                <br />
+                                Of Our
+                                <br />
+                                Story!
+                            </h4>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <!-- Contact-->
+        <section class="page-section" id="contact">
+            <div class="container">
+                <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Contact Us</h2>
+                    <h3 class="section-subheading text-muted">저희의 여정에 관심이 생기신다면 정보를 남겨주세요<br />매달 관련 정보를 레터로 보내드리겠습니다.</h3>
+                </div>
+                <form id="contactForm" name="contact" method="POST" data-netlify="true" netflify>
+                    <input type="hidden" name="form-name" value="contact">
+                    <div class="row align-items-stretch mb-5">
+                        <div class="form-group">
+                            <input class="form-control" id="email" type="email" name="email" placeholder="이메일 *" required />
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary btn-xl text-uppercase" type="submit">레터 등록하기</button>
+                    </div>
+                </form>                
+                    <!-- Submit success message-->
+                    <!---->
+                    <!-- This is what your users will see when the form-->
+                    <!-- has successfully submitted-->
+                    <div class="d-none" id="submitSuccessMessage">
+                        <div class="text-center text-white mb-3">
+                            <div class="fw-bolder">전송에 성공했습니다!</div>
+                            <br />
+                            <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+                        </div>
+                    </div>
+                    <!-- Submit error message-->
+                    <!---->
+                    <!-- This is what your users will see when there is-->
+                    <!-- an error submitting the form-->
+                    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">전송에 실패했습니다!</div></div>
+                </form>
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="footer py-4">
+            <div class="container">
+                <div class="row">
+                <!-- 왼쪽 컬럼: 대표이사 / 주소 / 사업자번호 -->
+                <div class="col-md-6 footer-left">
+                    <ul class="list-unstyled mb-0">
+                    <li>대표이사: 한동균</li>
+                    <li>주소: 서울 마포구 양화로 81 H스퀘어, 333호</li>
+                    </ul>
+                </div>
+                <!-- 오른쪽 컬럼: COPYRIGHT / Contact -->
+                <div class="col-md-6 footer-right text-md-end">
+                    <ul class="list-unstyled mb-0">
+                    <li>&copy; Nero All rights reserved.</li>
+                    <li><a href="#contact" class="link-light text-decoration-none">Contact Us</a></li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Portfolio Modals-->
+        <!-- Portfolio item 1 modal popup-->
+        <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">Nero CARE 출시 및 운영</h2>
+                                    <p class="item-intro text-muted">정신건강 통합관리 플랫폼</p>
+                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/1-1.png" alt="..." />
+                                    <p>2024년 10월 iOS와 Android 동시 출시 완료</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>Client:</strong>
+                                            정신건강을 통합적으로 관리하고 싶은 환자
+                                        </li>
+                                        <li>
+                                            <strong>Category:</strong>
+                                            건강/피트니스
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-xmark me-1"></i>
+                                        Close Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio item 2 modal popup-->
+        <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">2025 예비창업패키지 선정</h2>
+                                    <p class="item-intro text-muted">벤처기업협회 주관 소셜벤처 분야</p>
+                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/2.png" alt="..." />
+                                    <p>높은 경쟁률을 뚫고, 2025년 5월 벤처기업협회 주관 소셜벤처분야 예비창업패키지 기업 선정</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>주관:</strong>
+                                            벤처기업협회
+                                        </li>
+                                        <li>
+                                            <strong>분야:</strong>
+                                            소셜벤처
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-xmark me-1"></i>
+                                        Close Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Portfolio item 3 modal popup-->
+        <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="modal-body">
+                                    <!-- Project details-->
+                                    <h2 class="text-uppercase">2025 보건의료빅데이터 활용 창업경진대회 수상</h2>
+                                    <p class="item-intro text-muted">제품&서비스분야 건강보험심사평가원장상</p>
+                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/3.png" alt="..." />
+                                    <p>정부가 국민 건강 증진을 위해 보건의료데이터 기반 혁신 스타트업 발굴에 나섰다. 건강보험심사평가원(원장 강중구, 이하 심평원)은 지난 23일 원주 본원 컨퍼런스홀에서 ‘2025년 보건의료빅데이터 활용 창업경진대회(이하 경진대회)’ 최종 발표회 및 시상식을 개최했다고 밝혔다.이번 경진대회는 보건복지부(장관 정은경)가 주최하고 심평원이 주관한 것으로, 올해는 공공데이터 활용 관련 평가 항목을 전 심사 과정에 도입해 데이터 활용성이 뛰어난 작품을 수상작으로 선정했다. 총 122개팀이 참가했으며, 투자·법률·데이터 등 다방면의 전문가로 심사위원을 구성해 3단계에 걸친 공정한 평가를 통해 부문별 최우수, 우수, 장려, 입선 등 16개팀을 선정했다.</p>
+                                    <ul class="list-inline">
+                                        <li>
+                                            <strong>주최:</strong>
+                                            보건복지부
+                                        </li>
+                                        <li>
+                                            <strong>주관:</strong>
+                                            건강보험심사평가원
+                                        </li>
+                                        <li>
+                                            <strong>총 상금:</strong>
+                                            2160만원
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                        <i class="fas fa-xmark me-1"></i>
+                                        Close Project
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <!-- * *                               SB Forms JS                               * *-->
+        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+    </body>
 </html>
