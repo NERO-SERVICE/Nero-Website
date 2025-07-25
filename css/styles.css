@@ -10849,7 +10849,6 @@ p {
 .page-section h3.section-subheading, .page-section .section-subheading.h3 {
   font-size: 1rem;
   font-weight: 400;
-  font-style: italic;
   font-family: "Roboto Slab", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   margin-bottom: 4rem;
 }
@@ -10970,8 +10969,8 @@ header.masthead .masthead-subheading {
   font-family: "Roboto Slab", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 header.masthead .masthead-heading {
-  font-size: 3.25rem;
-  font-weight: 700;
+  font-size: 2.8rem;
+  font-weight: 500;
   line-height: 3.25rem;
   margin-bottom: 2rem;
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -10989,7 +10988,7 @@ header.masthead .masthead-heading {
     margin-bottom: 2rem;
   }
   header.masthead .masthead-heading {
-    font-size: 4.5rem;
+    font-size: 2.5rem;
     font-weight: 700;
     line-height: 4.5rem;
     margin-bottom: 4rem;
@@ -11389,34 +11388,26 @@ body#page-invest {
   color: #fff;
 }
 
-/* ========== index.html (page-top) 용 Footer ========== */
-body#page-top .footer {
-  background-color: #ffffff; /* 이미 흰색이지만 명시적으로 */
-}
-body#page-top .footer-left li,
-body#page-top .footer-right li {
-  color: #202020 !important; /* 어두운 텍스트 */
-}
-body#page-top .footer-right a {
-  color: #202020 !important;
-}
-body#page-top .footer-right a:hover {
-  color: #d0ee17 !important;
-}
-
 /* ========== invest.html (page-invest) 용 Footer ========== */
-body#page-invest .footer {
+.footer {
   background-color: #202020; /* 이미 다크이지만 명시적으로 */
 }
-body#page-invest .footer-left li,
-body#page-invest .footer-right li {
+.footer-left li,
+.footer-right li {
   color: #f8f9fa !important; /* 밝은 텍스트 */
 }
-body#page-invest .footer-right a {
+.footer-right a {
   color: #f8f9fa !important;
 }
-body#page-invest .footer-right a:hover {
+.footer-right a:hover {
   color: #d0ee17 !important;
+}
+.footer-logo {
+  display: block;
+  margin-bottom: 1rem;
+  width: clamp(4rem, 12vw, 8rem); /* 최소 4rem, 뷰포트 너비의 15%, 최대 10rem */
+  max-width: 100%;
+  height: auto;
 }
 
 @media (max-width: 600px) {
@@ -11428,4 +11419,171 @@ body#page-invest .footer-right a:hover {
     text-overflow: ellipsis; /* 넘칠 경우 말줄임 */
     margin-bottom: 1.5rem; /* 여백 조정 */
   }
+}
+
+
+/*========== Custom Overrides ==========*/
+
+/* 1. 상단 네비바 반투명 효과 (80% opacity) */
+/* 기존 navbar-shrink 배경색을 덮어쓰고, 모바일에서도 항상 유지 */
+@media (min-width: 992px) {
+  #mainNav.navbar-shrink {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: saturate(180%) blur(10px);
+  }
+}
+@media (max-width: 991.98px) {
+  #mainNav {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: saturate(180%) blur(10px);
+  }
+} 
+
+/* 2. Masthead 텍스트: 한 줄 유지, 화면 너비에 맞춰 자동 축소 */
+/* white-space: nowrap 으로 한 줄 고정, clamp()로 최소/최대 폰트사이즈 지정 */
+header.masthead .masthead-heading {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  font-size: clamp(1.5rem, 6vw, 4.5rem) !important;
+}
+
+/* 3. Portfolio Modal (모바일) 간격 + X 아이콘 크기 조정 */
+@media (max-width: 575.98px) {
+  .portfolio-modal .modal-dialog {
+    margin: 0.5rem !important;
+  }
+  .portfolio-modal .close-modal {
+    position: absolute;
+    top: 0.75rem !important;
+    right: 0.75rem !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+  }
+}
+
+/* portfolio modal 본문에서 HTML 줄바꿈(pre-line) 적용 */
+.portfolio-modal .modal-body .modal-text {
+  white-space: pre-line;
+  /* 필요시 아래 속성으로 여백, 색상, 폰트 등 추가 조정 가능 */
+  margin-bottom: 1rem;
+  color: #d9d9d9;
+  line-height: 1.6;
+}
+
+.portfolio-modal .modal-body p{
+  display: inline-block;
+  text-align: left;
+  max-width: 90%;
+}
+
+/* ── Portfolio Modal Title ── */
+.custom-modal-title {
+  color: #202020;                                      /* 포인트 컬러 */
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem) !important;                  /* 반응형 폰트 크기 */
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Portfolio Modal Subtitle ── */
+.custom-modal-subtitle {
+  color: #7d7d7d;                                      /* 밝은 회색 */
+  font-family: 'Roboto Slab', serif;
+  font-size: clamp(1rem, 3vw, 1.5rem) !important;                 /* 반응형 폰트 크기 */
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+}
+
+/* ── 모바일 전용 미세 조정 (≤576px) ── */
+@media (max-width: 575.98px) {
+  .custom-modal-title {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+  .custom-modal-subtitle {
+    font-size: clamp(0.9rem, 4.5vw, 1.2rem);
+  }
+}
+
+/* === Services Page 전용 이미지 크기 (rem 단위) === */
+/* 기본 (태블릿~기본 데스크탑) */
+.service-mock-image {
+  width: 15rem;       /* 기본 mock 이미지 너비 */
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 1rem;
+}
+
+.store-btn {
+  width: 8rem;        /* 기본 스토어 버튼 너비 */
+  max-width: 100%;
+  height: auto;
+  transition: transform .2s;
+}
+
+/* 모바일 (≤576px) */
+@media (max-width: 576px) {
+  .service-mock-image {
+    width: 10rem;     /* 모바일에서 더 작게 */
+  }
+  .store-btn {
+    width: 6rem;      /* 모바일 버튼 축소 */
+  }
+}
+
+/* 데스크탑 (≥992px) */
+@media (min-width: 992px) {
+  .service-mock-image {
+    width: 30rem;     /* 데스크탑에서 더 크게 */
+  }
+  .store-btn {
+    width: 15rem;     /* 데스크탑 버튼 확대 */
+  }
+}
+
+
+/* Services.html 백그라운드 컬러*/
+/* services 페이지 배경 원형 그라데이션 (고정 포지션으로 변경) */
+body#page-services {
+  overflow-x: hidden; /* 가로 스크롤만 숨김 */
+}
+
+/* 오른쪽 상단 큰 원 */
+body#page-services::before {
+  content: "";
+  position: fixed;           /* absolute → fixed */
+  top: -150px; right: -150px;
+  width: 700px; height: 700px;
+  background: rgba(208, 238, 23, 0.12);
+  border-radius: 50%;
+  filter: blur(270px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 왼쪽 하단 작은 원 */
+body#page-services::after {
+  content: "";
+  position: fixed;           /* absolute → fixed */
+  bottom: -100px; left: -100px;
+  width: 400px; height: 400px;
+  background: rgba(208, 238, 23, 0.08);
+  border-radius: 50%;
+  filter: blur(150px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* nav, main, footer를 배경 위로 올림 */
+body#page-services nav,
+body#page-services main,
+body#page-services footer {
+  position: relative;
+  z-index: 1;
+}
+
+.store-buttons {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.5rem, 8vw, 2rem); /* 최소 0.5rem, 최대 2rem, 뷰포트 너비의 8% */
 }
