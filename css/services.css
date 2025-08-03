@@ -1,0 +1,129 @@
+/* ===================================
+   SERVICES.HTML SPECIFIC STYLES
+   =================================== */
+
+/* Services Page Dark Theme */
+body#page-services {
+    background-color: #202020;
+    color: #ffffff;
+}
+
+/* Services Section Styles */
+.service-item {
+    margin-bottom: 3rem;
+}
+
+.service-mock-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 2rem;
+}
+
+.service-item h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.service-item p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #cccccc;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Store Buttons */
+.store-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.store-btn {
+    height: 60px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+}
+
+.store-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+}
+
+/* Service Item Images */
+.service-item-image {
+    max-width: 300px;
+    height: auto;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.service-item-content h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.service-item-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #cccccc;
+    margin-bottom: 0;
+}
+
+/* Responsive Design for Services */
+@media (max-width: 768px) {
+    .service-item h4 {
+        font-size: 1.6rem;
+    }
+    
+    .service-item p {
+        font-size: 1rem;
+    }
+    
+    .service-item-content h4 {
+        font-size: 1.5rem;
+    }
+    
+    .service-item-content p {
+        font-size: 0.95rem;
+    }
+    
+    .store-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .store-btn {
+        height: 50px;
+    }
+    
+    .service-item-image {
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .service-item h4 {
+        font-size: 1.4rem;
+    }
+    
+    .service-item-content h4 {
+        font-size: 1.3rem;
+    }
+    
+    .service-mock-image,
+    .service-item-image {
+        max-width: 200px;
+    }
+}

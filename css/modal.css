@@ -1,0 +1,375 @@
+/* ===================================
+   ENHANCED MODAL SYSTEM
+   중앙 정렬, 가변 높이, 반응형 디자인
+   =================================== */
+
+/* 전역 모달 최적화 */
+.modal {
+    --modal-border-radius: 16px;
+    --modal-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    --modal-backdrop: rgba(0, 0, 0, 0.8);
+    --modal-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    z-index: 1060;
+    backdrop-filter: blur(8px);
+}
+
+/* 모달 백드롭 향상 */
+.modal-backdrop {
+    background-color: var(--modal-backdrop);
+    backdrop-filter: blur(4px);
+    transition: opacity 0.15s linear;
+}
+
+.modal-backdrop.show {
+    opacity: 1;
+}
+
+/* 모달 다이얼로그 중앙 정렬 및 가변 높이 */
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 2rem);
+    margin: 1rem auto;
+    max-width: 90vw;
+    width: auto;
+    transition: var(--modal-transition);
+}
+
+/* 세로 중앙 정렬 강화 */
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 2rem);
+}
+
+.modal-dialog-centered::before {
+    display: block;
+    height: calc(100vh - 2rem);
+    height: -webkit-min-content;
+    height: -moz-min-content;
+    height: min-content;
+    content: "";
+}
+
+/* 모달 콘텐츠 가변 높이 및 반응형 */
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: calc(100vh - 2rem);
+    min-height: auto;
+    max-width: 800px;
+    
+    color: var(--bs-modal-color, #212529);
+    background-color: var(--bs-modal-bg, #fff);
+    border: none;
+    border-radius: var(--modal-border-radius);
+    box-shadow: var(--modal-shadow);
+    
+    /* 매끄러운 애니메이션 */
+    transition: var(--modal-transition);
+    transform-origin: center;
+}
+
+/* 모달 헤더 개선 */
+.modal-header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 2rem 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-top-left-radius: calc(var(--modal-border-radius) - 1px);
+    border-top-right-radius: calc(var(--modal-border-radius) - 1px);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.modal-title {
+    margin-bottom: 0;
+    line-height: 1.4;
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #2c3e50;
+}
+
+/* 모달 바디 가변 높이 */
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 2rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 12rem);
+    
+    /* 커스텀 스크롤바 */
+    scrollbar-width: thin;
+    scrollbar-color: #ccc transparent;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+/* 모달 푸터 */
+.modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1rem 2rem 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom-right-radius: calc(var(--modal-border-radius) - 1px);
+    border-bottom-left-radius: calc(var(--modal-border-radius) - 1px);
+    background: #f8f9fa;
+    gap: 0.75rem;
+}
+
+/* 닫기 버튼 개선 */
+.btn-close {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: scale(1.1);
+}
+
+.btn-close:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* 모달 애니메이션 */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: translate(0, -50px) scale(0.9);
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0, 0) scale(1);
+}
+
+/* 포트폴리오 모달 특화 */
+.portfolio-modal .modal-dialog {
+    max-width: 95vw;
+    width: auto;
+}
+
+.portfolio-modal .modal-content {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.portfolio-modal .modal-header {
+    background: linear-gradient(135deg, #ffc800 0%, #ffb400 100%);
+    color: white;
+    border-bottom: none;
+}
+
+.portfolio-modal .modal-title {
+    color: white;
+    font-size: 1.75rem;
+}
+
+.portfolio-modal .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.portfolio-modal .modal-body {
+    padding: 2.5rem;
+}
+
+.portfolio-modal .modal-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+/* 알림 모달 특화 */
+.notification-modal .modal-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+}
+
+.notification-modal .modal-title {
+    color: white;
+}
+
+.notification-modal .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100vw - 1rem);
+        min-height: calc(100vh - 1rem);
+    }
+    
+    .modal-content {
+        max-height: calc(100vh - 1rem);
+        border-radius: 12px;
+    }
+    
+    .modal-header {
+        padding: 1rem 1.5rem 0.75rem;
+    }
+    
+    .modal-title {
+        font-size: 1.25rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+        max-height: calc(100vh - 8rem);
+    }
+    
+    .modal-footer {
+        padding: 0.75rem 1.5rem 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+        margin: 0;
+    }
+    
+    /* 포트폴리오 모달 모바일 최적화 */
+    .portfolio-modal .modal-dialog {
+        margin: 0.25rem;
+        max-width: calc(100vw - 0.5rem);
+    }
+    
+    .portfolio-modal .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .portfolio-modal .modal-title {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 0.25rem;
+        max-width: calc(100vw - 0.5rem);
+        min-height: calc(100vh - 0.5rem);
+    }
+    
+    .modal-content {
+        max-height: calc(100vh - 0.5rem);
+        border-radius: 8px;
+    }
+    
+    .modal-header {
+        padding: 0.75rem 1rem 0.5rem;
+    }
+    
+    .modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+        max-height: calc(100vh - 6rem);
+    }
+    
+    .modal-footer {
+        padding: 0.5rem 1rem 0.75rem;
+    }
+}
+
+/* 접근성 향상 */
+.modal[aria-hidden="false"] {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-dialog:focus {
+    outline: none;
+}
+
+.modal-content:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+    .modal-content {
+        border: 2px solid #000;
+    }
+    
+    .modal-header {
+        border-bottom: 2px solid #000;
+    }
+    
+    .modal-footer {
+        border-top: 2px solid #000;
+    }
+}
+
+/* 모션 감소 설정 지원 */
+@media (prefers-reduced-motion: reduce) {
+    .modal.fade .modal-dialog,
+    .modal-backdrop,
+    .btn-close {
+        transition: none;
+    }
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+    .modal-content {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .modal-footer {
+        background-color: #4a5568;
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .modal-title {
+        color: #e2e8f0;
+    }
+    
+    .modal-body::-webkit-scrollbar-thumb {
+        background: #718096;
+    }
+}

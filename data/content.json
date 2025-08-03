@@ -1,0 +1,127 @@
+{
+  "portfolio": [
+    {
+      "id": 1,
+      "title": "Nero CARE 출시",
+      "subtitle": "iOS/Android 서비스 운영",
+      "image": "assets/img/portfolio/1.png",
+      "modalImage": "assets/img/portfolio/1-1.png",
+      "description": "2024년 10월 iOS와 Android 동시 출시를 완료하여, 정신건강을 통합적으로 관리할 수 있는 토탈 케어 솔루션을 제공하고 있습니다. 약물 복용 기록부터 부작용 모니터링까지, 환자 중심의 디지털 헬스케어 플랫폼을 구축했습니다.",
+      "details": {
+        "targetCustomer": "정신건강을 통합적으로 관리하고 싶은 환자",
+        "category": "건강/피트니스, 디지털 헬스케어"
+      },
+      "date": "2024-10",
+      "status": "active",
+      "order": 1,
+      "tags": ["앱출시", "디지털헬스케어", "포트폴리오"]
+    },
+    {
+      "id": 2,
+      "title": "2025 예비창업패키지 선정",
+      "subtitle": "벤처기업협회 주관 소셜벤처 분야",
+      "image": "assets/img/portfolio/2.png",
+      "modalImage": "assets/img/portfolio/2.png",
+      "description": "치열한 경쟁률을 뚫고 2025년 5월 벤처기업협회가 주관하는 소셜벤처 분야 예비창업패키지 지원 기업으로 선정되었습니다. 이를 통해 정신건강 데이터 분야의 혁신적인 사업 모델을 인정받으며, 창업생태계에서의 입지를 확고히 했습니다.",
+      "details": {
+        "hostOrganization": "벤처기업협회",
+        "selectedField": "소셜벤처"
+      },
+      "date": "2025-05",
+      "status": "active",
+      "order": 2,
+      "tags": ["창업패키지", "벤처기업협회", "포트폴리오"]
+    },
+    {
+      "id": 3,
+      "title": "보건의료빅데이터 경진대회 수상",
+      "subtitle": "제품&서비스분야 건강보험심사평가원장상",
+      "image": "assets/img/portfolio/3.png",
+      "modalImage": "assets/img/portfolio/3.png",
+      "description": "정부가 국민 건강 증진을 위해 보건의료데이터 기반 혁신 스타트업 발굴에 나선 가운데, 네로가 건강보험심사평가원이 주관하는 '2025년 보건의료빅데이터 활용 창업경진대회'에서 제품&서비스 분야 우수상을 수상했습니다.\n\n이번 경진대회는 보건복지부가 주최하고 심평원이 주관한 것으로, 총 122개 팀이 참가하여 3단계에 걸친 공정한 평가를 통해 부문별 수상작을 선정했습니다. 네로의 정신건강 데이터 활용 플랫폼이 혁신성과 실용성을 인정받아 영예의 수상을 차지했습니다.",
+      "details": {
+        "hostOrganization": "보건복지부",
+        "managingOrganization": "건강보험심사평가원",
+        "totalPrize": "2,160만원"
+      },
+      "date": "2025-07",
+      "status": "active",
+      "order": 3,
+      "tags": ["경진대회", "빅데이터", "수상", "포트폴리오"]
+    }
+  ],
+  "about": {
+    "timeline": [
+      {
+        "id": 1,
+        "date": "2024.9",
+        "title": "연세대학교 워크스테이션 선정",
+        "description": "연세대학교 워크스테이션 소셜벤처분야",
+        "image": "assets/img/about/1.png",
+        "order": 1,
+        "isInverted": false
+      },
+      {
+        "id": 2,
+        "date": "2024.10",
+        "title": "Nero CARE 앱 출시",
+        "description": "약물 복용 및 부작용을 기록하고 만성적으로 관리할 수 있도록 도와주는 토탈 케어 앱 서비스 출시",
+        "image": "assets/img/about/2.png",
+        "order": 2,
+        "isInverted": true
+      },
+      {
+        "id": 3,
+        "date": "2024.12",
+        "title": "국민체육진흥공단 공공데이터 활용 경진대회 수상",
+        "description": "AI 건강비서 관련 기능 구현 및 업데이트",
+        "image": "assets/img/about/3.png",
+        "order": 3,
+        "isInverted": false
+      },
+      {
+        "id": 4,
+        "date": "2025.3",
+        "title": "한국장학재단 창업기숙사 입주 기업 선정",
+        "description": "한국장학재단 서울센터",
+        "image": "assets/img/about/4.png",
+        "order": 4,
+        "isInverted": true
+      },
+      {
+        "id": 5,
+        "date": "2025.5",
+        "title": "벤처기업협회 예비창업패키지 선정",
+        "description": "소셜벤처 분야",
+        "image": "assets/img/about/5.png",
+        "order": 5,
+        "isInverted": false
+      },
+      {
+        "id": 6,
+        "date": "2025.7",
+        "title": "보건의료빅데이터 활용 창업경진대회 제품&서비스 수상",
+        "description": "보건복지부, 건강보험심사평가원 주관 총 상금 2160만원",
+        "image": "assets/img/about/6.png",
+        "order": 6,
+        "isInverted": true
+      },
+      {
+        "id": 7,
+        "date": "2025.7",
+        "title": "(주)네로 법인설립",
+        "description": "법인설립절차 완료",
+        "image": "assets/img/about/7.png",
+        "order": 7,
+        "isInverted": false
+      }
+    ],
+    "callToAction": {
+      "text": ["Be Part", "Of Our", "Story!"]
+    }
+  },
+  "metadata": {
+    "lastUpdated": "2025-08-03",
+    "version": "1.0.0"
+  }
+}

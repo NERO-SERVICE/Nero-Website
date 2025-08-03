@@ -15,28 +15,15 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
+        <!-- Page specific CSS -->
+        <link href="css/intro.css" rel="stylesheet" />
+        <!-- Enhanced Modal CSS -->
+        <link href="css/modal.css" rel="stylesheet" />
     </head>
     <body id="page-top">
         <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-            <div class="container">
-                <a class="navbar-brand" href="#page-top"><img src="assets/img/navbar-logo.svg" alt="..." /></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="fas fa-bars ms-1"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                        <!--<li class="nav-item"><a class="nav-link" href="#team">Team</a></li>-->
-                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                        <li class="nav-item"><a class="nav-link" href="services.html">Services</a></li>
-                        <!--<li class="nav-item"><a class="nav-link" href="invest.html">공고</a></li>-->
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <div id="navbar-container"></div>
+
         <!-- Masthead-->
         <header class="masthead">
             <div class="container">
@@ -44,41 +31,6 @@
                 <div class="masthead-subheading">Create a Mental Health Standard with Data</div>
             </div>
         </header>
-        <!-- Services-->
-        <!-- <section class="page-section" id="services">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Services</h2>
-                    <h3 class="section-subheading text-muted">약 복용 여부로 두려워하지 마세요</h3>
-                </div>
-                <div class="row text-center">
-                    <div class="col-md-4">
-                        <span class="fa-stack fa-4x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-3">보험료 인하</h4>
-                        <p class="text-muted">꾸준히 복용 기록만 남긴다면, 보험 가입이 일반인들보다 더 쉽고 저렴해질 수 있어요</p>
-                    </div>
-                    <div class="col-md-4">
-                        <span class="fa-stack fa-4x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-3">간편한 이용</h4>
-                        <p class="text-muted">앱을 사용하는 것만으로 정신질환 만성관리를 더욱 손쉽게 도와줘요.</p>
-                    </div>
-                    <div class="col-md-4">
-                        <span class="fa-stack fa-4x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-3">철저한 보안</h4>
-                        <p class="text-muted">내 기록이 모르는 곳에 사용될까봐 걱정되시나요? 암호화를 통한 보안으로 정보 유출을 철저히 막습니다.</p>
-                    </div>
-                </div>
-            </div>
-        </section> -->
         <!-- Portfolio Grid-->
         <section class="page-section bg-light" id="portfolio">
             <div class="container">
@@ -232,35 +184,86 @@
         <!-- Contact-->
         <section class="page-section" id="contact">
             <div class="container">
-                <div class="text-center">
+                <div class="text-center mb-5">
                     <h2 class="section-heading text-uppercase">Contact Us</h2><br>
                     <h3 class="section-subheading text-muted">서비스의 상세한 문의는<br />아래의 메일을 통해 부탁드립니다</h3>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-12">
+                        <div class="contact-card text-center">
+                            <a href="mailto:official@nero.ai.kr" class="btn btn-secondary btn-xl text-uppercase">
+                                <i class="fas fa-envelope fa-1x me-1"></i>
+                                Send Message
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
         <!-- Footer-->
-        <footer class="footer py-4">
-            <div class="container">
-                <div class="row">
-                <!-- 왼쪽 컬럼: 대표이사 / 주소 / 사업자번호 -->
-                <div class="col-md-6 footer-left">
-                    <img src="assets/img/footer-logo.svg" alt="회사 로고" class="footer-logo" />
-                    <ul class="list-unstyled mb-0">
-                        <li>대표이사: 한동균</li>
-                        <li>주소: 서울 마포구 양화로 81 H스퀘어, 333호</li>
-                        <li>메일: official@nero.ai.kr</li>
-                    </ul>
-                </div>
-                <!-- 오른쪽 컬럼: COPYRIGHT / Contact -->
-                <div class="col-md-6 footer-right text-md-end">
-                    <ul class="list-unstyled mb-0">
-                    <li>&copy; Nero All rights reserved.</li>
-                    <li><a href="#contact" class="link-light text-decoration-none">Contact Us</a></li>
-                    </ul>
-                </div>
-                </div>
-            </div>
-        </footer>
+        <div id="footer-container"></div>
+
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Components JS -->
+        <script src="js/components.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+        
+        <!-- Custom JavaScript for animations -->
+        <script>
+            // Intersection Observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all animated elements
+            document.addEventListener('DOMContentLoaded', () => {
+                const animatedElements = document.querySelectorAll('.story-item, .founder-card, .value-card');
+                animatedElements.forEach(el => observer.observe(el));
+
+                // Staggered animation for value cards
+                const valueCards = document.querySelectorAll('.value-card');
+                valueCards.forEach((card, index) => {
+                    card.style.transitionDelay = `${index * 0.1}s`;
+                });
+
+                // Parallax effect for background
+                window.addEventListener('scroll', () => {
+                    const scrolled = window.pageYOffset;
+                    const parallaxElements = document.querySelectorAll('.parallax-section');
+                    
+                    parallaxElements.forEach(element => {
+                        const speed = 0.5;
+                        const yPos = -(scrolled * speed);
+                        element.style.transform = `translateY(${yPos}px)`;
+                    });
+                });
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        </script>
         <!-- Portfolio Modals-->
         <!-- Portfolio item 1 modal popup-->
         <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
