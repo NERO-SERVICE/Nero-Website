@@ -11678,3 +11678,256 @@ body#page-services footer {
     line-height: 1.6;
   }
 }
+
+/* ==== TRENDY UI ENHANCEMENTS FOR INDEX.HTML ====
+ * 트렌디한 UI/UX 개선사항
+ * 마이크로 인터랙션, 그라데이션, 글래스모피즘 효과
+ */
+
+/* 글로벌 개선사항 */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 마스트헤드 배경 복원 - 원본 이미지 유지 */
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 포트폴리오 섹션 개선 */
+#portfolio {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  position: relative;
+}
+
+#portfolio::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 200, 0, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(253, 126, 20, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+#portfolio .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* 포트폴리오 아이템 글래스모피즘 효과 */
+#portfolio .portfolio-item {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+#portfolio .portfolio-item:hover {
+  transform: translateY(-15px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* 포트폴리오 이미지 개선 */
+#portfolio .portfolio-item img {
+  border-radius: 15px;
+  transition: transform 0.3s ease;
+}
+
+#portfolio .portfolio-item:hover img {
+  transform: scale(1.05);
+}
+
+/* 포트폴리오 호버 효과 개선 */
+#portfolio .portfolio-item .portfolio-hover {
+  background: linear-gradient(135deg, rgba(255, 200, 0, 0.9) 0%, rgba(253, 126, 20, 0.9) 100%);
+  backdrop-filter: blur(5px);
+  border-radius: 15px;
+}
+
+/* About 섹션 원래 스타일 유지 */
+
+/* About 섹션 원래 스타일 복원 완료 */
+
+/* 타임라인 이미지 스타일 복원 - 회전 제거, 확대만 */
+.timeline li .timeline-image {
+  transition: transform 0.3s ease;
+}
+
+.timeline li .timeline-image:hover {
+  transform: scale(1.1);
+}
+
+/* Contact 섹션 개선 */
+#contact {
+  background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+#contact::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="circuit" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M0 25h25v-25h25v50h-25v-25h-25z" fill="none" stroke="rgba(255,200,0,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23circuit)"/></svg>');
+  opacity: 0.3;
+}
+
+#contact .container {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-10px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* 버튼 개선 */
+.btn-primary, .btn-secondary {
+  background: linear-gradient(135deg, #ffc800 0%, #fd7e14 100%);
+  border: none;
+  border-radius: 50px;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(255, 200, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 200, 0, 0.4);
+  background: linear-gradient(135deg, #fd7e14 0%, #ffc800 100%);
+}
+
+.btn-primary::before, .btn-secondary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before, .btn-secondary:hover::before {
+  left: 100%;
+}
+
+/* 네비게이션 원래 스타일 복원 */
+
+/* 부드러운 스크롤 효과 */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* 접근성 개선 - 주황색 테두리 제거 */
+.btn:focus, .portfolio-link:focus, .portfolio-item:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.portfolio-link:focus, .portfolio-link:active {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.portfolio-item img:focus, .portfolio-item img:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* 모든 포커스 상태에서 주황색 제거 */
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+*:focus-visible {
+  outline: 2px solid #007bff !important;
+  outline-offset: 2px !important;
+}
+
+/* Bootstrap 포커스 상태 덮어쓰기 */
+.btn:focus, .btn:active, .btn.active {
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+a:focus, button:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 로딩 애니메이션 */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.loading {
+  animation: pulse 2s infinite;
+}
+
+/* 다크모드 대응 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #f8f9fa;
+    --bg-color: #212529;
+  }
+}
+
+/* 고해상도 디스플레이 최적화 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .portfolio-item img,
+  .timeline-image img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* ==== 모달 스크롤 및 배경 제어 ====
+ * 모달이 열릴 때 배경 스크롤 방지 및 모달 내부 스크롤 최적화
+ */
+
+/* 모달 열린 상태에서 body 스크롤 방지 */
+body.modal-open {
+  overflow: hidden !important;
+  padding-right: 0 !important;
+}
+
+/* 모달 배경 원래 스타일 복원 */
+
+/* 모달 스크롤 제어만 유지 - 나머지 스타일은 원래대로 복원 */
