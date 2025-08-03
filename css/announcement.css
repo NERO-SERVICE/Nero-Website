@@ -1,40 +1,40 @@
 /* ===================================
-   NOTIFICATION.HTML SPECIFIC STYLES
+   ANNOUNCEMENT.HTML SPECIFIC STYLES
    =================================== */
 
 /* 신뢰감 있는 공고 페이지 전용 스타일 */
 :root {
-    --notification-primary: #2c3e50;
-    --notification-secondary: #34495e;
-    --notification-accent: #3498db;
-    --notification-warning: #e74c3c;
-    --notification-background: #f8f9fa;
-    --notification-card-bg: #ffffff;
-    --notification-border: #dee2e6;
-    --notification-text: #2c3e50;
-    --notification-muted: #6c757d;
+    --announcement-primary: #2c3e50;
+    --announcement-secondary: #34495e;
+    --announcement-accent: #3498db;
+    --announcement-warning: #e74c3c;
+    --announcement-background: #f8f9fa;
+    --announcement-card-bg: #ffffff;
+    --announcement-border: #dee2e6;
+    --announcement-text: #2c3e50;
+    --announcement-muted: #6c757d;
 }
 
 body {
-    background-color: var(--notification-background);
-    color: var(--notification-text);
+    background-color: var(--announcement-background);
+    color: var(--announcement-text);
 }
 
 /* Hero Section */
-.notification-hero {
-    background: linear-gradient(135deg, var(--notification-primary) 0%, var(--notification-secondary) 100%);
+.announcement-hero {
+    background: linear-gradient(135deg, var(--announcement-primary) 0%, var(--announcement-secondary) 100%);
     color: white;
-    padding: 120px 0 80px;
+    padding: 80px 0 50px;
     position: relative;
     overflow: hidden;
     /* 글래스모피즘 효과를 위한 추가 */
     backdrop-filter: blur(10px);
     /* 트렌디한 그라디언트 개선 */
     background: linear-gradient(135deg, 
-        var(--notification-primary) 0%, 
+        var(--announcement-primary) 0%, 
         #34495e 25%,
         #2980b9 75%,
-        var(--notification-secondary) 100%);
+        var(--announcement-secondary) 100%);
     /* 동적 배경 애니메이션 */
     background-size: 400% 400%;
     animation: gradientShift 8s ease infinite;
@@ -46,7 +46,7 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-.notification-hero::before {
+.announcement-hero::before {
     content: '';
     position: absolute;
     top: 0;
@@ -75,12 +75,12 @@ body {
     }
 }
 
-.notification-hero .container {
+.announcement-hero .container {
     position: relative;
     z-index: 2;
 }
 
-.notification-hero h1 {
+.announcement-hero h1 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 2.5rem;
@@ -90,7 +90,7 @@ body {
     animation: fadeInUp 1s ease-out 0.3s forwards;
 }
 
-.notification-hero .lead {
+.announcement-hero .lead {
     font-size: 1.2rem;
     opacity: 0.9;
     margin-bottom: 0;
@@ -107,24 +107,24 @@ body {
 }
 
 /* Filter Section */
-.notification-filters {
+.announcement-filters {
     background: white;
-    padding: 2rem 0;
-    border-bottom: 1px solid var(--notification-border);
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--announcement-border);
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .filter-tabs {
     display: flex;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
 }
 
 .filter-tab {
     background: transparent;
-    border: 2px solid var(--notification-border);
-    color: var(--notification-text);
+    border: 2px solid var(--announcement-border);
+    color: var(--announcement-text);
     padding: 0.5rem 1.2rem;
     border-radius: 25px;
     font-weight: 500;
@@ -134,14 +134,14 @@ body {
 }
 
 .filter-tab:hover {
-    border-color: var(--notification-accent);
-    color: var(--notification-accent);
+    border-color: var(--announcement-accent);
+    color: var(--announcement-accent);
     transform: translateY(-2px);
 }
 
 .filter-tab.active {
-    background: var(--notification-accent);
-    border-color: var(--notification-accent);
+    background: var(--announcement-accent);
+    border-color: var(--announcement-accent);
     color: white;
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
@@ -152,7 +152,7 @@ body {
 }
 
 .search-input {
-    border: 2px solid var(--notification-border);
+    border: 2px solid var(--announcement-border);
     border-radius: 25px;
     padding: 0.7rem 1rem 0.7rem 2.5rem;
     font-size: 0.95rem;
@@ -161,7 +161,7 @@ body {
 }
 
 .search-input:focus {
-    border-color: var(--notification-accent);
+    border-color: var(--announcement-accent);
     box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
     outline: none;
 }
@@ -171,17 +171,17 @@ body {
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--notification-muted);
+    color: var(--announcement-muted);
 }
 
-/* Notification Cards */
-.notifications-container {
-    padding: 3rem 0;
+/* Announcement Cards */
+.announcements-container {
+    padding: 2rem 0;
 }
 
-.notification-card {
-    background: var(--notification-card-bg);
-    border: 1px solid var(--notification-border);
+.announcement-card {
+    background: var(--announcement-card-bg);
+    border: 1px solid var(--announcement-border);
     border-radius: 12px;
     padding: 1.8rem;
     margin-bottom: 1.5rem;
@@ -191,37 +191,37 @@ body {
     overflow: hidden;
 }
 
-.notification-card::before {
+.announcement-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 4px;
     height: 100%;
-    background: var(--notification-border);
+    background: var(--announcement-border);
     transition: all 0.3s ease;
 }
 
-.notification-card:hover {
+.announcement-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    border-color: var(--notification-accent);
+    border-color: var(--announcement-accent);
 }
 
-.notification-card:hover::before {
-    background: var(--notification-accent);
+.announcement-card:hover::before {
+    background: var(--announcement-accent);
     width: 6px;
 }
 
-.notification-card.important::before {
-    background: var(--notification-accent);
+.announcement-card.important::before {
+    background: var(--announcement-accent);
 }
 
-.notification-card.important:hover::before {
-    background: var(--notification-accent);
+.announcement-card.important:hover::before {
+    background: var(--announcement-accent);
 }
 
-.notification-header {
+.announcement-header {
     display: flex;
     justify-content: between;
     align-items: flex-start;
@@ -229,15 +229,15 @@ body {
     gap: 1rem;
 }
 
-.notification-meta {
+.announcement-meta {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 0.8rem;
 }
 
-.notification-type {
-    background: var(--notification-accent);
+.announcement-type {
+    background: var(--announcement-accent);
     color: white;
     padding: 0.3rem 0.8rem;
     border-radius: 15px;
@@ -246,30 +246,30 @@ body {
     white-space: nowrap;
 }
 
-.notification-type.법정공고 {
-    background: var(--notification-accent);
+.announcement-type.법정공고 {
+    background: var(--announcement-accent);
 }
 
-.notification-type.일반공고 {
-    background: var(--notification-accent);
+.announcement-type.일반공고 {
+    background: var(--announcement-accent);
 }
 
-.notification-type.채용공고 {
+.announcement-type.채용공고 {
     background: #27ae60;
 }
 
-.notification-type.투자공고 {
+.announcement-type.투자공고 {
     background: #8e44ad;
 }
 
-.notification-type.포트폴리오 {
+.announcement-type.포트폴리오 {
     background: #f39c12;
 }
 
 .portfolio-link-info {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
-    border-top: 1px solid var(--notification-border);
+    border-top: 1px solid var(--announcement-border);
 }
 
 .portfolio-link-info .btn {
@@ -277,31 +277,31 @@ body {
     padding: 0.4rem 0.8rem;
 }
 
-.notification-date {
-    color: var(--notification-muted);
+.announcement-date {
+    color: var(--announcement-muted);
     font-size: 0.9rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.notification-title {
+.announcement-title {
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 1.2rem;
-    color: var(--notification-text);
+    color: var(--announcement-text);
     margin-bottom: 0.8rem;
     line-height: 1.4;
 }
 
-.notification-preview {
-    color: var(--notification-muted);
+.announcement-preview {
+    color: var(--announcement-muted);
     font-size: 0.95rem;
     line-height: 1.6;
     margin-bottom: 1rem;
 }
 
-.notification-actions {
+.announcement-actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -309,8 +309,8 @@ body {
 
 .read-more-btn {
     background: transparent;
-    border: 1px solid var(--notification-accent);
-    color: var(--notification-accent);
+    border: 1px solid var(--announcement-accent);
+    color: var(--announcement-accent);
     padding: 0.5rem 1.2rem;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -320,13 +320,13 @@ body {
 }
 
 .read-more-btn:hover {
-    background: var(--notification-accent);
+    background: var(--announcement-accent);
     color: white;
     transform: translateY(-1px);
 }
 
 .important-badge {
-    background: var(--notification-warning);
+    background: var(--announcement-warning);
     color: white;
     padding: 0.3rem 0.8rem;
     border-radius: 15px;
@@ -338,15 +338,15 @@ body {
 }
 
 /* Pagination */
-.notification-pagination {
+.announcement-pagination {
     display: flex;
     justify-content: center;
     margin-top: 3rem;
 }
 
 .pagination .page-link {
-    border: 1px solid var(--notification-border);
-    color: var(--notification-text);
+    border: 1px solid var(--announcement-border);
+    color: var(--announcement-text);
     padding: 0.6rem 1rem;
     margin: 0 0.2rem;
     border-radius: 8px;
@@ -354,14 +354,14 @@ body {
 }
 
 .pagination .page-link:hover {
-    background: var(--notification-accent);
-    border-color: var(--notification-accent);
+    background: var(--announcement-accent);
+    border-color: var(--announcement-accent);
     color: white;
 }
 
 .pagination .page-item.active .page-link {
-    background: var(--notification-accent);
-    border-color: var(--notification-accent);
+    background: var(--announcement-accent);
+    border-color: var(--announcement-accent);
     color: white;
 }
 
@@ -369,7 +369,7 @@ body {
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
-    color: var(--notification-muted);
+    color: var(--announcement-muted);
 }
 
 .empty-state i {
@@ -395,7 +395,7 @@ body {
 }
 
 .modal-header {
-    background: var(--notification-primary);
+    background: var(--announcement-primary);
     color: white;
     border-radius: 12px 12px 0 0;
     padding: 1.5rem 2rem;
@@ -411,11 +411,11 @@ body {
     padding: 2rem;
     font-size: 1rem;
     line-height: 1.7;
-    color: var(--notification-text);
+    color: var(--announcement-text);
 }
 
 .modal-footer {
-    border-top: 1px solid var(--notification-border);
+    border-top: 1px solid var(--announcement-border);
     padding: 1.5rem 2rem;
 }
 
@@ -430,8 +430,8 @@ body {
 .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid var(--notification-border);
-    border-top: 3px solid var(--notification-accent);
+    border: 3px solid var(--announcement-border);
+    border-top: 3px solid var(--announcement-accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -444,20 +444,32 @@ body {
 /* Accessibility Enhancements */
 .filter-tab:focus,
 .search-input:focus,
-.notification-card:focus,
+.announcement-card:focus,
 .read-more-btn:focus {
-    outline: 2px solid var(--notification-accent);
+    outline: 2px solid var(--announcement-accent);
     outline-offset: 2px;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .notification-hero h1 {
+    .announcement-hero {
+        padding: 60px 0 40px;
+    }
+
+    .announcement-hero h1 {
         font-size: 2rem;
     }
 
-    .notification-hero .lead {
+    .announcement-hero .lead {
         font-size: 1.1rem;
+    }
+
+    .announcement-filters {
+        padding: 1rem 0;
+    }
+
+    .announcements-container {
+        padding: 1.5rem 0;
     }
 
     .filter-tabs {
@@ -469,26 +481,26 @@ body {
         font-size: 0.85rem;
     }
 
-    .notification-card {
+    .announcement-card {
         padding: 1.3rem;
         margin-bottom: 1rem;
     }
 
-    .notification-title {
+    .announcement-title {
         font-size: 1.1rem;
     }
 
-    .notification-header {
+    .announcement-header {
         flex-direction: column;
         gap: 0.8rem;
     }
 
-    .notification-meta {
+    .announcement-meta {
         flex-wrap: wrap;
         gap: 0.8rem;
     }
 
-    .notification-actions {
+    .announcement-actions {
         flex-direction: column;
         gap: 1rem;
         align-items: stretch;
@@ -500,20 +512,86 @@ body {
     }
 }
 
+/* Minimal External Link Styling - Only Icon Indicator */
+.external-link-indicator {
+    color: var(--announcement-muted);
+    font-size: 0.75rem;
+    margin-left: 0.3rem;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.announcement-card:hover .external-link-indicator {
+    opacity: 1;
+}
+
+/* 보도자료 스타일 - 일반공지와 동일하게 */
+.announcement-type.보도자료 {
+    background: var(--announcement-accent);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* 외부 링크 버튼 스타일 - 일반 버튼과 동일하게 */
+.external-link-btn {
+    background: transparent;
+    border: 1px solid var(--announcement-accent);
+    color: var(--announcement-accent);
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.external-link-btn:hover {
+    background: var(--announcement-accent);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* 외부 링크 카드 스타일 제거 - 일반 카드와 동일하게 */
+.external-link-card {
+    /* 특별한 스타일 제거 */
+}
+
+/* 외부 소스 정보 제거 */
+.external-source-info {
+    display: none;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .external-link-indicator {
+        font-size: 0.7rem;
+    }
+}
+
 /* Print Styles */
 @media print {
-    .notification-hero,
-    .notification-filters,
-    .notification-pagination,
+    .announcement-hero,
+    .announcement-filters,
+    .announcement-pagination,
     .modal,
     nav {
         display: none !important;
     }
 
-    .notification-card {
+    .announcement-card {
         break-inside: avoid;
         box-shadow: none;
         border: 1px solid #ddd;
         margin-bottom: 1rem;
+    }
+
+    .external-link-card::after {
+        content: ' [외부 링크: ' attr(data-url) ']';
+        font-size: 0.8rem;
+        color: #666;
     }
 }

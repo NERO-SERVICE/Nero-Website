@@ -42,13 +42,13 @@ class ContentLoader {
      */
     async loadNotificationData() {
         try {
-            const response = await fetch('data/notifications.json');
+            const response = await fetch('data/announcements.json');
             if (!response.ok) {
                 throw new Error(`알림 데이터 로드 실패: ${response.status}`);
             }
             this.notificationData = await response.json();
         } catch (error) {
-            console.error('notifications.json 로드 오류:', error);
+            console.error('announcements.json 로드 오류:', error);
             throw error;
         }
     }

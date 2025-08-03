@@ -9,12 +9,47 @@
       "isImportant": true,
       "attachments": [],
       "status": "active"
+    },
+    {
+      "id": 2,
+      "type": "보도자료",
+      "title": "국민체육진흥공단, ‘2024년 공공데이터 활용 경진대회’ 시상식 개최",
+      "date": "2024-12-20",
+      "content": "",
+      "isImportant": true,
+      "attachments": [],
+      "status": "active",
+      "externalLink": {
+        "url": "https://www.mk.co.kr/news/sports/11199551",
+        "source": "전자신문",
+        "linkType": "press",
+        "openInNewTab": true,
+        "publishedAt": "2024-12-20"
+      }
+    },
+    {
+      "id": 3,
+      "type": "보도자료",
+      "title": "심평원, '2025년 보건의료빅데이터 활용 창업경진대회' 성료",
+      "date": "2025-07-24",
+      "content": "",
+      "isImportant": true,
+      "attachments": [],
+      "status": "active",
+      "externalLink": {
+        "url": "https://www.yakup.com/news/index.html?mode=view&cat=11&nid=313724",
+        "source": "전자신문",
+        "linkType": "press",
+        "openInNewTab": true,
+        "publishedAt": "2025-07-24"
+      }
     }
   ],
   "categories": [
     "전체",
     "법정공고",
-    "일반공지"
+    "일반공지",
+    "보도자료"
   ],
   "settings": {
     "postsPerPage": 10,

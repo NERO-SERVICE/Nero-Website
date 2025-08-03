@@ -55,7 +55,7 @@ class AdminInterface {
         try {
             const [contentResponse, notificationResponse] = await Promise.all([
                 fetch('data/content.json'),
-                fetch('data/notifications.json')
+                fetch('data/announcements.json')
             ]);
 
             this.contentData = await contentResponse.json();

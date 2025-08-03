@@ -8,7 +8,7 @@
  * - 접근성 지원
  */
 
-class NotificationSystem {
+class AnnouncementSystem {
     constructor() {
         this.data = null;
         this.portfolioData = null;
@@ -38,19 +38,19 @@ class NotificationSystem {
     async loadData() {
         try {
             // 공고 데이터와 포트폴리오 데이터 동시 로드
-            const [notificationResponse, portfolioResponse] = await Promise.all([
-                fetch('data/notifications.json'),
+            const [announcementResponse, portfolioResponse] = await Promise.all([
+                fetch('data/announcements.json'),
                 fetch('data/content.json')
             ]);
             
-            if (!notificationResponse.ok) {
-                throw new Error(`Notification data error! status: ${notificationResponse.status}`);
+            if (!announcementResponse.ok) {
+                throw new Error(`Announcement data error! status: ${announcementResponse.status}`);
             }
             if (!portfolioResponse.ok) {
                 throw new Error(`Portfolio data error! status: ${portfolioResponse.status}`);
             }
             
-            this.data = await notificationResponse.json();
+            this.data = await announcementResponse.json();
             this.portfolioData = await portfolioResponse.json();
             this.filteredData = [...this.data.announcements];
             this.itemsPerPage = this.data.settings.postsPerPage || 10;
@@ -90,12 +90,12 @@ class NotificationSystem {
         }
 
         // 모달 이벤트
-        const modal = document.getElementById('notificationModal');
+        const modal = document.getElementById('announcementModal');
         if (modal) {
             modal.addEventListener('show.bs.modal', (e) => {
-                const notificationId = parseInt(e.relatedTarget?.dataset.id);
-                if (notificationId) {
-                    this.showNotificationDetail(notificationId);
+                const announcementId = parseInt(e.relatedTarget?.dataset.id);
+                if (announcementId) {
+                    this.showAnnouncementDetail(announcementId);
                 }
             });
         }
@@ -149,7 +149,7 @@ class NotificationSystem {
     }
 
     renderNotifications() {
-        const container = document.getElementById('notifications-list');
+        const container = document.getElementById('announcements-list');
         const emptyState = document.getElementById('empty-state');
         const portfolioEmptyState = document.getElementById('portfolio-empty-state');
         
@@ -181,8 +181,8 @@ class NotificationSystem {
         const pageData = this.filteredData.slice(startIndex, endIndex);
 
         // 공고 카드 렌더링
-        container.innerHTML = pageData.map(notification => 
-            this.createNotificationCard(notification)
+        container.innerHTML = pageData.map(announcement => 
+            this.createAnnouncementCard(announcement)
         ).join('');
 
         // 카드 클릭 이벤트 추가
@@ -195,13 +195,13 @@ class NotificationSystem {
         this.animateCards();
     }
 
-    createNotificationCard(notification) {
-        const previewText = this.truncateText(notification.content, 120);
-        const formattedDate = this.formatDate(notification.date);
-        const importantBadge = notification.isImportant ? '' : '';
+    createAnnouncementCard(announcement) {
+        const previewText = this.truncateText(announcement.content, 120);
+        const formattedDate = this.formatDate(announcement.date);
+        const importantBadge = announcement.isImportant ? '' : '';
         
         // 포트폴리오 연동 정보 추가
-        const portfolioLinkInfo = this.getPortfolioLinkInfo(notification);
+        const portfolioLinkInfo = this.getPortfolioLinkInfo(announcement);
         const portfolioLink = portfolioLinkInfo ? `
             <div class="portfolio-link-info">
                 <a href="index.html#portfolio" class="btn btn-outline-secondary btn-sm">
@@ -211,49 +211,72 @@ class NotificationSystem {
             </div>
         ` : '';
 
+        // 외부 링크 정보 처리
+        const externalLinkInfo = this.getExternalLinkInfo(announcement);
+        const isExternalLink = !!announcement.externalLink;
+        
+        // 외부 링크가 있는 경우 다른 UI 표시
+        const actionButton = isExternalLink ? `
+            <button class="read-more-btn external-link-btn" 
+                    data-id="${announcement.id}"
+                    data-url="${announcement.externalLink.url}"
+                    data-open-new-tab="${announcement.externalLink.openInNewTab}"
+                    aria-label="${announcement.title} 기사 보기">
+                기사 보기
+                <i class="fas fa-external-link-alt ms-1"></i>
+            </button>
+        ` : `
+            <button class="read-more-btn" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#announcementModal"
+                    data-id="${announcement.id}"
+                    aria-label="${announcement.title} 상세 내용 보기">
+                자세히 보기
+                <i class="fas fa-arrow-right ms-1"></i>
+            </button>
+        `;
+
+        // 외부 링크 소스 정보 제거 (아이콘만 유지)
+        const sourceInfo = '';
+
         return `
-            <article class="notification-card ${notification.isImportant ? 'important' : ''} ${notification.type === '포트폴리오' ? 'portfolio-card' : ''}" 
-                     data-id="${notification.id}" 
+            <article class="announcement-card ${announcement.isImportant ? 'important' : ''} ${announcement.type === '포트폴리오' ? 'portfolio-card' : ''} ${isExternalLink ? 'external-link-card' : ''}" 
+                     data-id="${announcement.id}" 
                      tabindex="0" 
                      role="button"
-                     aria-label="${notification.title} 공고 상세보기">
-                <div class="notification-header">
+                     aria-label="${announcement.title} ${isExternalLink ? '기사' : '공고'} 보기">
+                <div class="announcement-header">
                     <div class="flex-grow-1">
-                        <div class="notification-meta">
-                            <span class="notification-type ${notification.type}">${notification.type}</span>
-                            <span class="notification-date">
+                        <div class="announcement-meta">
+                            <span class="announcement-type ${announcement.type}">${announcement.type}</span>
+                            <span class="announcement-date">
                                 <i class="fas fa-calendar-alt"></i>
                                 ${formattedDate}
                             </span>
+                            ${isExternalLink ? '<i class="fas fa-external-link-alt external-link-indicator" title="외부 링크"></i>' : ''}
                         </div>
-                        <h3 class="notification-title">${this.escapeHtml(notification.title)}</h3>
-                        <p class="notification-preview">${this.escapeHtml(previewText)}</p>
+                        <h3 class="announcement-title">${this.escapeHtml(announcement.title)}</h3>
+                        <p class="announcement-preview">${this.escapeHtml(previewText)}</p>
+                        ${sourceInfo}
                         ${portfolioLink}
                     </div>
                     ${importantBadge}
                 </div>
-                <div class="notification-actions">
-                    <button class="read-more-btn" 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#notificationModal"
-                            data-id="${notification.id}"
-                            aria-label="${notification.title} 상세 내용 보기">
-                        자세히 보기
-                        <i class="fas fa-arrow-right ms-1"></i>
-                    </button>
+                <div class="announcement-actions">
+                    ${actionButton}
                 </div>
             </article>
         `;
     }
 
     attachCardEvents() {
-        const cards = document.querySelectorAll('.notification-card');
+        const cards = document.querySelectorAll('.announcement-card');
         cards.forEach(card => {
             // 클릭 이벤트
             card.addEventListener('click', (e) => {
                 if (!e.target.closest('.read-more-btn')) {
                     const button = card.querySelector('.read-more-btn');
-                    if (button) button.click();
+                    if (button) this.handleButtonClick(button);
                 }
             });
 
@@ -262,10 +285,65 @@ class NotificationSystem {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     const button = card.querySelector('.read-more-btn');
-                    if (button) button.click();
+                    if (button) this.handleButtonClick(button);
                 }
             });
         });
+
+        // 버튼별 직접 이벤트 처리
+        const buttons = document.querySelectorAll('.read-more-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.handleButtonClick(button);
+            });
+        });
+    }
+
+    handleButtonClick(button) {
+        // 외부 링크 버튼인지 확인
+        if (button.classList.contains('external-link-btn')) {
+            const url = button.dataset.url;
+            const openInNewTab = button.dataset.openNewTab === 'true';
+            
+            if (url) {
+                this.handleExternalLink(url, openInNewTab, button);
+            }
+        } else {
+            // 기존 모달 처리
+            const announcementId = parseInt(button.dataset.id);
+            if (announcementId) {
+                this.showAnnouncementDetail(announcementId);
+                // Bootstrap 모달 열기
+                const modal = new bootstrap.Modal(document.getElementById('announcementModal'));
+                modal.show();
+            }
+        }
+    }
+
+    handleExternalLink(url, openInNewTab, buttonElement) {
+        // URL 검증
+        if (!this.isValidUrl(url)) {
+            console.error('Invalid URL:', url);
+            this.announceToScreenReader('유효하지 않은 링크입니다.');
+            return;
+        }
+
+        // 즉시 링크 열기 (확인 대화상자 제거)
+        try {
+            if (openInNewTab) {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            } else {
+                window.location.href = url;
+            }
+            
+            // 접근성 안내
+            this.announceToScreenReader('외부 기사 페이지로 이동합니다.');
+        } catch (error) {
+            console.error('Failed to open external link:', error);
+            this.announceToScreenReader('링크를 열 수 없습니다.');
+        }
     }
 
     renderPagination(totalItems) {
@@ -342,7 +420,7 @@ class NotificationSystem {
                     this.renderNotifications();
                     
                     // 페이지 변경 시 상단으로 스크롤
-                    document.querySelector('.notifications-container').scrollIntoView({
+                    document.querySelector('.announcements-container').scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
@@ -351,22 +429,22 @@ class NotificationSystem {
         });
     }
 
-    showNotificationDetail(id) {
-        const notification = this.data.announcements.find(item => item.id === id);
-        if (!notification) return;
+    showAnnouncementDetail(id) {
+        const announcement = this.data.announcements.find(item => item.id === id);
+        if (!announcement) return;
 
-        const modalTitle = document.getElementById('notificationModalLabel');
-        const modalBody = document.getElementById('notificationModalBody');
+        const modalTitle = document.getElementById('announcementModalLabel');
+        const modalBody = document.getElementById('announcementModalBody');
 
         if (modalTitle) {
-            modalTitle.textContent = notification.title;
+            modalTitle.textContent = announcement.title;
         }
 
         if (modalBody) {
-            const formattedDate = this.formatDate(notification.date);
+            const formattedDate = this.formatDate(announcement.date);
             
             // 포트폴리오 연동 정보 확인
-            const portfolioInfo = this.getPortfolioLinkInfo(notification);
+            const portfolioInfo = this.getPortfolioLinkInfo(announcement);
             const portfolioSection = portfolioInfo ? `
                 <div class="alert alert-info mt-3">
                     <h6><i class="fas fa-link me-2"></i>연동된 포트폴리오 항목</h6>
@@ -381,14 +459,14 @@ class NotificationSystem {
 
             modalBody.innerHTML = `
                 <div class="mb-3">
-                    <span class="notification-type ${notification.type} me-2">${notification.type}</span>
+                    <span class="announcement-type ${announcement.type} me-2">${announcement.type}</span>
                     <span class="text-muted">
                         <i class="fas fa-calendar-alt me-1"></i>
                         ${formattedDate}
                     </span>
                 </div>
-                <div class="notification-content">
-                    ${this.formatContent(notification.content)}
+                <div class="announcement-content">
+                    ${this.formatContent(announcement.content)}
                 </div>
                 ${portfolioSection}
             `;
@@ -413,7 +491,7 @@ class NotificationSystem {
     }
 
     animateCards() {
-        const cards = document.querySelectorAll('.notification-card');
+        const cards = document.querySelectorAll('.announcement-card');
         cards.forEach((card, index) => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
@@ -434,11 +512,11 @@ class NotificationSystem {
     }
 
     showError(message) {
-        const container = document.getElementById('notifications-list');
+        const container = document.getElementById('announcements-list');
         if (container) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <i class="fas fa-exclamation-triangle" style="color: var(--notification-warning);"></i>
+                    <i class="fas fa-exclamation-triangle" style="color: var(--announcement-warning);"></i>
                     <h3>오류 발생</h3>
                     <p>${this.escapeHtml(message)}</p>
                 </div>
@@ -471,15 +549,63 @@ class NotificationSystem {
             .replace(/'/g, "&#039;");
     }
 
-    getPortfolioLinkInfo(notification) {
+    getPortfolioLinkInfo(announcement) {
         // 포트폴리오 타입 공고에 대한 연동 정보 반환
-        if (notification.type === '포트폴리오' && notification.portfolioRef && this.portfolioData) {
+        if (announcement.type === '포트폴리오' && announcement.portfolioRef && this.portfolioData) {
             const portfolioItem = this.portfolioData.portfolio.find(
-                item => item.id === notification.portfolioRef
+                item => item.id === announcement.portfolioRef
             );
             return portfolioItem || null;
         }
         return null;
+    }
+
+    getExternalLinkInfo(announcement) {
+        // 외부 링크 정보 반환
+        return announcement.externalLink || null;
+    }
+
+    isValidUrl(string) {
+        try {
+            const url = new URL(string);
+            return url.protocol === 'http:' || url.protocol === 'https:';
+        } catch (_) {
+            return false;
+        }
+    }
+
+    isTrustedDomain(url) {
+        const trustedDomains = [
+            'moneytoday.co.kr',
+            'mk.co.kr',
+            'etnews.com',
+            'yakup.com',
+            'hankyung.com',
+            'naver.com',
+            'daum.net',
+            'joins.com',
+            'chosun.com',
+            'donga.com',
+            'hani.co.kr',
+            'khan.co.kr',
+            'yna.co.kr',
+            'newsis.com',
+            'ytn.co.kr',
+            'sbs.co.kr',
+            'kbs.co.kr',
+            'mbc.co.kr'
+        ];
+
+        try {
+            const urlObj = new URL(url);
+            const hostname = urlObj.hostname.toLowerCase();
+            
+            return trustedDomains.some(domain => 
+                hostname === domain || hostname.endsWith('.' + domain)
+            );
+        } catch (_) {
+            return false;
+        }
     }
 
     announceToScreenReader(message) {
@@ -507,7 +633,7 @@ class NotificationSystem {
 
 // 페이지 로드 완료 시 시스템 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    new NotificationSystem();
+    new AnnouncementSystem();
 });
 
 // 브라우저 뒤로가기/앞으로가기 지원
@@ -521,12 +647,12 @@ window.addEventListener('popstate', (e) => {
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
         // 페이지가 숨겨졌을 때 애니메이션 중지
-        document.querySelectorAll('.notification-card').forEach(card => {
+        document.querySelectorAll('.announcement-card').forEach(card => {
             card.style.animationPlayState = 'paused';
         });
     } else {
         // 페이지가 다시 보일 때 애니메이션 재개
-        document.querySelectorAll('.notification-card').forEach(card => {
+        document.querySelectorAll('.announcement-card').forEach(card => {
             card.style.animationPlayState = 'running';
         });
     }
