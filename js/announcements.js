@@ -17,6 +17,7 @@ class AnnouncementSystem {
         this.itemsPerPage = 10;
         this.currentCategory = '전체';
         this.currentSearchTerm = '';
+        this.modalInstance = null; // 모달 인스턴스 단일화
         
         this.init();
     }
@@ -85,20 +86,12 @@ class AnnouncementSystem {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
                     this.handleSearch(e.target.value);
-                }, 300); // 디바운싱
+                }, 300); // 디바운싹
             });
         }
 
-        // 모달 이벤트
-        const modal = document.getElementById('announcementModal');
-        if (modal) {
-            modal.addEventListener('show.bs.modal', (e) => {
-                const announcementId = parseInt(e.relatedTarget?.dataset.id);
-                if (announcementId) {
-                    this.showAnnouncementDetail(announcementId);
-                }
-            });
-        }
+        // 모달 이벤트 초기화
+        this.initModal();
     }
 
     handleCategoryFilter(category) {
@@ -311,13 +304,10 @@ class AnnouncementSystem {
                 this.handleExternalLink(url, openInNewTab, button);
             }
         } else {
-            // 기존 모달 처리
+            // 기존 모달 처리 - 인스턴스 재사용
             const announcementId = parseInt(button.dataset.id);
             if (announcementId) {
-                this.showAnnouncementDetail(announcementId);
-                // Bootstrap 모달 열기
-                const modal = new bootstrap.Modal(document.getElementById('announcementModal'));
-                modal.show();
+                this.showModal(announcementId);
             }
         }
     }
@@ -605,6 +595,67 @@ class AnnouncementSystem {
             );
         } catch (_) {
             return false;
+        }
+    }
+
+    // 모달 인스턴스 초기화 및 이벤트 처리
+    initModal() {
+        const modalElement = document.getElementById('announcementModal');
+        if (!modalElement) return;
+
+        // 단일 모달 인스턴스 생성
+        this.modalInstance = new bootstrap.Modal(modalElement);
+        
+        // 모달 닫기 이벤트 처리 - 스크롤 복원
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            this.restoreBodyScroll();
+        });
+
+        // 모달 열기 이벤트 처리 (기존 방식 유지)
+        modalElement.addEventListener('show.bs.modal', (e) => {
+            const announcementId = parseInt(e.relatedTarget?.dataset.id);
+            if (announcementId) {
+                this.showAnnouncementDetail(announcementId);
+            }
+        });
+    }
+
+    // 안전한 모달 열기
+    showModal(announcementId) {
+        if (!this.modalInstance) {
+            this.initModal();
+        }
+        
+        this.showAnnouncementDetail(announcementId);
+        this.modalInstance.show();
+    }
+
+    // Body 스크롤 복원 로직
+    restoreBodyScroll() {
+        try {
+            // Bootstrap이 실패한 경우 강제 복원
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            document.body.classList.remove('modal-open');
+            
+            // 백드롭 잔여물 제거
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => {
+                if (backdrop.parentNode) {
+                    backdrop.parentNode.removeChild(backdrop);
+                }
+            });
+            
+            // 추가 안전장치: body 스타일 완전 정리
+            setTimeout(() => {
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }, 100);
+            
+        } catch (error) {
+            console.warn('모달 정리 중 오류:', error);
+            // 최후 수단: 강제 스크롤 복원
+            document.body.style.overflow = 'auto';
         }
     }
 

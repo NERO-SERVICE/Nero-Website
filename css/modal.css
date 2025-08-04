@@ -14,15 +14,20 @@
     backdrop-filter: blur(8px);
 }
 
-/* 모달 백드롭 향상 */
+/* 모달 백드롭 향상 - 블러 효과 전환 개선 */
 .modal-backdrop {
     background-color: var(--modal-backdrop);
-    backdrop-filter: blur(4px);
-    transition: opacity 0.15s linear;
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.15s linear, opacity 0.15s linear;
 }
 
 .modal-backdrop.show {
     opacity: 1;
+    backdrop-filter: blur(4px);
+}
+
+.modal-backdrop.fade {
+    backdrop-filter: blur(0px);
 }
 
 /* 모달 다이얼로그 중앙 정렬 및 가변 높이 */

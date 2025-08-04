@@ -20,11 +20,13 @@ body {
     color: var(--announcement-text);
 }
 
-/* Hero Section */
+/* Hero Section - 네비바 충돌 방지 및 반응형 향상 */
 .announcement-hero {
     background: linear-gradient(135deg, var(--announcement-primary) 0%, var(--announcement-secondary) 100%);
     color: white;
-    padding: 80px 0 50px;
+    /* 네비바 높이 + 안전 여백 고려 */
+    padding: 110px 0 60px;
+    min-height: 200px;
     position: relative;
     overflow: hidden;
     /* 글래스모피즘 효과를 위한 추가 */
@@ -450,10 +452,12 @@ body {
     outline-offset: 2px;
 }
 
-/* Responsive Design */
+/* Responsive Design - 네비바 충돌 방지 강화 */
 @media (max-width: 768px) {
     .announcement-hero {
-        padding: 60px 0 40px;
+        /* 모바일 네비바 높이 + 안전 여백 */
+        padding: 90px 0 50px;
+        min-height: 180px;
     }
 
     .announcement-hero h1 {
@@ -569,6 +573,23 @@ body {
 @media (max-width: 768px) {
     .external-link-indicator {
         font-size: 0.7rem;
+    }
+}
+
+/* 초소형 모바일 디바이스 반응형 - 네비바 충돌 방지 */
+@media (max-width: 576px) {
+    .announcement-hero {
+        /* 초소형 디바이스 네비바 높이 + 안전 여백 */
+        padding: 85px 0 45px;
+        min-height: 160px;
+    }
+    
+    .announcement-hero h1 {
+        font-size: 1.8rem;
+    }
+    
+    .announcement-hero .lead {
+        font-size: 1rem;
     }
 }
 
