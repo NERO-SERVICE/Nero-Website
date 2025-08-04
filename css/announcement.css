@@ -2,11 +2,11 @@
    ANNOUNCEMENT.HTML SPECIFIC STYLES
    =================================== */
 
-/* 신뢰감 있는 공고 페이지 전용 스타일 */
+/* 신뢰감 있는 공고 페이지 전용 스타일 - 무채색 시스템 */
 :root {
     --announcement-primary: #2c3e50;
     --announcement-secondary: #34495e;
-    --announcement-accent: #3498db;
+    --announcement-accent: #6c757d;
     --announcement-warning: #e74c3c;
     --announcement-background: #f8f9fa;
     --announcement-card-bg: #ffffff;
@@ -138,14 +138,15 @@ body {
 .filter-tab:hover {
     border-color: var(--announcement-accent);
     color: var(--announcement-accent);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.15);
 }
 
 .filter-tab.active {
     background: var(--announcement-accent);
     border-color: var(--announcement-accent);
     color: white;
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 3px 10px rgba(108, 117, 125, 0.25);
 }
 
 .search-container {

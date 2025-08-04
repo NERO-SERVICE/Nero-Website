@@ -2846,20 +2846,20 @@ textarea.form-control-lg {
 
 .btn-primary {
   --bs-btn-color: #ffffff;
-  --bs-btn-bg: #d0ee17;
-  --bs-btn-border-color: #d0ee17;
+  --bs-btn-bg: #2c3e50;
+  --bs-btn-border-color: #2c3e50;
   --bs-btn-hover-color: #ffffff;
-  --bs-btn-hover-bg: #b4dd15;
-  --bs-btn-hover-border-color: #a6cc13;
-  --bs-btn-focus-shadow-rgb: 208, 238, 23;
+  --bs-btn-hover-bg: #34495e;
+  --bs-btn-hover-border-color: #34495e;
+  --bs-btn-focus-shadow-rgb: 44, 62, 80;
   --bs-btn-active-color: #ffffff;
-  --bs-btn-active-bg: #91b40e;
-  --bs-btn-active-border-color: #82aa0d;
+  --bs-btn-active-bg: #243342;
+  --bs-btn-active-border-color: #243342;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 
   --bs-btn-disabled-color: #ffffff;
-  --bs-btn-disabled-bg: #d0ee17;
-  --bs-btn-disabled-border-color: #d0ee17;
+  --bs-btn-disabled-bg: #95a5a6;
+  --bs-btn-disabled-border-color: #95a5a6;
 }
 
 .btn-secondary {
@@ -2867,16 +2867,16 @@ textarea.form-control-lg {
   --bs-btn-bg: #6c757d;
   --bs-btn-border-color: #6c757d;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #5c636a;
-  --bs-btn-hover-border-color: #565e64;
-  --bs-btn-focus-shadow-rgb: 130, 138, 145;
+  --bs-btn-hover-bg: #5a6268;
+  --bs-btn-hover-border-color: #5a6268;
+  --bs-btn-focus-shadow-rgb: 108, 117, 125;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #565e64;
-  --bs-btn-active-border-color: #51585e;
+  --bs-btn-active-bg: #545b62;
+  --bs-btn-active-border-color: #545b62;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #6c757d;
-  --bs-btn-disabled-border-color: #6c757d;
+  --bs-btn-disabled-bg: #95a5a6;
+  --bs-btn-disabled-border-color: #95a5a6;
 }
 
 .btn-success {
@@ -10946,6 +10946,13 @@ p {
     margin-right: 0;
   }
 }
+
+/* Mobile Navbar Logo Spacing */
+@media (max-width: 991px) {
+  #mainNav .navbar-brand {
+    margin-left: 1rem;
+  }
+}
 /* ==== 마스트헤드 (메인 히어로 섹션) ====
  * 사용 위치: index.html 최상단 히어로 섹션
  * 클래스/ID: header.masthead, .masthead-heading, .masthead-subheading
@@ -11807,25 +11814,56 @@ body#page-services footer {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* 버튼 개선 */
+/* 차분한 무채색 버튼 시스템 */
 .btn-primary, .btn-secondary {
-  background: linear-gradient(135deg, #ffc800 0%, #fd7e14 100%);
-  border: none;
-  border-radius: 50px;
-  padding: 0.8rem 2rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  background: #2c3e50;
+  border: 2px solid #2c3e50;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(255, 200, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.15);
   transition: all 0.3s ease;
 }
 
-.btn-primary:hover, .btn-secondary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(255, 200, 0, 0.4);
-  background: linear-gradient(135deg, #fd7e14 0%, #ffc800 100%);
+.btn-secondary {
+  background: #6c757d;
+  border-color: #6c757d;
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.15);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background: #34495e;
+  border-color: #34495e;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(44, 62, 80, 0.25);
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+  background: #5a6268;
+  border-color: #5a6268;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.25);
+}
+
+.btn-primary:active {
+  background: #243342;
+  border-color: #243342;
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(44, 62, 80, 0.3);
+}
+
+.btn-secondary:active {
+  background: #545b62;
+  border-color: #545b62;
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(108, 117, 125, 0.3);
 }
 
 .btn-primary::before, .btn-secondary::before {
@@ -11835,8 +11873,8 @@ body#page-services footer {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  transition: left 0.6s ease;
 }
 
 .btn-primary:hover::before, .btn-secondary:hover::before {
