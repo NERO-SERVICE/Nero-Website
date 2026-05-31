@@ -867,29 +867,20 @@ landingRoot.innerHTML = `
     </section>
 
     <footer class="landing-footer">
-        <div class="container footer-grid">
-            <div>
-                <a class="brand" href="#main" aria-label="NERO 랜딩 홈">
-                    <span class="brand-mark">N</span>
-                    <span>
-                        <strong>NERO</strong>
-                        <small>0→1 Development Partner</small>
-                    </span>
-                </a>
-                <p>연구자·창업자·기업을 위한 0→1 외주개발 파트너</p>
+        <div class="container landing-footer-row">
+            <div class="footer-left">
+                <img src="../assets/img/footer-logo.svg" alt="회사 로고" class="footer-logo" />
+                <ul>
+                    <li>대표이사 한동균</li>
+                    <li>본사 서울특별시 중구 퇴계로 36길 2, 충무로관 본관 130호</li>
+                    <li>메일 official@nero.ai.kr</li>
+                </ul>
             </div>
-            <div>
-                <strong>주식회사 네로</strong>
-                <span>대표 한동균</span>
-                <a href="mailto:official@nero.ai.kr" data-track="${TRACK_EVENTS.EMAIL_CONTACT}">official@nero.ai.kr</a>
-                <a href="tel:+821036447680">+82)10-3644-7680</a>
-            </div>
-            <div>
-                <strong>회사 정보</strong>
-                <span>사업자등록번호: 준비 중</span>
-                <span>주소: 준비 중</span>
-                <a href="#main">개인정보처리방침</a>
-                <a href="#main">이용약관</a>
+            <div class="footer-right">
+                <ul>
+                    <li>&copy; Nero Inc. All rights reserved.</li>
+                    <li><a href="mailto:official@nero.ai.kr" data-track="${TRACK_EVENTS.EMAIL_CONTACT}">Contact Us</a></li>
+                </ul>
             </div>
         </div>
     </footer>
