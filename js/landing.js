@@ -687,18 +687,25 @@ landingRoot.innerHTML = `
                 <h2 id="services-title">목표 검증부터 정식 서비스까지 단계별로 설계합니다</h2>
             </div>
             <div class="service-grid">
-                ${services.map((item) => `
-                    <article class="service-card reveal" role="button" tabindex="0" data-build-value="${item.buildValue}" data-track="${item.event}">
-                        ${AssetSlot({ label: item.label, file: item.image, className: "service-asset" })}
+                ${services.map((item, index) => `
+                    <article class="service-card reveal" role="button" tabindex="0" data-build-value="${item.buildValue}" data-track="${item.event}" aria-label="${item.title} 상담하기">
+                        <div class="service-head">
+                            <span class="service-index">${String(index + 1).padStart(2, "0")}</span>
+                            <span class="service-kicker">${item.buildValue}</span>
+                        </div>
                         <div class="service-body">
                             <h3>${item.title}</h3>
-                            <div>
+                            <div class="service-data">
                                 <strong>포함 기능</strong>
-                                <p>${item.includes.join(" · ")}</p>
+                                <div class="service-chip-row">
+                                    ${item.includes.map((feature) => `<span>${feature}</span>`).join("")}
+                                </div>
                             </div>
-                            <div>
+                            <div class="service-data">
                                 <strong>대표 산출물</strong>
-                                <p>${item.outputs.join(" · ")}</p>
+                                <ul class="service-output-list">
+                                    ${item.outputs.map((output) => `<li>${output}</li>`).join("")}
+                                </ul>
                             </div>
                         </div>
                     </article>
