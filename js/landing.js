@@ -601,16 +601,9 @@ landingRoot.innerHTML = `
     <section class="hero section-dark" aria-labelledby="hero-title">
         <div class="container hero-grid">
             <div class="hero-copy reveal">
-                <p class="eyebrow">연구자·창업자·기업을 위한 0→1 개발</p>
-                <h1 id="hero-title">개발 완료가 아니라, 배포·운영·인수인계까지 함께 설계합니다</h1>
-                <p class="hero-subcopy">기획, Figma 화면설계, 웹·앱, 서버·DB, 관리자, 배포, 유지보수까지 실제 운영 가능한 구조로 개발합니다.</p>
-                <div class="hero-points" aria-label="핵심 지원 범위">
-                    <span>기획서 없이 상담</span>
-                    <span>웹·앱·서버·DB</span>
-                    <span>관리자·배포·유지보수</span>
-                </div>
+                <h1 id="hero-title">기획, Figma 화면설계, 웹·앱, 서버·DB, 관리자, 배포, 유지보수까지 실제 운영 가능한 구조로 개발합니다.</h1>
                 <div class="hero-actions">
-                    <a class="primary-button" href="#contact" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">3분 프로젝트 진단 받기</a>
+                    <a class="primary-button" href="#contact" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">아이디어 보내기</a>
                     <a class="secondary-button" href="#portfolio" data-track="${TRACK_EVENTS.PORTFOLIO_VIEW}">포트폴리오 보기</a>
                 </div>
             </div>
@@ -847,65 +840,23 @@ landingRoot.innerHTML = `
     </section>
 
     <section class="contact-section" id="contact" aria-labelledby="contact-title">
-        <div class="container contact-grid">
-            <div class="contact-copy reveal">
-                <p class="eyebrow">Contact</p>
+        <div class="container">
+            <div class="section-heading reveal">
+                <p class="eyebrow">아이디어만 있어도 됩니다. 3분 진단지를 작성해주시면 개발 방향과 필요한 기능을 정리해드립니다.</p>
                 <h2 id="contact-title">정리가 안 됐어도 괜찮습니다</h2>
-                <p>아이디어만 있어도 됩니다. 3분 진단지를 작성해주시면 개발 방향과 필요한 기능을 정리해드립니다.</p>
-                <div class="contact-actions">
-                    <a class="primary-button" href="#contact" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">3분 프로젝트 진단 시작하기</a>
-                    <a class="secondary-button" href="#contact" data-track="${TRACK_EVENTS.CONSULTATION_BOOKING}">무료 상담 예약하기</a>
-                    <a class="text-link" href="mailto:official@nero.ai.kr" data-track="${TRACK_EVENTS.EMAIL_CONTACT}">이메일 문의하기</a>
-                </div>
             </div>
-            <form class="contact-form reveal" id="contact-form">
+            <form class="contact-form contact-form-simple reveal" id="contact-form" action="mailto:official@nero.ai.kr" method="post" enctype="text/plain">
                 <label>
                     성함
                     <input type="text" name="name" autocomplete="name" required />
                 </label>
                 <label>
-                    회사/기관명
-                    <input type="text" name="organization" autocomplete="organization" />
-                </label>
-                <label>
-                    연락처
-                    <input type="tel" name="phone" autocomplete="tel" />
-                </label>
-                <label>
                     이메일
                     <input type="email" name="email" autocomplete="email" required />
                 </label>
-                <label>
-                    고객유형
-                    <select name="customerType" id="customer-type">${options(customerOptions)}</select>
-                </label>
-                <label>
-                    프로젝트목적
-                    <input type="text" name="projectGoal" />
-                </label>
-                <label>
-                    희망개발형태
-                    <select name="buildType" id="build-type">${options(buildOptions)}</select>
-                </label>
-                <label>
-                    예산범위
-                    <select name="budget">${options(budgetOptions)}</select>
-                </label>
-                <label>
-                    희망일정
-                    <input type="text" name="timeline" placeholder="예: 8주 내 베타 오픈" />
-                </label>
-                <label>
-                    참고URL
-                    <input type="url" name="referenceUrl" placeholder="https://" />
-                </label>
                 <label class="form-wide">
                     문의내용
-                    <textarea name="message" rows="5" required></textarea>
-                </label>
-                <label class="privacy-check form-wide">
-                    <input type="checkbox" name="privacy" required />
-                    <span>개인정보 수집 및 상담 목적 이용에 동의합니다.</span>
+                    <textarea name="message" rows="7" required></textarea>
                 </label>
                 <button class="primary-button form-submit" type="submit">프로젝트 진단 요청하기</button>
                 <p class="form-status form-wide" role="status" aria-live="polite"></p>
@@ -1118,19 +1069,27 @@ const wireTracking = () => {
 
 const wireContactForm = () => {
     const form = document.querySelector("#contact-form");
+    if (!form) return;
     const status = form.querySelector(".form-status");
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const data = Object.fromEntries(new FormData(form).entries());
         trackEvent(TRACK_EVENTS.SUBMIT_DIAGNOSIS, {
-            customerType: data.customerType,
-            buildType: data.buildType,
-            budget: data.budget,
+            hasMessage: Boolean(data.message?.trim()),
         });
-        console.log("[NERO contact placeholder]", data);
-        status.textContent = "요청이 기록되었습니다. 빠르게 확인 후 연락드리겠습니다.";
+        const subject = "[NERO] 프로젝트 진단 요청";
+        const body = [
+            `성함: ${data.name ?? ""}`,
+            `이메일: ${data.email ?? ""}`,
+            "",
+            "문의내용:",
+            data.message ?? "",
+        ].join("\n");
+
+        status.textContent = "이메일 앱을 열고 있습니다. 작성 내용을 확인한 뒤 전송해주세요.";
         form.dataset.submitted = "true";
+        window.location.href = `mailto:official@nero.ai.kr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
 };
 
