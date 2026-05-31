@@ -601,7 +601,9 @@ landingRoot.innerHTML = `
     <section class="hero section-dark" aria-labelledby="hero-title">
         <div class="container hero-grid">
             <div class="hero-copy reveal">
-                <h1 id="hero-title">기획, Figma 화면설계, 웹·앱, 서버·DB, 관리자, 배포, 유지보수까지 실제 운영 가능한 구조로 개발합니다.</h1>
+                <p class="hero-subtitle">0 to 1 연구자/사업가를 위한 외주개발</p>
+                <h1 class="hero-title" id="hero-title">웹사이트, 앱개발, AI 모델, 관리자페이지까지</h1>
+                <p class="hero-content">기획, Figma 화면설계, 웹·앱, 서버·DB, 관리자, 배포, 유지보수까지 실제 운영 가능한 구조로 개발합니다</p>
                 <div class="hero-actions">
                     <a class="primary-button" href="#contact" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">아이디어 보내기</a>
                     <a class="secondary-button" href="#portfolio" data-track="${TRACK_EVENTS.PORTFOLIO_VIEW}">포트폴리오 보기</a>
