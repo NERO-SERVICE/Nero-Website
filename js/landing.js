@@ -390,7 +390,7 @@ const featureCategories = [
 const portfolio = [
     {
         title: "Nero 정신건강 통합관리 플랫폼",
-        image: "portfolio-nero-mental-health.png",
+        image: "portfolio-1.png",
         label: "Nero 정신건강 통합관리 플랫폼 앱·관리자 화면",
         copy: "모바일 기록, 건강 데이터 연동, 관리자, AI 서버, 앱 배포와 장기 유지보수까지 이어진 통합 플랫폼입니다.",
         tags: [
@@ -412,7 +412,61 @@ const portfolio = [
     },
     {
         title: "소살리토 공식 온라인 사이트",
-        image: "portfolio-sausalito-commerce.png",
+        image: "portfolio-2.png",
+        label: "소살리토 공식 온라인 사이트와 운영 관리자 화면",
+        copy: "브랜드 웹사이트, 결제, 알림, 배송 API, 운영 관리자와 배포 파이프라인까지 구축한 공식 온라인 사이트입니다.",
+        tags: [
+            "Django",
+            "PostgreSQL",
+            "네이버페이",
+            "토스페이먼츠",
+            "알림톡",
+            "스마트택배API",
+            "Redis",
+            "Docker/CI/CD",
+            "GA4",
+        ],
+        verification: ["결제 연동", "배송 API", "알림 자동화", "CI/CD"],
+    },
+    {
+        title: "소프티 Softie",
+        image: "portfolio-3.png",
+        label: "소살리토 공식 온라인 사이트와 운영 관리자 화면",
+        copy: "브랜드 웹사이트, 결제, 알림, 배송 API, 운영 관리자와 배포 파이프라인까지 구축한 공식 온라인 사이트입니다.",
+        tags: [
+            "Django",
+            "PostgreSQL",
+            "네이버페이",
+            "토스페이먼츠",
+            "알림톡",
+            "스마트택배API",
+            "Redis",
+            "Docker/CI/CD",
+            "GA4",
+        ],
+        verification: ["결제 연동", "배송 API", "알림 자동화", "CI/CD"],
+    },
+    {
+        title: "레브마이크 RevMic",
+        image: "portfolio-4.png",
+        label: "소살리토 공식 온라인 사이트와 운영 관리자 화면",
+        copy: "브랜드 웹사이트, 결제, 알림, 배송 API, 운영 관리자와 배포 파이프라인까지 구축한 공식 온라인 사이트입니다.",
+        tags: [
+            "Django",
+            "PostgreSQL",
+            "네이버페이",
+            "토스페이먼츠",
+            "알림톡",
+            "스마트택배API",
+            "Redis",
+            "Docker/CI/CD",
+            "GA4",
+        ],
+        verification: ["결제 연동", "배송 API", "알림 자동화", "CI/CD"],
+    },
+    {
+        title: "서울익스플로러 Seoul Explorer",
+        image: "portfolio-5.png",
         label: "소살리토 공식 온라인 사이트와 운영 관리자 화면",
         copy: "브랜드 웹사이트, 결제, 알림, 배송 API, 운영 관리자와 배포 파이프라인까지 구축한 공식 온라인 사이트입니다.",
         tags: [
@@ -502,6 +556,18 @@ const HeroProductSlot = ({ label, desktopFile, mobileFile, className = "" }) => 
 const list = (items) => items.map((item) => `<li>${item}</li>`).join("");
 const badges = (items) => items.map((item) => `<span>${item}</span>`).join("");
 const options = (items) => items.map((item) => `<option value="${item}">${item}</option>`).join("");
+
+const renderPortfolioCards = (isDuplicate = false) => portfolio.map((item) => `
+    <article class="portfolio-card"${isDuplicate ? ' aria-hidden="true"' : ""}>
+        ${AssetSlot({ label: item.label, file: item.image, className: "portfolio-asset" })}
+        <div class="portfolio-body">
+            <h3>${item.title}</h3>
+            <p>${item.copy}</p>
+            <div class="badge-row">${badges(item.tags)}</div>
+            <div class="verification-row" aria-label="검증 배지">${badges(item.verification)}</div>
+        </div>
+    </article>
+`).join("");
 
 const renderFeatureTabs = () => featureCategories.map((category, index) => `
     <button
@@ -667,20 +733,13 @@ landingRoot.innerHTML = `
         <div class="container">
             <div class="section-heading reveal">
                 <p class="eyebrow">포트폴리오</p>
-                <h2 id="portfolio-title">운영 가능한 제품 구조까지 고려한 개발 사례</h2>
+                <h2 id="portfolio-title">포트폴리오</h2>
             </div>
-            <div class="portfolio-grid">
-                ${portfolio.map((item) => `
-                    <article class="portfolio-card reveal">
-                        ${AssetSlot({ label: item.label, file: item.image, className: "portfolio-asset" })}
-                        <div class="portfolio-body">
-                            <h3>${item.title}</h3>
-                            <p>${item.copy}</p>
-                            <div class="badge-row">${badges(item.tags)}</div>
-                            <div class="verification-row" aria-label="검증 배지">${badges(item.verification)}</div>
-                        </div>
-                    </article>
-                `).join("")}
+            <div class="portfolio-marquee reveal" aria-label="포트폴리오 목록">
+                <div class="portfolio-track">
+                    <div class="portfolio-set">${renderPortfolioCards()}</div>
+                    <div class="portfolio-set" aria-hidden="true">${renderPortfolioCards(true)}</div>
+                </div>
             </div>
         </div>
     </section>

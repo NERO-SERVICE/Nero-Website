@@ -1010,11 +1010,32 @@ section[id] {
     font-weight: 900;
 }
 
-.portfolio-grid {
-    grid-template-columns: repeat(2, 1fr);
+.portfolio-marquee {
+    overflow: hidden;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding: 4px 0 12px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+
+.portfolio-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    animation: portfolioMarquee 54s linear infinite;
+}
+
+.portfolio-set {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 18px;
+    padding-right: 18px;
 }
 
 .portfolio-card {
+    flex: 0 0 clamp(360px, 32vw, 520px);
+    width: clamp(360px, 32vw, 520px);
     overflow: hidden;
 }
 
@@ -1394,6 +1415,16 @@ section[id] {
 }
 
 @keyframes marquee {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes portfolioMarquee {
     from {
         transform: translateX(0);
     }
