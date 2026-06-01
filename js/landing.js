@@ -544,7 +544,7 @@ const badges = (items) => items.map((item) => `<span>${item}</span>`).join("");
 const options = (items) => items.map((item) => `<option value="${item}">${item}</option>`).join("");
 
 const renderPortfolioCards = (isDuplicate = false) => portfolio.map((item) => `
-    <article class="portfolio-card"${isDuplicate ? ' aria-hidden="true"' : ""}>
+    <article class="portfolio-card"${isDuplicate ? ' aria-hidden="true"' : ' data-portfolio-card'}>
         ${AssetSlot({ label: item.label, file: item.image, className: "portfolio-asset" })}
         <div class="portfolio-body">
             <h3>${item.title}</h3>
@@ -728,6 +728,11 @@ landingRoot.innerHTML = `
                     <div class="portfolio-set">${renderPortfolioCards()}</div>
                     <div class="portfolio-set" aria-hidden="true">${renderPortfolioCards(true)}</div>
                 </div>
+                <div class="portfolio-nav" aria-label="포트폴리오 탐색">
+                    <button type="button" class="portfolio-nav-button" data-portfolio-prev aria-label="이전 포트폴리오">‹</button>
+                    <span class="portfolio-count" data-portfolio-count>01 / ${String(portfolio.length).padStart(2, "0")}</span>
+                    <button type="button" class="portfolio-nav-button" data-portfolio-next aria-label="다음 포트폴리오">›</button>
+                </div>
             </div>
         </div>
     </section>
@@ -864,19 +869,16 @@ landingRoot.innerHTML = `
                 <h2 id="contact-title">정리가 안 됐어도 괜찮습니다</h2>
             </div>
             <form class="contact-form contact-form-simple reveal" id="contact-form" action="mailto:official@nero.ai.kr" method="post" enctype="text/plain">
-                <label>
-                    성함
-                    <input type="text" name="name" autocomplete="name" required />
+                <label aria-label="성함">
+                    <input type="text" name="name" autocomplete="name" placeholder="성함" required />
                 </label>
-                <label>
-                    이메일
-                    <input type="email" name="email" autocomplete="email" required />
+                <label aria-label="이메일">
+                    <input type="email" name="email" autocomplete="email" placeholder="이메일" required />
                 </label>
-                <label class="form-wide">
-                    문의내용
-                    <textarea name="message" rows="7" required></textarea>
+                <label class="form-wide" aria-label="문의내용">
+                    <textarea name="message" rows="7" placeholder="문의내용" required></textarea>
                 </label>
-                <button class="primary-button form-submit" type="submit">프로젝트 진단 요청하기</button>
+                <button class="primary-button form-submit" type="submit">아이디어 보내기</button>
                 <p class="form-status form-wide" role="status" aria-live="polite"></p>
             </form>
         </div>
@@ -1180,6 +1182,49 @@ const wireProcessTimeline = () => {
     setActive(0);
 };
 
+const wirePortfolioCarousel = () => {
+    const carousel = document.querySelector(".portfolio-marquee");
+    const set = carousel?.querySelector(".portfolio-set:not([aria-hidden])");
+    const cards = Array.from(set?.querySelectorAll("[data-portfolio-card]") ?? []);
+    const prevButton = carousel?.querySelector("[data-portfolio-prev]");
+    const nextButton = carousel?.querySelector("[data-portfolio-next]");
+    const count = carousel?.querySelector("[data-portfolio-count]");
+    if (!carousel || !set || cards.length === 0) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 768px)");
+    let activeIndex = 0;
+    let ticking = false;
+
+    const setActive = (nextIndex) => {
+        activeIndex = (nextIndex + cards.length) % cards.length;
+
+        if (!mobileQuery.matches) {
+            set.style.transform = "";
+            cards.forEach((card) => card.removeAttribute("aria-hidden"));
+            return;
+        }
+
+        set.style.transform = `translate3d(${-cards[activeIndex].offsetLeft}px, 0, 0)`;
+        cards.forEach((card, index) => card.setAttribute("aria-hidden", String(index !== activeIndex)));
+        if (count) count.textContent = `${String(activeIndex + 1).padStart(2, "0")} / ${String(cards.length).padStart(2, "0")}`;
+    };
+
+    const requestUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(() => {
+            setActive(activeIndex);
+            ticking = false;
+        });
+    };
+
+    prevButton?.addEventListener("click", () => setActive(activeIndex - 1));
+    nextButton?.addEventListener("click", () => setActive(activeIndex + 1));
+    window.addEventListener("resize", requestUpdate);
+    mobileQuery.addEventListener?.("change", requestUpdate);
+    setActive(0);
+};
+
 const wireDrawer = () => {
     const button = document.querySelector(".menu-button");
     const drawer = document.querySelector("#mobile-drawer");
@@ -1283,6 +1328,7 @@ wireModal();
 wireTracking();
 wireContactForm();
 wireProcessTimeline();
+wirePortfolioCarousel();
 wireScrollTracking();
 revealNewElements();
 scrollToInitialHash();
