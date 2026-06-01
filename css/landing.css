@@ -2044,7 +2044,7 @@ section[id] {
     }
 
     .process-layout {
-        width: calc(100% - 64px);
+        width: calc(100% - 40px);
         display: block;
         height: auto;
         min-height: 0;
@@ -2126,7 +2126,7 @@ section[id] {
 
 @media (max-width: 768px) {
     .container {
-        width: calc(100% - 64px);
+        width: calc(100% - 40px);
     }
 
     .site-header {
@@ -2306,7 +2306,7 @@ section[id] {
     }
 
     .trust-marquee {
-        width: calc(100% - 64px);
+        width: calc(100% - 40px);
         padding: 16px 0;
         -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%);
         mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%);
