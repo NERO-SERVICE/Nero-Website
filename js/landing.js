@@ -478,16 +478,16 @@ const whyNero = [
 ];
 
 const processSteps = [
-    ["3분 진단", "고객 유형, 개발 형태, 예산, 일정, 핵심 기능을 빠르게 확인합니다."],
-    ["무료 상담", "목표, 이해관계자, 기존 자료, 운영 조건을 함께 점검합니다."],
-    ["Project Snapshot", "제품 목표, 사용자, 핵심 흐름, 기술 범위를 1차로 정리합니다."],
-    ["Scope Sprint", "기능정의서, 화면 목록, 관리자 범위, 데이터 구조를 좁힙니다."],
+    ["무료 상담", "아이디어 기반 서비스 개발을 위한 빠른 진단을 도와드립니다."],
+    ["1차 미팅", "고객 유형, 개발 형태, 예산, 일정, 핵심 기능을 확인합니다."],
+    ["요구사항 정의", "목표, 이해관계자, 기존 자료, 운영 조건을 함께 점검합니다."],
+    ["기능 범위 산정", "기능정의서, 화면 목록, 관리자 범위, 데이터 구조를 좁힙니다."],
     ["맞춤 제안·견적", "우선순위와 과업범위서를 기준으로 견적을 확정합니다."],
     ["계약/착수", "일정, 산출물, 검수 기준, 커뮤니케이션 방식을 확정합니다."],
-    ["QA·배포·인수인계", "테스트, 배포, 운영 문서, 유지보수 범위를 정리해 넘깁니다."],
+    ["QA·배포·인수인계", "테스트, 배포, 운영 문서, 유지보수 범위를 정리해 제공합니다."],
 ];
 
-const processLabels = ["DIAGNOSIS", "CONSULTATION", "SNAPSHOT", "SCOPE", "PROPOSAL", "KICK-OFF", "HANDOVER"];
+const processLabels = ["CONSULTATION", "FIRST MEETING", "REQUIREMENTS", "SCOPE", "PROPOSAL", "CONTRACT", "QA & HANDOVER"];
 
 const deliverables = [
     ["기획", "요구사항 정의서, 기능정의서, 과업범위서", "무엇을 만들고 제외하는지 명확화"],
@@ -610,7 +610,7 @@ landingRoot.innerHTML = `
     <section class="section section-light" id="pain" aria-labelledby="pain-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">문제점</p>
+                <p class="eyebrow">문제는 업체와 클라이언트 사이의 소통 차이입니다</p>
                 <h2 id="pain-title">외주개발, 왜 불안할까요?</h2>
             </div>
             <div class="pain-grid">
@@ -629,7 +629,7 @@ landingRoot.innerHTML = `
     <section class="section section-dark comparison-section" aria-labelledby="comparison-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">NERO 해결 방식</p>
+                <p class="eyebrow">더이상 외주개발에 불안할 필요가 없습니다</p>
                 <h2 id="comparison-title">외주개발을 제품 운영 관점으로 다시 설계합니다</h2>
             </div>
             <div class="comparison-grid">
@@ -650,7 +650,7 @@ landingRoot.innerHTML = `
     <section class="section section-dark packages-section" id="packages" aria-labelledby="packages-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">추천 패키지</p>
+                <p class="eyebrow">고객 유형별 맞춤형 추천 제안</p>
                 <h2 id="packages-title">고객 유형에 맞는 시작 구성을 먼저 제안합니다</h2>
             </div>
             <div class="package-grid">
@@ -669,7 +669,7 @@ landingRoot.innerHTML = `
     <section class="section section-dark services-section" id="services" aria-labelledby="services-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">서비스</p>
+                <p class="eyebrow">처음부터 비싸고 복잡한 서비스를 할 필요가 없습니다</p>
                 <h2 id="services-title">목표 검증부터 정식 서비스까지 단계별로 설계합니다</h2>
             </div>
             <div class="service-grid">
@@ -703,7 +703,7 @@ landingRoot.innerHTML = `
     <section class="section section-light feature-section" id="features" aria-labelledby="features-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">기능 컴포넌트</p>
+                <p class="eyebrow">원하시는 부분을 더 뾰족하게 알 수 있도록</p>
                 <h2 id="features-title">필요한 기능을 조합해 과업 범위를 명확히 합니다</h2>
             </div>
             <div class="feature-shell reveal">
@@ -720,7 +720,6 @@ landingRoot.innerHTML = `
     <section class="section section-dark portfolio-section" id="portfolio" aria-labelledby="portfolio-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">포트폴리오</p>
                 <h2 id="portfolio-title">포트폴리오</h2>
             </div>
             <div class="portfolio-marquee reveal" aria-label="포트폴리오 목록">
@@ -740,8 +739,8 @@ landingRoot.innerHTML = `
     <section class="section section-light why-section" aria-labelledby="why-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">왜 NERO인가</p>
-                <h2 id="why-title">개발 이후 실제 운영까지 필요한 일을 압축해 관리합니다</h2>
+                <p class="eyebrow">보이지 않는 부분까지 설계가 되어야 지속 운영할 수 있습니다</p>
+                <h2 id="why-title">개발 이후의 서비스 관리를 책임집니다</h2>
             </div>
             <div class="why-grid">
                 ${whyNero.map(([title, copy], index) => `
@@ -759,10 +758,9 @@ landingRoot.innerHTML = `
         <div class="process-sticky">
             <div class="process-layout">
                 <aside class="process-copy reveal">
-                    <span class="process-badge">진행 프로세스</span>
                     <h2 id="process-title">명확한 절차로 예측 가능한 개발을 설계합니다</h2>
                     <p>상담부터 QA·배포·인수인계까지, 운영 가능한 제품을 만들기 위한 기준을 단계마다 확인합니다.</p>
-                    <a class="text-cta" href="#contact" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">Scope Sprint 상담 요청하기</a>
+                    <a class="text-cta" href="#contact" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">아이디어 보내기</a>
                 </aside>
                 <div class="process-stage" aria-label="NERO 진행 프로세스">
                     <ol class="process-timeline" data-process-track>
@@ -800,7 +798,7 @@ landingRoot.innerHTML = `
     <section class="section section-light deliverables-section" aria-labelledby="deliverables-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">산출물·인수인계</p>
+                <p class="eyebrow">소스코드는 물론, 추후의 유지보수와 디벨롭을 고려한 자료까지 가져가실 수 있도록</p>
                 <h2 id="deliverables-title">코드만 납품하지 않습니다</h2>
             </div>
             <div class="deliverable-grid">
@@ -841,7 +839,7 @@ landingRoot.innerHTML = `
                     </tbody>
                 </table>
             </div>
-            <p class="notice reveal">최종 견적은 Scope Sprint, 기능정의서, 과업범위서를 기준으로 확정됩니다.</p>
+            <p class="notice reveal">최종 견적은 기능정의서, 과업범위서를 기준으로 확정됩니다.</p>
         </div>
     </section>
 
@@ -869,14 +867,14 @@ landingRoot.innerHTML = `
                 <h2 id="contact-title">정리가 안 됐어도 괜찮습니다</h2>
             </div>
             <form class="contact-form contact-form-simple reveal" id="contact-form" action="mailto:official@nero.ai.kr" method="post" enctype="text/plain">
-                <label aria-label="성함">
-                    <input type="text" name="name" autocomplete="name" placeholder="성함" required />
+                <label aria-label="이름">
+                    <input type="text" name="name" autocomplete="name" placeholder="이름" required />
                 </label>
                 <label aria-label="이메일">
                     <input type="email" name="email" autocomplete="email" placeholder="이메일" required />
                 </label>
                 <label class="form-wide" aria-label="문의내용">
-                    <textarea name="message" rows="7" placeholder="문의내용" required></textarea>
+                    <textarea name="message" rows="15" placeholder="개발을 문의하고 싶은 아이디어와 내용들을 자유롭게 입력해주세요" required></textarea>
                 </label>
                 <button class="primary-button form-submit" type="submit">아이디어 보내기</button>
                 <p class="form-status form-wide" role="status" aria-live="polite"></p>
