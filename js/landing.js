@@ -487,6 +487,8 @@ const processSteps = [
     ["QA·배포·인수인계", "테스트, 배포, 운영 문서, 유지보수 범위를 정리해 넘깁니다."],
 ];
 
+const processLabels = ["DIAGNOSIS", "CONSULTATION", "SNAPSHOT", "SCOPE", "PROPOSAL", "KICK-OFF", "HANDOVER"];
+
 const deliverables = [
     ["기획", "요구사항 정의서, 기능정의서, 과업범위서", "무엇을 만들고 제외하는지 명확화"],
     ["디자인", "Figma 화면설계, 사용자 플로우", "화면별 동작과 예외 케이스 확인"],
@@ -748,22 +750,45 @@ landingRoot.innerHTML = `
         </div>
     </section>
 
-    <section class="section section-dark process-section" id="process" aria-labelledby="process-title">
-        <div class="container">
-            <div class="section-heading reveal">
-                <p class="eyebrow">프로세스</p>
-                <h2 id="process-title">상담부터 인수인계까지 한 번에 이어지는 흐름</h2>
+    <section class="process-section process-scroll-section" id="process" aria-labelledby="process-title" data-process-section>
+        <div class="process-sticky">
+            <div class="process-layout">
+                <aside class="process-copy reveal">
+                    <span class="process-badge">진행 프로세스</span>
+                    <h2 id="process-title">명확한 절차로 예측 가능한 개발을 설계합니다</h2>
+                    <p>상담부터 QA·배포·인수인계까지, 운영 가능한 제품을 만들기 위한 기준을 단계마다 확인합니다.</p>
+                    <a class="text-cta" href="#contact" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">Scope Sprint 상담 요청하기</a>
+                </aside>
+                <div class="process-stage" aria-label="NERO 진행 프로세스">
+                    <ol class="process-timeline" data-process-track>
+                        ${processSteps.map(([title, copy], index) => `
+                            <li class="process-step reveal" data-process-step>
+                                <div class="process-marker" aria-hidden="true">
+                                    <span class="process-number">${String(index + 1).padStart(2, "0")}</span>
+                                    <span class="process-line"></span>
+                                </div>
+                                <article class="process-card">
+                                    <div class="process-card-head">
+                                        <span>${processLabels[index]}</span>
+                                        <h3>${title}</h3>
+                                    </div>
+                                    <div class="process-card-panel">
+                                        <strong>진행 기준</strong>
+                                        <p>${copy}</p>
+                                    </div>
+                                </article>
+                            </li>
+                        `).join("")}
+                    </ol>
+                </div>
             </div>
-            <ol class="timeline">
-                ${processSteps.map(([title, copy], index) => `
-                    <li class="timeline-item reveal">
-                        <span>${String(index + 1).padStart(2, "0")}</span>
-                        <strong>${title}</strong>
-                        <p>${copy}</p>
-                    </li>
-                `).join("")}
-            </ol>
-            <a class="text-cta reveal" href="#contact" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">Scope Sprint 상담 요청하기</a>
+            <div class="process-dots" aria-hidden="true">
+                ${processSteps.map((_, index) => `<span data-process-dot="${index}"></span>`).join("")}
+            </div>
+            <button class="process-skip" type="button" data-process-skip aria-label="프로세스 섹션 건너뛰기">
+                <span>skip</span>
+                <span aria-hidden="true">⌄</span>
+            </button>
         </div>
     </section>
 
@@ -1077,6 +1102,84 @@ const wireContactForm = () => {
     });
 };
 
+const wireProcessTimeline = () => {
+    const section = document.querySelector("[data-process-section]");
+    const stage = section?.querySelector(".process-stage");
+    const track = section?.querySelector("[data-process-track]");
+    const steps = Array.from(section?.querySelectorAll("[data-process-step]") ?? []);
+    const dots = Array.from(section?.querySelectorAll("[data-process-dot]") ?? []);
+    const skipButton = section?.querySelector("[data-process-skip]");
+    if (!section || !stage || !track || steps.length === 0) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 900px)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let ticking = false;
+    let travel = 0;
+    let lead = 0;
+
+    const setActive = (activeIndex) => {
+        steps.forEach((step, index) => step.classList.toggle("is-active", index === activeIndex));
+        dots.forEach((dot, index) => dot.classList.toggle("is-active", index === activeIndex));
+    };
+
+    const reset = () => {
+        section.style.removeProperty("--process-height");
+        track.style.transform = "";
+        section.classList.remove("is-process-pinned");
+        setActive(0);
+    };
+
+    const measure = () => {
+        if (mobileQuery.matches || reducedMotionQuery.matches) {
+            reset();
+            return;
+        }
+
+        lead = Math.min(140, window.innerHeight * 0.16);
+        travel = Math.max(0, track.scrollHeight - stage.clientHeight);
+        section.style.setProperty("--process-height", `${window.innerHeight + lead + travel}px`);
+        update();
+    };
+
+    const update = () => {
+        if (mobileQuery.matches || reducedMotionQuery.matches) {
+            reset();
+            ticking = false;
+            return;
+        }
+
+        const rect = section.getBoundingClientRect();
+        const offset = Math.min(Math.max(-rect.top - lead, 0), travel);
+        const progress = travel === 0 ? 0 : offset / travel;
+        const activeIndex = Math.min(steps.length - 1, Math.max(0, Math.round(progress * (steps.length - 1))));
+
+        track.style.transform = `translate3d(0, ${-offset}px, 0)`;
+        section.classList.toggle("is-process-pinned", rect.top <= 0 && rect.bottom >= window.innerHeight);
+        setActive(activeIndex);
+        ticking = false;
+    };
+
+    const requestUpdate = () => {
+        if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+        }
+    };
+
+    skipButton?.addEventListener("click", () => {
+        const sectionBottom = section.offsetTop + section.offsetHeight;
+        window.scrollTo({ top: sectionBottom, behavior: "smooth" });
+    });
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", measure);
+    mobileQuery.addEventListener?.("change", measure);
+    reducedMotionQuery.addEventListener?.("change", measure);
+    window.setTimeout(measure, 60);
+    window.addEventListener("load", measure, { once: true });
+    setActive(0);
+};
+
 const wireDrawer = () => {
     const button = document.querySelector(".menu-button");
     const drawer = document.querySelector("#mobile-drawer");
@@ -1179,6 +1282,7 @@ wireFeatureCards();
 wireModal();
 wireTracking();
 wireContactForm();
+wireProcessTimeline();
 wireScrollTracking();
 revealNewElements();
 scrollToInitialHash();
