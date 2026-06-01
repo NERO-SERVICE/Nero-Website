@@ -42,14 +42,18 @@ const heroAssets = [
 
 const trustItems = [
     "Flutter",
+    "Vite",
     "Django",
     "PostgreSQL",
     "Docker",
     "GitHub Actions",
+    "Lottie",
+    "Figma",
     "HealthKit",
     "Google Health Connect",
     "GA4",
     "NCP",
+    "GCP",
 ];
 
 const painCards = [
@@ -478,14 +482,16 @@ const whyNero = [
 ];
 
 const processSteps = [
-    ["3분 진단", "고객 유형, 개발 형태, 예산, 일정, 핵심 기능을 빠르게 확인합니다."],
-    ["무료 상담", "목표, 이해관계자, 기존 자료, 운영 조건을 함께 점검합니다."],
-    ["Project Snapshot", "제품 목표, 사용자, 핵심 흐름, 기술 범위를 1차로 정리합니다."],
-    ["Scope Sprint", "기능정의서, 화면 목록, 관리자 범위, 데이터 구조를 좁힙니다."],
+    ["무료 상담", "아이디어 기반 서비스 개발을 위한 빠른 진단을 도와드립니다."],
+    ["1차 미팅", "고객 유형, 개발 형태, 예산, 일정, 핵심 기능을 확인합니다."],
+    ["요구사항 정의", "목표, 이해관계자, 기존 자료, 운영 조건을 함께 점검합니다."],
+    ["기능 범위 산정", "기능정의서, 화면 목록, 관리자 범위, 데이터 구조를 좁힙니다."],
     ["맞춤 제안·견적", "우선순위와 과업범위서를 기준으로 견적을 확정합니다."],
     ["계약/착수", "일정, 산출물, 검수 기준, 커뮤니케이션 방식을 확정합니다."],
-    ["QA·배포·인수인계", "테스트, 배포, 운영 문서, 유지보수 범위를 정리해 넘깁니다."],
+    ["QA·배포·인수인계", "테스트, 배포, 운영 문서, 유지보수 범위를 정리해 제공합니다."],
 ];
+
+const processLabels = ["CONSULTATION", "FIRST MEETING", "REQUIREMENTS", "SCOPE", "PROPOSAL", "CONTRACT", "QA & HANDOVER"];
 
 const deliverables = [
     ["기획", "요구사항 정의서, 기능정의서, 과업범위서", "무엇을 만들고 제외하는지 명확화"],
@@ -498,9 +504,9 @@ const deliverables = [
 ];
 
 const estimates = [
-    ["전환형 랜딩페이지", "300만 원~", "신청 폼, 리드 DB, 전환 이벤트"],
-    ["MVP/PoC", "1,000만 원~", "핵심 흐름, API, 관리자, 배포 URL"],
-    ["정식 웹서비스", "2,000만 원~", "회원, 결제, 콘텐츠, 관리자, 운영 구조"],
+    ["전환형 랜딩페이지", "50만 원~", "신청 폼, 리드 DB, 전환 이벤트"],
+    ["MVP/PoC 웹서비스", "500만 원~", "핵심 흐름, API, 관리자, 배포 URL"],
+    ["운영형 웹서비스", "2,000만 원~", "회원, 결제, 콘텐츠, 관리자, 운영 구조"],
     ["iOS/Android 앱서비스", "3,000만 원~", "앱 빌드, 서버, 관리자, 스토어 배포 지원"],
     ["기존 서비스 Rescue", "500만 원~", "코드·서버 진단, 오류 수정, 배포 정상화"],
     ["월 유지보수", "월 50만 원~", "장애 대응, 기능 개선, 운영 지원"],
@@ -508,7 +514,7 @@ const estimates = [
 
 const faqs = [
     ["기획서가 없어도 상담 가능한가요?", "가능합니다. 3분 진단과 1차 상담을 통해 목표, 사용자, 필요한 기능을 함께 정리합니다."],
-    ["견적은 언제 확정되나요?", "Scope Sprint에서 기능정의서와 과업범위서가 정리된 뒤 확정됩니다."],
+    ["견적은 언제 확정되나요?", "상담 후 기능정의서와 과업범위서가 정리된 뒤 확정됩니다."],
     ["랜딩페이지만 제작할 수도 있나요?", "가능합니다. 신청 폼, 전환 측정, CRM 연결, 관리자 목록까지 필요한 범위를 선택할 수 있습니다."],
     ["기존 개발물을 이어받을 수 있나요?", "가능합니다. 코드, 서버, 배포 계정, 오류 현황을 점검한 뒤 Rescue 범위로 정리합니다."],
     ["앱 배포도 가능한가요?", "iOS와 Android 앱 빌드, 스토어 등록 자료, 심사 대응 범위를 프로젝트에 포함할 수 있습니다."],
@@ -542,7 +548,7 @@ const badges = (items) => items.map((item) => `<span>${item}</span>`).join("");
 const options = (items) => items.map((item) => `<option value="${item}">${item}</option>`).join("");
 
 const renderPortfolioCards = (isDuplicate = false) => portfolio.map((item) => `
-    <article class="portfolio-card"${isDuplicate ? ' aria-hidden="true"' : ""}>
+    <article class="portfolio-card"${isDuplicate ? ' aria-hidden="true"' : ' data-portfolio-card'}>
         ${AssetSlot({ label: item.label, file: item.image, className: "portfolio-asset" })}
         <div class="portfolio-body">
             <h3>${item.title}</h3>
@@ -608,7 +614,7 @@ landingRoot.innerHTML = `
     <section class="section section-light" id="pain" aria-labelledby="pain-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">문제점</p>
+                <p class="eyebrow">문제는 업체와 클라이언트 사이의 소통 차이입니다</p>
                 <h2 id="pain-title">외주개발, 왜 불안할까요?</h2>
             </div>
             <div class="pain-grid">
@@ -627,7 +633,7 @@ landingRoot.innerHTML = `
     <section class="section section-dark comparison-section" aria-labelledby="comparison-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">NERO 해결 방식</p>
+                <p class="eyebrow">더이상 외주개발에 불안할 필요가 없습니다</p>
                 <h2 id="comparison-title">외주개발을 제품 운영 관점으로 다시 설계합니다</h2>
             </div>
             <div class="comparison-grid">
@@ -648,7 +654,7 @@ landingRoot.innerHTML = `
     <section class="section section-dark packages-section" id="packages" aria-labelledby="packages-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">추천 패키지</p>
+                <p class="eyebrow">고객 유형별 맞춤형 추천 제안</p>
                 <h2 id="packages-title">고객 유형에 맞는 시작 구성을 먼저 제안합니다</h2>
             </div>
             <div class="package-grid">
@@ -667,7 +673,7 @@ landingRoot.innerHTML = `
     <section class="section section-dark services-section" id="services" aria-labelledby="services-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">서비스</p>
+                <p class="eyebrow">처음부터 비싸고 복잡한 서비스를 할 필요가 없습니다</p>
                 <h2 id="services-title">목표 검증부터 정식 서비스까지 단계별로 설계합니다</h2>
             </div>
             <div class="service-grid">
@@ -701,7 +707,7 @@ landingRoot.innerHTML = `
     <section class="section section-light feature-section" id="features" aria-labelledby="features-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">기능 컴포넌트</p>
+                <p class="eyebrow">원하시는 부분을 더 뾰족하게 알 수 있도록</p>
                 <h2 id="features-title">필요한 기능을 조합해 과업 범위를 명확히 합니다</h2>
             </div>
             <div class="feature-shell reveal">
@@ -718,13 +724,17 @@ landingRoot.innerHTML = `
     <section class="section section-dark portfolio-section" id="portfolio" aria-labelledby="portfolio-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">포트폴리오</p>
                 <h2 id="portfolio-title">포트폴리오</h2>
             </div>
             <div class="portfolio-marquee reveal" aria-label="포트폴리오 목록">
                 <div class="portfolio-track">
                     <div class="portfolio-set">${renderPortfolioCards()}</div>
                     <div class="portfolio-set" aria-hidden="true">${renderPortfolioCards(true)}</div>
+                </div>
+                <div class="portfolio-nav" aria-label="포트폴리오 탐색">
+                    <button type="button" class="portfolio-nav-button" data-portfolio-prev aria-label="이전 포트폴리오">‹</button>
+                    <span class="portfolio-count" data-portfolio-count>01 / ${String(portfolio.length).padStart(2, "0")}</span>
+                    <button type="button" class="portfolio-nav-button" data-portfolio-next aria-label="다음 포트폴리오">›</button>
                 </div>
             </div>
         </div>
@@ -733,8 +743,8 @@ landingRoot.innerHTML = `
     <section class="section section-light why-section" aria-labelledby="why-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">왜 NERO인가</p>
-                <h2 id="why-title">개발 이후 실제 운영까지 필요한 일을 압축해 관리합니다</h2>
+                <p class="eyebrow">보이지 않는 부분까지 설계가 되어야 지속 운영할 수 있습니다</p>
+                <h2 id="why-title">개발 이후의 서비스 관리를 책임집니다</h2>
             </div>
             <div class="why-grid">
                 ${whyNero.map(([title, copy], index) => `
@@ -748,29 +758,51 @@ landingRoot.innerHTML = `
         </div>
     </section>
 
-    <section class="section section-dark process-section" id="process" aria-labelledby="process-title">
-        <div class="container">
-            <div class="section-heading reveal">
-                <p class="eyebrow">프로세스</p>
-                <h2 id="process-title">상담부터 인수인계까지 한 번에 이어지는 흐름</h2>
+    <section class="process-section process-scroll-section" id="process" aria-labelledby="process-title" data-process-section>
+        <div class="process-sticky">
+            <div class="process-layout">
+                <aside class="process-copy reveal">
+                    <h2 id="process-title">명확한 절차로 예측 가능한 개발을 설계합니다</h2>
+                    <p>상담부터 QA·배포·인수인계까지, 운영 가능한 제품을 만들기 위한 기준을 단계마다 확인합니다.</p>
+                    <a class="text-cta" href="#contact" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">아이디어 보내기</a>
+                </aside>
+                <div class="process-stage" aria-label="NERO 진행 프로세스">
+                    <ol class="process-timeline" data-process-track>
+                        ${processSteps.map(([title, copy], index) => `
+                            <li class="process-step reveal" data-process-step>
+                                <div class="process-marker" aria-hidden="true">
+                                    <span class="process-number">${String(index + 1).padStart(2, "0")}</span>
+                                    <span class="process-line"></span>
+                                </div>
+                                <article class="process-card">
+                                    <div class="process-card-head">
+                                        <span>${processLabels[index]}</span>
+                                        <h3>${title}</h3>
+                                    </div>
+                                    <div class="process-card-panel">
+                                        <strong>진행 기준</strong>
+                                        <p>${copy}</p>
+                                    </div>
+                                </article>
+                            </li>
+                        `).join("")}
+                    </ol>
+                </div>
             </div>
-            <ol class="timeline">
-                ${processSteps.map(([title, copy], index) => `
-                    <li class="timeline-item reveal">
-                        <span>${String(index + 1).padStart(2, "0")}</span>
-                        <strong>${title}</strong>
-                        <p>${copy}</p>
-                    </li>
-                `).join("")}
-            </ol>
-            <a class="text-cta reveal" href="#contact" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">Scope Sprint 상담 요청하기</a>
+            <div class="process-dots" aria-hidden="true">
+                ${processSteps.map((_, index) => `<span data-process-dot="${index}"></span>`).join("")}
+            </div>
+            <button class="process-skip" type="button" data-process-skip aria-label="프로세스 섹션 건너뛰기">
+                <span>skip</span>
+                <span aria-hidden="true">⌄</span>
+            </button>
         </div>
     </section>
 
     <section class="section section-light deliverables-section" aria-labelledby="deliverables-title">
         <div class="container">
             <div class="section-heading reveal">
-                <p class="eyebrow">산출물·인수인계</p>
+                <p class="eyebrow">소스코드는 물론, 추후의 유지보수와 디벨롭을 고려한 자료까지 가져가실 수 있도록</p>
                 <h2 id="deliverables-title">코드만 납품하지 않습니다</h2>
             </div>
             <div class="deliverable-grid">
@@ -811,7 +843,7 @@ landingRoot.innerHTML = `
                     </tbody>
                 </table>
             </div>
-            <p class="notice reveal">최종 견적은 Scope Sprint, 기능정의서, 과업범위서를 기준으로 확정됩니다.</p>
+            <p class="notice reveal">최종 견적은 기능정의서, 과업범위서를 기준으로 확정됩니다.</p>
         </div>
     </section>
 
@@ -839,19 +871,16 @@ landingRoot.innerHTML = `
                 <h2 id="contact-title">정리가 안 됐어도 괜찮습니다</h2>
             </div>
             <form class="contact-form contact-form-simple reveal" id="contact-form" action="mailto:official@nero.ai.kr" method="post" enctype="text/plain">
-                <label>
-                    성함
-                    <input type="text" name="name" autocomplete="name" required />
+                <label aria-label="이름">
+                    <input type="text" name="name" autocomplete="name" placeholder="이름" required />
                 </label>
-                <label>
-                    이메일
-                    <input type="email" name="email" autocomplete="email" required />
+                <label aria-label="이메일">
+                    <input type="email" name="email" autocomplete="email" placeholder="이메일" required />
                 </label>
-                <label class="form-wide">
-                    문의내용
-                    <textarea name="message" rows="7" required></textarea>
+                <label class="form-wide" aria-label="문의내용">
+                    <textarea name="message" rows="15" placeholder="개발을 문의하고 싶은 아이디어와 내용들을 자유롭게 입력해주세요" required></textarea>
                 </label>
-                <button class="primary-button form-submit" type="submit">프로젝트 진단 요청하기</button>
+                <button class="primary-button form-submit" type="submit">아이디어 보내기</button>
                 <p class="form-status form-wide" role="status" aria-live="polite"></p>
             </form>
         </div>
@@ -1077,6 +1106,127 @@ const wireContactForm = () => {
     });
 };
 
+const wireProcessTimeline = () => {
+    const section = document.querySelector("[data-process-section]");
+    const stage = section?.querySelector(".process-stage");
+    const track = section?.querySelector("[data-process-track]");
+    const steps = Array.from(section?.querySelectorAll("[data-process-step]") ?? []);
+    const dots = Array.from(section?.querySelectorAll("[data-process-dot]") ?? []);
+    const skipButton = section?.querySelector("[data-process-skip]");
+    if (!section || !stage || !track || steps.length === 0) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 900px)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let ticking = false;
+    let travel = 0;
+    let lead = 0;
+
+    const setActive = (activeIndex) => {
+        steps.forEach((step, index) => step.classList.toggle("is-active", index === activeIndex));
+        dots.forEach((dot, index) => dot.classList.toggle("is-active", index === activeIndex));
+    };
+
+    const reset = () => {
+        section.style.removeProperty("--process-height");
+        track.style.transform = "";
+        section.classList.remove("is-process-pinned");
+        setActive(0);
+    };
+
+    const measure = () => {
+        if (mobileQuery.matches || reducedMotionQuery.matches) {
+            reset();
+            return;
+        }
+
+        lead = Math.min(140, window.innerHeight * 0.16);
+        travel = Math.max(0, track.scrollHeight - stage.clientHeight);
+        section.style.setProperty("--process-height", `${window.innerHeight + lead + travel}px`);
+        update();
+    };
+
+    const update = () => {
+        if (mobileQuery.matches || reducedMotionQuery.matches) {
+            reset();
+            ticking = false;
+            return;
+        }
+
+        const rect = section.getBoundingClientRect();
+        const offset = Math.min(Math.max(-rect.top - lead, 0), travel);
+        const progress = travel === 0 ? 0 : offset / travel;
+        const activeIndex = Math.min(steps.length - 1, Math.max(0, Math.round(progress * (steps.length - 1))));
+
+        track.style.transform = `translate3d(0, ${-offset}px, 0)`;
+        section.classList.toggle("is-process-pinned", rect.top <= 0 && rect.bottom >= window.innerHeight);
+        setActive(activeIndex);
+        ticking = false;
+    };
+
+    const requestUpdate = () => {
+        if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+        }
+    };
+
+    skipButton?.addEventListener("click", () => {
+        const sectionBottom = section.offsetTop + section.offsetHeight;
+        window.scrollTo({ top: sectionBottom, behavior: "smooth" });
+    });
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", measure);
+    mobileQuery.addEventListener?.("change", measure);
+    reducedMotionQuery.addEventListener?.("change", measure);
+    window.setTimeout(measure, 60);
+    window.addEventListener("load", measure, { once: true });
+    setActive(0);
+};
+
+const wirePortfolioCarousel = () => {
+    const carousel = document.querySelector(".portfolio-marquee");
+    const set = carousel?.querySelector(".portfolio-set:not([aria-hidden])");
+    const cards = Array.from(set?.querySelectorAll("[data-portfolio-card]") ?? []);
+    const prevButton = carousel?.querySelector("[data-portfolio-prev]");
+    const nextButton = carousel?.querySelector("[data-portfolio-next]");
+    const count = carousel?.querySelector("[data-portfolio-count]");
+    if (!carousel || !set || cards.length === 0) return;
+
+    const mobileQuery = window.matchMedia("(max-width: 768px)");
+    let activeIndex = 0;
+    let ticking = false;
+
+    const setActive = (nextIndex) => {
+        activeIndex = (nextIndex + cards.length) % cards.length;
+
+        if (!mobileQuery.matches) {
+            set.style.transform = "";
+            cards.forEach((card) => card.removeAttribute("aria-hidden"));
+            return;
+        }
+
+        set.style.transform = `translate3d(${-cards[activeIndex].offsetLeft}px, 0, 0)`;
+        cards.forEach((card, index) => card.setAttribute("aria-hidden", String(index !== activeIndex)));
+        if (count) count.textContent = `${String(activeIndex + 1).padStart(2, "0")} / ${String(cards.length).padStart(2, "0")}`;
+    };
+
+    const requestUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(() => {
+            setActive(activeIndex);
+            ticking = false;
+        });
+    };
+
+    prevButton?.addEventListener("click", () => setActive(activeIndex - 1));
+    nextButton?.addEventListener("click", () => setActive(activeIndex + 1));
+    window.addEventListener("resize", requestUpdate);
+    mobileQuery.addEventListener?.("change", requestUpdate);
+    setActive(0);
+};
+
 const wireDrawer = () => {
     const button = document.querySelector(".menu-button");
     const drawer = document.querySelector("#mobile-drawer");
@@ -1179,6 +1329,8 @@ wireFeatureCards();
 wireModal();
 wireTracking();
 wireContactForm();
+wireProcessTimeline();
+wirePortfolioCarousel();
 wireScrollTracking();
 revealNewElements();
 scrollToInitialHash();
