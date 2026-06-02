@@ -1,5 +1,10 @@
-const crypto = require("crypto");
-const { sendSmtpMail } = require("../../backend/email/smtp-mailer");
+const crypto = require("node:crypto");
+const { sendSmtpMail } = require("./_smtp-mailer");
+
+const CONTACT_TO = process.env.CONTACT_TO || "cs123@nero.ai.kr";
+const CONTACT_FROM = process.env.SMTP_FROM
+    || (process.env.SMTP_USER ? `NERO <${process.env.SMTP_USER}>` : "NERO <cs123@nero.ai.kr>");
+const SUBJECT_PREFIX = "[NERO]";
 
 const json = (statusCode, body) => ({
     statusCode,
@@ -14,148 +19,34 @@ const normalize = (value, maxLength = 2000) => String(value ?? "").trim().slice(
 
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-const errorCodeFrom = (error) => {
-    const message = String(error?.message || "");
-    if (message.includes("Missing Firebase environment variables")) return "firebase_env_missing";
-    if (message.includes("Firebase token request failed")) return "firebase_token_failed";
-    if (message.includes("Firestore write failed")) return "firestore_write_failed";
-    if (message.includes("Missing SMTP environment variables")) return "smtp_env_missing";
-    if (message.includes("SMTP connection timed out")) return "smtp_timeout";
-    if (message.includes("SMTP unexpected response")) return "smtp_response_failed";
-    return "contact_submit_failed";
-};
-
-const CONTACT_NOTIFICATION = {
-    to: "cs123@nero.ai.kr",
-    from: "NERO <cs123@nero.ai.kr>",
-    subjectPrefix: "[NERO]",
-    requestCollectionPath: "nero-web/contact_requests/items",
-};
-
-const getSmtpFrom = () => process.env.SMTP_FROM
-    || (process.env.SMTP_USER ? `NERO <${process.env.SMTP_USER}>` : CONTACT_NOTIFICATION.from);
-
-const escapeHtml = (value) => normalize(value, 5000)
+const escapeHtml = (value) => normalize(value, 10000)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 
-const parseJson = (event) => {
-    if (!event.body) return {};
-    return JSON.parse(event.body);
+const errorCodeFrom = (error) => {
+    const message = String(error?.message || "");
+    if (message.includes("Missing SMTP environment variables")) return "smtp_env_missing";
+    if (message.includes("SMTP connection timed out")) return "smtp_timeout";
+    if (message.includes("SMTP unexpected response")) return "smtp_response_failed";
+    return "smtp_submit_failed";
 };
 
-const getServiceAccount = () => {
-    const encoded = normalize(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, 20000);
-    if (!encoded) return null;
-    const source = Buffer.from(encoded, "base64").toString("utf8");
-    return JSON.parse(source);
-};
+const parseFormBody = (event) => {
+    const contentType = normalize(event.headers?.["content-type"] || event.headers?.["Content-Type"]).toLowerCase();
+    const body = event.body || "";
 
-const toBase64Url = (value) => Buffer.from(value).toString("base64url");
-
-const createFirebaseJwt = (serviceAccount) => {
-    const now = Math.floor(Date.now() / 1000);
-    const header = toBase64Url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
-    const claim = toBase64Url(JSON.stringify({
-        iss: serviceAccount.client_email,
-        scope: "https://www.googleapis.com/auth/datastore",
-        aud: "https://oauth2.googleapis.com/token",
-        iat: now,
-        exp: now + 3600,
-    }));
-    const signer = crypto.createSign("RSA-SHA256");
-    signer.update(`${header}.${claim}`);
-    signer.end();
-    const signature = signer.sign(serviceAccount.private_key).toString("base64url");
-    return `${header}.${claim}.${signature}`;
-};
-
-const getFirebaseAccessToken = async (serviceAccount) => {
-    const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-            grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-            assertion: createFirebaseJwt(serviceAccount),
-        }),
-    });
-
-    if (!tokenResponse.ok) {
-        const details = await tokenResponse.text();
-        throw new Error(`Firebase token request failed: ${details}`);
+    if (contentType.includes("application/json")) {
+        return JSON.parse(body || "{}");
     }
 
-    const token = await tokenResponse.json();
-    return token.access_token;
-};
-
-const firebaseContext = async () => {
-    const projectId = normalize(process.env.FIREBASE_PROJECT_ID);
-    const databaseId = encodeURIComponent(normalize(process.env.FIRESTORE_DATABASE_ID || "nero-web-db"));
-    const serviceAccount = getServiceAccount();
-    if (!projectId || !serviceAccount) {
-        throw new Error("Missing Firebase environment variables");
-    }
-
-    const accessToken = await getFirebaseAccessToken(serviceAccount);
-    return { projectId, databaseId, accessToken };
-};
-
-const firestoreValue = (value) => {
-    if (value === null || value === undefined) return { nullValue: null };
-    if (typeof value === "boolean") return { booleanValue: value };
-    if (typeof value === "number") return { doubleValue: value };
-    if (value instanceof Date) return { timestampValue: value.toISOString() };
-    if (Array.isArray(value)) {
-        return {
-            arrayValue: {
-                values: value.map((item) => firestoreValue(item)),
-            },
-        };
-    }
-    if (typeof value === "object") {
-        return {
-            mapValue: {
-                fields: Object.fromEntries(
-                    Object.entries(value).map(([key, item]) => [key, firestoreValue(item)]),
-                ),
-            },
-        };
-    }
-    return { stringValue: normalize(value, 5000) };
-};
-
-const firestoreFields = (data) => Object.fromEntries(
-    Object.entries(data).map(([key, value]) => [key, firestoreValue(value)]),
-);
-
-const createFirestoreDocument = async (collectionPath, data) => {
-    const { projectId, databaseId, accessToken } = await firebaseContext();
-    const endpoint = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/${databaseId}/documents/${collectionPath}`;
-    const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            fields: firestoreFields(data),
-        }),
-    });
-
-    if (!response.ok) {
-        const details = await response.text();
-        throw new Error(`Firestore write failed: ${details}`);
-    }
-
-    return response.json();
+    return Object.fromEntries(new URLSearchParams(body));
 };
 
 const buildContactText = ({ name, email, message, requestId }) => [
-    `접수 ID: ${requestId || ""}`,
+    `접수 ID: ${requestId}`,
     `성함: ${name}`,
     `이메일: ${email}`,
     "",
@@ -164,73 +55,22 @@ const buildContactText = ({ name, email, message, requestId }) => [
 ].join("\n");
 
 const buildContactHtml = ({ name, email, message, requestId }) => `
-        <h2>${escapeHtml(CONTACT_NOTIFICATION.subjectPrefix)} 프로젝트 진단 요청</h2>
-        <p><strong>접수 ID</strong>: ${escapeHtml(requestId)}</p>
-        <p><strong>성함</strong>: ${escapeHtml(name)}</p>
-        <p><strong>이메일</strong>: ${escapeHtml(email)}</p>
-        <p><strong>문의내용</strong></p>
-        <div style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(message)}</div>
+    <h2>${escapeHtml(SUBJECT_PREFIX)} 프로젝트 진단 요청</h2>
+    <p><strong>접수 ID</strong>: ${escapeHtml(requestId)}</p>
+    <p><strong>성함</strong>: ${escapeHtml(name)}</p>
+    <p><strong>이메일</strong>: ${escapeHtml(email)}</p>
+    <p><strong>문의내용</strong></p>
+    <div style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(message)}</div>
 `;
 
-const saveContactRequest = async ({ name, email, message, userAgent, referer }) => {
-    const now = new Date();
-    const contactDoc = await createFirestoreDocument(CONTACT_NOTIFICATION.requestCollectionPath, {
-        name,
-        email,
-        message,
-        source: "landing_contact",
-        status: "new",
-        userAgent,
-        referer,
-        createdAt: now,
-    });
-
-    const requestId = contactDoc.name?.split("/").pop() || "";
-    return { requestId };
-};
-
-const sendContactNotification = async ({ name, email, message, requestId }) => {
-    await sendSmtpMail({
-        from: getSmtpFrom(),
-        to: CONTACT_NOTIFICATION.to,
-        replyTo: email,
-        subject: `${CONTACT_NOTIFICATION.subjectPrefix} 프로젝트 진단 요청 - ${name}`,
-        text: buildContactText({ name, email, message, requestId }),
-        html: buildContactHtml({ name, email, message, requestId }),
-        headers: {
-            "X-NERO-Request-ID": requestId,
-            "X-NERO-Source": "landing_contact",
-        },
-    });
-};
-
 exports.handler = async (event) => {
-    if (event.httpMethod === "GET") {
-        return json(200, {
-            ok: true,
-            message: "NERO contact function is running. Use POST to submit the contact form.",
-        });
-    }
-
-    if (event.httpMethod === "OPTIONS") {
-        return {
-            statusCode: 204,
-            headers: {
-                "Access-Control-Allow-Origin": event.headers.origin || "*",
-                "Access-Control-Allow-Methods": "POST, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
-            body: "",
-        };
-    }
-
     if (event.httpMethod !== "POST") {
-        return json(405, { ok: false, message: "POST 요청만 지원합니다.", code: "method_not_allowed" });
+        return json(405, { ok: false, message: "문의 폼 전송만 지원합니다." });
     }
 
     let data;
     try {
-        data = parseJson(event);
+        data = parseFormBody(event);
     } catch {
         return json(400, { ok: false, message: "요청 형식이 올바르지 않습니다." });
     }
@@ -251,22 +91,27 @@ exports.handler = async (event) => {
         return json(400, { ok: false, message: "이메일 형식이 올바르지 않습니다." });
     }
 
+    const requestId = crypto.randomUUID();
     try {
-        const { requestId } = await saveContactRequest({
-            name,
-            email,
-            message,
-            userAgent: event.headers["user-agent"] || "",
-            referer: event.headers.referer || "",
+        await sendSmtpMail({
+            from: CONTACT_FROM,
+            to: CONTACT_TO,
+            replyTo: email,
+            subject: `${SUBJECT_PREFIX} 프로젝트 진단 요청 - ${name}`,
+            text: buildContactText({ name, email, message, requestId }),
+            html: buildContactHtml({ name, email, message, requestId }),
+            headers: {
+                "X-NERO-Request-ID": requestId,
+                "X-NERO-Source": "landing_contact",
+            },
         });
-        await sendContactNotification({ name, email, message, requestId });
     } catch (error) {
         const code = errorCodeFrom(error);
         console.error("[contact]", code, error);
         return json(500, {
             ok: false,
             code,
-            message: "문의 접수 또는 이메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.",
+            message: "이메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.",
         });
     }
 

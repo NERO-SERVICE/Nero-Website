@@ -1123,7 +1123,8 @@ const wireContactForm = () => {
             });
             const result = await response.json().catch(() => ({}));
             if (!response.ok || !result.ok) {
-                throw new Error(result.message || "전송에 실패했습니다.");
+                const suffix = result.code ? ` (${result.code})` : "";
+                throw new Error(`${result.message || "전송에 실패했습니다."}${suffix}`);
             }
             status.textContent = result.message || "아이디어가 접수되었습니다. 곧 연락드리겠습니다.";
             form.dataset.submitted = "true";
