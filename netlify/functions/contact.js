@@ -64,8 +64,19 @@ const buildContactHtml = ({ name, email, message, requestId }) => `
 `;
 
 exports.handler = async (event) => {
+    if (event.httpMethod === "GET" || event.httpMethod === "HEAD") {
+        return {
+            statusCode: 302,
+            headers: {
+                Location: "/landing/#contact",
+                "Cache-Control": "no-store",
+            },
+            body: "",
+        };
+    }
+
     if (event.httpMethod !== "POST") {
-        return json(405, { ok: false, message: "문의 폼 전송만 지원합니다." });
+        return json(405, { ok: false, code: "method_not_allowed", message: "문의 폼 전송만 지원합니다." });
     }
 
     let data;
