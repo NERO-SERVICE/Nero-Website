@@ -10,34 +10,27 @@ GitHub UI 기준:
 
 1. GitHub repository 선택
 2. `Settings` → `Secrets and variables` → `Actions`
-3. `Repository secrets`에 아래 값을 추가
-4. `main` 브랜치에 push하거나 Actions에서 수동 배포 실행
+3. `.env`에 있는 키와 같은 이름으로 `Repository secrets`에 아래 값을 추가
+4. `main` 또는 `develop` 브랜치에 push하거나 Actions에서 수동 배포 실행
 
 workflow가 배포 직전에 GitHub Repository secrets를 읽고 Netlify CLI의 `env:set`으로 Netlify Functions 환경변수를 자동 등록합니다. 그래서 Netlify Dashboard에서 함수용 환경변수를 따로 등록할 필요가 없습니다.
 
-배포용 필수:
+Repository secrets 필수:
 
 ```bash
 NETLIFY_AUTH_TOKEN=netlify_personal_access_token
 NETLIFY_SITE_ID=your_netlify_site_id
-```
-
-Gmail SMTP 발송 필수:
-
-```bash
 SMTP_USER=cs123@nero.ai.kr
 SMTP_PASS=google_app_password
 ```
 
-Gmail SMTP 발송 선택:
+Repository secrets 권장:
 
 ```bash
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=465
 SMTP_SECURE=true
 SMTP_FROM="NERO <cs123@nero.ai.kr>"
-CONTACT_TO=cs123@nero.ai.kr
-SMTP_EHLO_DOMAIN=nero.ai.kr
 ```
 
 Firebase 연결값은 문의 폼 발송에는 필요하지 않습니다. 이미지/별도 데이터 연동에 Firebase를 쓸 때만 선택적으로 둡니다.
@@ -48,7 +41,7 @@ FIRESTORE_DATABASE_ID=nero-web-db
 FIREBASE_SERVICE_ACCOUNT_BASE64=base64_encoded_service_account_json
 ```
 
-`.env.example`에는 Gmail SMTP 발송에 필요한 최소값만 필수로 둡니다. `SMTP_PASS`에는 일반 Gmail 로그인 비밀번호가 아니라 Google App Password를 넣습니다.
+`.env.example`에는 Gmail SMTP 발송에 필요한 최소값만 필수로 둡니다. `SMTP_PASS`에는 일반 Gmail 로그인 비밀번호가 아니라 Google App Password를 넣습니다. 이 저장소는 GitHub Repository secrets만 읽도록 구성되어 있으므로 Variables나 Environment secrets가 아니라 Repository secrets에 넣습니다.
 
 로컬에서는 `.env.example`을 참고해 `.env`를 만들고 `npm run dev`로 실행합니다.
 
@@ -127,6 +120,8 @@ Netlify Site ID:
 3. `Site ID` 복사
 
 이미 Netlify가 GitHub repository와 직접 연결되어 자동 배포 중이면, GitHub Actions 배포와 중복될 수 있습니다. 이 경우 Netlify의 자동 빌드를 끄거나, GitHub Actions만 production 배포 경로로 사용하세요.
+
+중요: GitHub에 Repository secrets를 등록하는 것만으로 Netlify Function 런타임에 자동 전달되지는 않습니다. 이 저장소는 GitHub Actions의 `Sync Netlify function environment` 단계가 값을 Netlify에 복사합니다. 배포가 Netlify의 Git 자동 배포로만 실행되면 이 동기화가 생략되어 `smtp_env_missing`이 발생할 수 있습니다.
 
 문의 폼이 배포 환경에서 500을 반환하면 브라우저 Network 탭에서 `/.netlify/functions/contact` 응답 JSON의 `code`를 확인하세요.
 

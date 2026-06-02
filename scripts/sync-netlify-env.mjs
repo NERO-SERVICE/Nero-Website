@@ -6,7 +6,6 @@ const requiredRuntimeEnv = [
 ];
 
 const optionalRuntimeEnv = [
-    "CONTACT_TO",
     "FIREBASE_PROJECT_ID",
     "FIREBASE_SERVICE_ACCOUNT_BASE64",
     "FIRESTORE_DATABASE_ID",
@@ -14,8 +13,6 @@ const optionalRuntimeEnv = [
     "SMTP_PORT",
     "SMTP_SECURE",
     "SMTP_FROM",
-    "SMTP_REQUIRE_TLS",
-    "SMTP_EHLO_DOMAIN",
 ];
 
 const requiredDeployEnv = [
@@ -25,12 +22,12 @@ const requiredDeployEnv = [
 
 const missingDeployEnv = requiredDeployEnv.filter((key) => !process.env[key]);
 if (missingDeployEnv.length > 0) {
-    throw new Error(`Missing Netlify deploy secrets: ${missingDeployEnv.join(", ")}`);
+    throw new Error(`Missing Netlify deploy secrets: ${missingDeployEnv.join(", ")}. Add them as GitHub Repository secrets.`);
 }
 
 const missingRuntimeEnv = requiredRuntimeEnv.filter((key) => !process.env[key]);
 if (missingRuntimeEnv.length > 0) {
-    throw new Error(`Missing function runtime secrets: ${missingRuntimeEnv.join(", ")}`);
+    throw new Error(`Missing function runtime secrets: ${missingRuntimeEnv.join(", ")}. Add them as GitHub Repository secrets with the same names used in .env.`);
 }
 
 const setNetlifyEnv = (key, value) => {
