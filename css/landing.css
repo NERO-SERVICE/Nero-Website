@@ -226,9 +226,14 @@ button {
     color: var(--text);
 }
 
-.desktop-nav a:hover::after {
+.desktop-nav a:hover::after,
+.desktop-nav a.is-active::after {
     opacity: 1;
     transform: scaleX(1);
+}
+
+.desktop-nav a.is-active {
+    color: var(--text);
 }
 
 .header-cta,
@@ -375,6 +380,12 @@ button {
     padding: 15px 16px;
     font-size: 16px;
     font-weight: 700;
+    transition: background 180ms ease, color 180ms ease;
+}
+
+.drawer-nav a:not(.primary-button).is-active {
+    background: rgba(47, 111, 237, 0.18);
+    color: var(--text);
 }
 
 h1,
@@ -1925,13 +1936,70 @@ section[id] {
 }
 
 .reveal {
-    opacity: 1;
-    transform: translateY(18px);
-    transition: transform 700ms ease;
+    --reveal-delay: 0ms;
+    --reveal-y: 28px;
+    --reveal-scale: 0.985;
+    opacity: 0;
+    filter: blur(9px);
+    transform: translate3d(0, var(--reveal-y), 0) scale(var(--reveal-scale));
+    transition:
+        opacity 780ms cubic-bezier(0.16, 1, 0.3, 1),
+        filter 780ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 780ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay);
+    will-change: opacity, filter, transform;
 }
 
 .reveal.is-visible {
-    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+.section-heading.reveal,
+.hero-copy.reveal {
+    --reveal-y: 34px;
+    --reveal-scale: 0.99;
+}
+
+.hero-product-wrap.reveal,
+.portfolio-marquee.reveal,
+.feature-shell.reveal,
+.estimate-table-wrap.reveal,
+.contact-form.reveal {
+    --reveal-y: 24px;
+    --reveal-scale: 0.975;
+}
+
+.glass-card.reveal,
+.light-card.reveal,
+.package-card.reveal,
+.service-card.reveal,
+.comparison-panel.reveal,
+.number-card.reveal,
+.deliverable-card.reveal,
+.faq-item.reveal,
+.process-step.reveal,
+.feature-card.reveal {
+    --reveal-y: 32px;
+    --reveal-scale: 0.972;
+}
+
+.glass-card.reveal.is-visible:hover,
+.package-card.reveal.is-visible:hover,
+.service-card.reveal.is-visible:hover,
+.comparison-panel.reveal.is-visible:hover,
+.portfolio-card.reveal.is-visible:hover,
+.timeline-item.reveal.is-visible:hover,
+.faq-item.reveal.is-visible:hover,
+.light-card.reveal.is-visible:hover,
+.number-card.reveal.is-visible:hover,
+.deliverable-card.reveal.is-visible:hover {
+    transform: translateY(-3px);
+}
+
+.feature-card.reveal.is-visible:hover {
+    transform: translateY(-4px);
 }
 
 @keyframes marquee {
@@ -2517,6 +2585,7 @@ section[id] {
 
     .reveal {
         opacity: 1;
+        filter: none;
         transform: none;
     }
 }

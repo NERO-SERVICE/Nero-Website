@@ -962,8 +962,22 @@ const setContactValue = (selector, value) => {
     if (element && value) element.value = value;
 };
 
+const getAnchorOffset = () => {
+    const headerHeight = document.querySelector(".site-header")?.offsetHeight ?? 74;
+    return headerHeight + (window.matchMedia("(max-width: 768px)").matches ? 18 : 28);
+};
+
+const scrollToSection = (target, { behavior = "smooth", updateHash = true } = {}) => {
+    if (!target) return;
+    const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - getAnchorOffset());
+    window.scrollTo({ top, behavior });
+    if (updateHash && target.id) {
+        window.history.pushState(null, "", `#${target.id}`);
+    }
+};
+
 const scrollToContact = () => {
-    document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    scrollToSection(document.querySelector("#contact"));
 };
 
 const wirePackageAndServiceCards = () => {
@@ -1010,6 +1024,7 @@ const wireFeatureTabs = () => {
             panel.innerHTML = renderFeatureCards(tab.dataset.featureCategory);
             requestAnimationFrame(() => {
                 wireFeatureCards();
+                prepareRevealStagger(panel);
                 revealNewElements(panel);
             });
         });
@@ -1261,6 +1276,80 @@ const wireDrawer = () => {
     });
 };
 
+const getHashTarget = (href) => {
+    if (!href?.startsWith("#")) return null;
+    const id = decodeURIComponent(href.slice(1));
+    return id ? document.getElementById(id) : null;
+};
+
+const wireAnchoredNavigation = () => {
+    const anchorLinks = Array.from(document.querySelectorAll('a[href^="#"]'));
+    const targetMap = new Map();
+
+    anchorLinks.forEach((link) => {
+        const href = link.getAttribute("href");
+        const target = getHashTarget(href);
+        if (!target) return;
+        targetMap.set(target.id, target);
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+            scrollToSection(target);
+        });
+    });
+
+    const targets = Array.from(targetMap.values()).sort((a, b) => a.offsetTop - b.offsetTop);
+    if (targets.length === 0) return;
+
+    let ticking = false;
+    const updateActive = () => {
+        const probe = window.scrollY + getAnchorOffset() + window.innerHeight * 0.22;
+        const activeTarget = targets.reduce((current, target) => {
+            if (target.offsetTop <= probe) return target;
+            return current;
+        }, targets[0]);
+        anchorLinks.forEach((link) => {
+            const target = getHashTarget(link.getAttribute("href"));
+            link.classList.toggle("is-active", Boolean(target && target.id === activeTarget.id));
+        });
+        ticking = false;
+    };
+
+    window.addEventListener("scroll", () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateActive);
+    }, { passive: true });
+    window.addEventListener("resize", updateActive);
+    updateActive();
+};
+
+const prepareRevealStagger = (root = document) => {
+    const groups = [
+        ".pain-grid",
+        ".comparison-grid",
+        ".package-grid",
+        ".service-grid",
+        ".feature-panel",
+        ".why-grid",
+        ".deliverable-grid",
+        ".faq-list",
+        ".process-timeline",
+    ];
+
+    groups.forEach((selector) => {
+        const matchedGroups = [
+            ...(root.matches?.(selector) ? [root] : []),
+            ...root.querySelectorAll(selector),
+        ];
+        matchedGroups.forEach((group) => {
+            const items = group.querySelectorAll(":scope > .reveal");
+            items.forEach((item, index) => {
+                item.style.setProperty("--reveal-delay", `${Math.min(index * 70, 360)}ms`);
+            });
+        });
+    });
+};
+
 let revealObserver = null;
 
 const revealNewElements = (root = document) => {
@@ -1314,7 +1403,7 @@ const scrollToInitialHash = () => {
         const hashId = decodeURIComponent(window.location.hash.slice(1));
         const target = document.getElementById(hashId);
         if (!target) return;
-        target.scrollIntoView({ block: "start" });
+        scrollToSection(target, { behavior: "auto", updateHash: false });
         revealNewElements(document);
     };
     [0, 80, 260, 700, 1300].forEach((delay) => window.setTimeout(move, delay));
@@ -1323,6 +1412,7 @@ const scrollToInitialHash = () => {
 
 hydrateAssetSlots();
 wireDrawer();
+wireAnchoredNavigation();
 wirePackageAndServiceCards();
 wireFeatureTabs();
 wireFeatureCards();
@@ -1332,5 +1422,6 @@ wireContactForm();
 wireProcessTimeline();
 wirePortfolioCarousel();
 wireScrollTracking();
+prepareRevealStagger();
 revealNewElements();
 scrollToInitialHash();
