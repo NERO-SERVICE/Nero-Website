@@ -49,7 +49,7 @@ SMTP_EHLO_DOMAIN=nero.ai.kr
 
 `.env.example`에는 Firebase 연결값과 Gmail SMTP 발송에 필요한 최소값만 남겨둡니다. `SMTP_PASS`에는 일반 Gmail 로그인 비밀번호가 아니라 Google App Password를 넣습니다.
 
-로컬에서는 `.env.example`을 참고해 `.env`를 만들고 `npm run netlify:dev`로 실행합니다.
+로컬에서는 `.env.example`을 참고해 `.env`를 만들고 `npm run dev`로 실행합니다.
 
 ## 2. 문의 폼 최소 기능 구조
 
@@ -301,22 +301,32 @@ await addNeroWebData("assets", {
 
 ## 7. 로컬 확인
 
-정적 페이지만 확인:
+Netlify Function까지 포함해 확인:
 
 ```bash
 npm run dev
 ```
 
-Netlify Function까지 확인:
-
-```bash
-npm run netlify:dev
-```
-
-Netlify Dev URL은 기본적으로 `http://localhost:8888`이며, 함수 URL은 아래와 같습니다.
+브라우저에서는 아래 주소를 엽니다.
 
 ```text
-http://localhost:8888/.netlify/functions/contact
+http://127.0.0.1:4173/
+```
+
+랜딩 페이지를 바로 확인하려면 아래 주소를 엽니다.
+
+```text
+http://127.0.0.1:4173/landing/
+```
+
+`npm run dev`는 정적 페이지와 `/.netlify/functions/contact`를 같은 로컬 서버에서 처리합니다. 문의 폼과 이메일 발송 테스트는 `/landing/` 페이지에서 확인합니다.
+
+이미 `4173` 포트를 다른 서버가 사용 중이면 `npm run dev`가 다음 포트로 자동 전환합니다. 터미널에 출력되는 실제 URL을 열면 됩니다.
+
+함수 URL은 아래와 같습니다.
+
+```text
+http://127.0.0.1:4173/.netlify/functions/contact
 ```
 
 ## 8. 배포 후 확인
