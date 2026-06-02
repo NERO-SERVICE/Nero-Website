@@ -8,7 +8,6 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  included_files = ["backend/email/smtp-mailer.js"]
 
 [dev]
   command = "npm run serve"
