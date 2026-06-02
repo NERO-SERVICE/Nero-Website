@@ -104,8 +104,8 @@ const CONTACT_NOTIFICATION = {
 동작:
 
 - Pull Request: JavaScript syntax check만 실행
-- `main` push: check 후 Netlify environment sync, production deploy
-- 수동 실행: `main` 브랜치에서 실행한 `workflow_dispatch`만 environment sync, production deploy
+- `main` 또는 `develop` push: check 후 Netlify environment sync, production deploy
+- 수동 실행: `main` 또는 `develop` 브랜치에서 실행한 `workflow_dispatch`만 environment sync, production deploy
 
 deploy job은 Repository secrets만 사용합니다. 공개 저장소 보안을 위해 `pull_request`에서는 deploy job이 실행되지 않습니다.
 
@@ -116,7 +116,7 @@ workflow의 `Sync Netlify function environment` 단계가 Firebase 연결값과 
 - secrets는 코드, 문서, `.env`에 직접 쓰지 않습니다.
 - `pull_request_target` 이벤트는 사용하지 않습니다.
 - PR에서는 `validate` job만 실행되고 secrets가 필요한 deploy job은 실행되지 않습니다.
-- production 배포는 `main` push 또는 `main` 브랜치에서의 수동 실행만 허용합니다.
+- production 배포는 `main`/`develop` push 또는 해당 브랜치에서의 수동 실행만 허용합니다.
 - Netlify 자동 Git 배포가 켜져 있으면 GitHub Actions 배포와 중복될 수 있으므로 하나만 사용하세요.
 
 Netlify Access Token:
@@ -133,6 +133,21 @@ Netlify Site ID:
 3. `Site ID` 복사
 
 이미 Netlify가 GitHub repository와 직접 연결되어 자동 배포 중이면, GitHub Actions 배포와 중복될 수 있습니다. 이 경우 Netlify의 자동 빌드를 끄거나, GitHub Actions만 production 배포 경로로 사용하세요.
+
+문의 폼이 배포 환경에서 500을 반환하면 브라우저 Network 탭에서 `/.netlify/functions/contact` 응답 JSON의 `code`를 확인하세요.
+
+대표 원인:
+
+```text
+firebase_env_missing: Netlify Function에 FIREBASE_PROJECT_ID 또는 FIREBASE_SERVICE_ACCOUNT_BASE64가 없음
+firebase_token_failed: 서비스 계정 JSON 또는 Google IAM 인증 실패
+firestore_write_failed: Firestore DB 이름, 권한, API 활성화, 경로 문제
+smtp_env_missing: SMTP_USER 또는 SMTP_PASS가 Netlify Function에 없음
+smtp_timeout: Netlify Function에서 Gmail SMTP 서버 연결 지연/차단/네트워크 실패
+smtp_response_failed: Gmail App Password, 계정, 발신자 주소, SMTP 인증 실패
+```
+
+함수 URL을 브라우저에서 직접 열면 GET 요청이므로 문의가 접수되지는 않습니다. 랜딩페이지 버튼은 POST로 호출하므로, 실제 버튼 실패 원인은 500 응답의 `code`와 Netlify Function logs에서 확인합니다.
 
 ## 4. Firebase에 `nero-web` 경로 만들기
 
