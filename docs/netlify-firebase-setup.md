@@ -1,6 +1,6 @@
 # Netlify, GitHub Actions, Firebase 연동 절차
 
-이 저장소는 정적 사이트를 Netlify에 배포하고, 문의 폼은 Netlify Functions를 통해 Firebase Firestore에 저장합니다. 이메일 발송은 `.env`에서 직접 관리하지 않고, Firebase Extension 또는 `nero_website` 내부 코드의 최소 로직으로 다룹니다.
+이 저장소는 정적 사이트를 Netlify에 배포하고, 문의 폼은 Netlify Functions를 통해 Firebase Firestore에 저장합니다. 이메일 발송은 `backend/email/smtp-mailer.js`의 SMTP 모듈이 Gmail SMTP로 처리하며, Gmail 계정/App Password 같은 민감값은 GitHub Repository secrets와 Netlify Functions 환경변수로 관리합니다.
 
 ## 1. GitHub Actions Repository secrets 설정
 
@@ -30,7 +30,24 @@ FIRESTORE_DATABASE_ID=nero-web-db
 FIREBASE_SERVICE_ACCOUNT_BASE64=base64_encoded_service_account_json
 ```
 
-`.env.example`에도 Firebase 연결값만 남겨둡니다. 이메일 주소, 제목 prefix, 발송 provider 키는 `.env`에 넣지 않습니다.
+Gmail SMTP 발송 필수:
+
+```bash
+SMTP_USER=cs123@nero.ai.kr
+SMTP_PASS=google_app_password
+```
+
+Gmail SMTP 발송 선택:
+
+```bash
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_FROM="NERO <cs123@nero.ai.kr>"
+SMTP_EHLO_DOMAIN=nero.ai.kr
+```
+
+`.env.example`에는 Firebase 연결값과 Gmail SMTP 발송에 필요한 최소값만 남겨둡니다. `SMTP_PASS`에는 일반 Gmail 로그인 비밀번호가 아니라 Google App Password를 넣습니다.
 
 로컬에서는 `.env.example`을 참고해 `.env`를 만들고 `npm run netlify:dev`로 실행합니다.
 
@@ -42,8 +59,9 @@ FIREBASE_SERVICE_ACCOUNT_BASE64=base64_encoded_service_account_json
 /landing contact form
 → POST /.netlify/functions/contact
 → Firestore: nero-web/contact_requests/items
-→ Firestore: nero-web/email_queue/items
-→ optional Firebase Trigger Email extension
+→ backend/email/smtp-mailer.js
+→ Gmail SMTP
+→ cs123@nero.ai.kr
 ```
 
 프론트엔드는 `js/landing.js`의 `wireContactForm()`에서 JSON으로 전송합니다.
@@ -53,31 +71,31 @@ FIREBASE_SERVICE_ACCOUNT_BASE64=base64_encoded_service_account_json
 최소 기능 단위:
 
 1. `contact_requests/items`: 사용자가 보낸 원본 문의 저장
-2. `email_queue/items`: 이메일 발송 요청 문서 저장
-3. Firebase Extension: `email_queue/items`에 문서가 생기면 실제 이메일 발송
+2. `backend/email/smtp-mailer.js`: SMTP 연결, 인증, MIME 메시지 생성, 발송
+3. Netlify Function: 입력 검증, Firestore 저장, SMTP 메일러 호출
 
-현재 이메일 수신 주소와 제목 prefix는 `.env`가 아니라 `netlify/functions/contact.js`의 `CONTACT_NOTIFICATION` 상수에서 관리합니다.
+현재 이메일 수신 주소와 제목 prefix는 `netlify/functions/contact.js`의 `CONTACT_NOTIFICATION` 상수에서 관리합니다. SMTP 계정/비밀번호 등 민감값만 환경변수에 둡니다.
 
 ```js
 const CONTACT_NOTIFICATION = {
-    to: "official@nero.ai.kr",
+    to: "cs123@nero.ai.kr",
+    from: "NERO <cs123@nero.ai.kr>",
     subjectPrefix: "[NERO]",
     requestCollectionPath: "nero-web/contact_requests/items",
-    emailQueueCollectionPath: "nero-web/email_queue/items",
 };
 ```
 
-이 방식은 사이트 JS 번들을 무겁게 만들지 않고, Netlify Function도 Firebase에 문서 2개를 쓰는 역할만 맡습니다.
+이 방식은 사이트 JS 번들을 무겁게 만들지 않고, 별도 Firebase Extension 없이 Netlify Function 안에서 최소 SMTP 발송만 수행합니다.
 
 개발자 관점 추천 경계:
 
 - 프론트엔드: 입력값 수집, 버튼 상태, 성공/실패 메시지 표시만 담당
-- Netlify Function: 입력 검증, 스팸 honeypot 확인, Firestore 문서 생성만 담당
-- Firebase Firestore: 문의 원본과 이메일 발송 큐 저장
-- Firebase Extension: 실제 이메일 발송 provider, SMTP, 발신자 설정 담당
-- `.env`: Firebase 연결 자격 증명만 담당
+- Netlify Function: 입력 검증, 스팸 honeypot 확인, Firestore 문서 생성, SMTP 메일러 호출 담당
+- Firebase Firestore: 문의 원본 저장
+- `backend/email/smtp-mailer.js`: SMTP 프로토콜 처리 담당
+- `.env`/Repository secrets: Firebase 연결값과 Gmail SMTP 인증값만 담당
 
-이 구조를 유지하면 랜딩 페이지는 가볍게 유지되고, 이메일 provider를 바꿔도 프론트엔드 코드를 건드리지 않아도 됩니다.
+이 구조를 유지하면 랜딩 페이지는 가볍게 유지되고, 별도 유료 이메일 provider 없이 Gmail 계정만으로 문의 알림을 받을 수 있습니다.
 
 ## 3. GitHub Actions CI/CD 설정
 
@@ -91,7 +109,7 @@ const CONTACT_NOTIFICATION = {
 
 deploy job은 Repository secrets만 사용합니다. 공개 저장소 보안을 위해 `pull_request`에서는 deploy job이 실행되지 않습니다.
 
-workflow의 `Sync Netlify function environment` 단계가 Firebase 연결값만 Netlify production/functions scope로 자동 세팅합니다.
+workflow의 `Sync Netlify function environment` 단계가 Firebase 연결값과 Gmail SMTP 인증값을 Netlify production/functions scope로 자동 세팅합니다.
 
 공개 repository 보안 원칙:
 
@@ -129,7 +147,6 @@ Cloud Storage: nero-web/images/{file}
 Cloud Storage backend-only: nero-web/backend/{file}
 Cloud Firestore database: nero-web-db
 Cloud Firestore contact path: nero-web/contact_requests/items/{autoId}
-Cloud Firestore email queue path: nero-web/email_queue/items/{autoId}
 Cloud Firestore asset metadata path: nero-web/assets/items/{autoId}
 ```
 
@@ -170,38 +187,75 @@ firebase/storage.rules
 
 Netlify Function에서 서비스 계정으로 쓰는 Firestore 저장은 클라이언트 rules가 아니라 Google IAM 권한으로 처리됩니다.
 
-## 5. Firebase에서 이메일 발송 설정
+## 5. Gmail SMTP 이메일 발송 설정
 
-이메일 발송은 `.env`가 아니라 Firebase Console에서 관리하는 것을 추천합니다.
+이메일 발송은 `backend/email/smtp-mailer.js`가 담당합니다. 별도 npm 패키지를 설치하지 않고 Node 기본 모듈로 Gmail SMTP 서버에 접속합니다.
 
-추천 방식:
+코드는 `SMTP_HOST`가 없으면 `smtp.gmail.com`을 기본값으로 사용합니다. GitHub Repository secrets에는 아래 두 값만 반드시 추가하면 됩니다.
 
-1. Firebase Console → `Extensions`
-2. `Trigger Email from Firestore` 설치
-3. Cloud Firestore collection path를 아래 값으로 설정
+```bash
+SMTP_USER=cs123@nero.ai.kr
+SMTP_PASS=google_app_password
+```
+
+`SMTP_PASS`에는 일반 Gmail 로그인 비밀번호를 넣지 않습니다. Google 계정에서 2단계 인증을 켠 뒤 생성한 App Password를 넣어야 합니다.
+
+권장 선택값:
+
+```bash
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_FROM="NERO <cs123@nero.ai.kr>"
+SMTP_EHLO_DOMAIN=nero.ai.kr
+```
+
+Gmail App Password 생성:
+
+1. `cs123@nero.ai.kr` 계정으로 Google에 로그인
+2. Google Account → `Security`
+3. `2-Step Verification` 활성화
+4. `App passwords`로 이동
+5. 앱 이름은 예: `nero-website-smtp-email`
+6. 생성된 16자리 App Password를 복사
+7. GitHub Repository secret `SMTP_PASS`에 공백 없이 저장
+
+Google Workspace에서 App Password 메뉴가 보이지 않으면 Workspace 관리자 설정에서 App Password 사용이 막혀 있거나, 계정에 Advanced Protection이 켜져 있을 수 있습니다. 이 경우 관리자 콘솔에서 App Password 사용을 허용해야 합니다.
+
+Gmail SMTP 기준:
 
 ```text
-nero-web/email_queue/items
+Host: smtp.gmail.com
+Port: 465
+Secure: true
+User: cs123@nero.ai.kr
+Pass: Google App Password
 ```
 
-4. SMTP provider, 발신 주소, 인증 정보는 Extension 설정 화면에서 입력
-5. 문의 폼 제출 시 Netlify Function이 `email_queue/items`에 아래 형태의 문서를 생성
+문의 폼 제출 시 Netlify Function이 SMTP로 발송하는 메일 구조:
 
-```js
-{
-  to: "official@nero.ai.kr",
-  replyTo: "user@example.com",
-  message: {
-    subject: "[NERO] 프로젝트 진단 요청 - 홍길동",
-    text: "...",
-    html: "..."
-  }
-}
+```text
+From: NERO <cs123@nero.ai.kr>
+To: cs123@nero.ai.kr
+Reply-To: 고객이 입력한 이메일
+Subject: [NERO] 프로젝트 진단 요청 - 고객명
 ```
 
-Firebase 공식 Trigger Email extension은 Firestore collection에 문서가 추가되면 그 문서의 `to`, `message` 필드를 바탕으로 이메일을 발송합니다.
+운영자는 `cs123@nero.ai.kr` 받은메일함에서 문의를 열고 `답장`을 누르면 고객 이메일로 바로 회신할 수 있습니다.
 
-Extension을 설치하지 않아도 문의 접수 저장은 정상 동작합니다. 이 경우 Firestore의 `nero-web/contact_requests/items`에서 직접 확인하면 됩니다.
+Gmail/Google Workspace에는 발송량 제한이 있습니다. 문의 폼 알림처럼 낮은 빈도의 운영 메일에는 적합하지만, 대량 메일이나 마케팅 메일 발송용으로 쓰면 계정 제한에 걸릴 수 있습니다.
+
+공식 참고:
+
+- Google App Password: https://support.google.com/accounts/answer/185833
+- Gmail SMTP: https://developers.google.com/gmail/imap/imap-smtp
+- Google Workspace Gmail sending limits: https://support.google.com/a/answer/166852
+
+정상 동작 확인:
+
+1. `/landing/#contact`에서 테스트 문의 제출
+2. Firestore `nero-web/contact_requests/items`에 원본 문의 문서가 생성되는지 확인
+3. `cs123@nero.ai.kr` 수신함에서 메일 확인
 
 ## 6. Firebase 이미지 업로드 연동
 
@@ -271,4 +325,4 @@ http://localhost:8888/.netlify/functions/contact
 2. `아이디어 보내기` 클릭
 3. 화면에 접수 완료 메시지 확인
 4. Firestore에서 `nero-web/contact_requests/items` 확인
-5. Trigger Email extension을 설치했다면 `official@nero.ai.kr` 수신함 확인
+5. `cs123@nero.ai.kr` 수신함에서 SMTP 발송 메일 확인

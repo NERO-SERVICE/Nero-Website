@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const { sendSmtpMail } = require("../../backend/email/smtp-mailer");
 
 const json = (statusCode, body) => ({
     statusCode,
@@ -14,11 +15,14 @@ const normalize = (value, maxLength = 2000) => String(value ?? "").trim().slice(
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 const CONTACT_NOTIFICATION = {
-    to: "official@nero.ai.kr",
+    to: "cs123@nero.ai.kr",
+    from: "NERO <cs123@nero.ai.kr>",
     subjectPrefix: "[NERO]",
     requestCollectionPath: "nero-web/contact_requests/items",
-    emailQueueCollectionPath: "nero-web/email_queue/items",
 };
+
+const getSmtpFrom = () => process.env.SMTP_FROM
+    || (process.env.SMTP_USER ? `NERO <${process.env.SMTP_USER}>` : CONTACT_NOTIFICATION.from);
 
 const escapeHtml = (value) => normalize(value, 5000)
     .replace(/&/g, "&amp;")
@@ -79,7 +83,7 @@ const getFirebaseAccessToken = async (serviceAccount) => {
 
 const firebaseContext = async () => {
     const projectId = normalize(process.env.FIREBASE_PROJECT_ID);
-    const databaseId = encodeURIComponent(normalize(process.env.FIRESTORE_DATABASE_ID || "(default)"));
+    const databaseId = encodeURIComponent(normalize(process.env.FIRESTORE_DATABASE_ID || "nero-web-db"));
     const serviceAccount = getServiceAccount();
     if (!projectId || !serviceAccount) {
         throw new Error("Missing Firebase environment variables");
@@ -139,16 +143,18 @@ const createFirestoreDocument = async (collectionPath, data) => {
     return response.json();
 };
 
-const buildContactText = ({ name, email, message }) => [
-        `성함: ${name}`,
-        `이메일: ${email}`,
-        "",
-        "문의내용:",
-        message,
+const buildContactText = ({ name, email, message, requestId }) => [
+    `접수 ID: ${requestId || ""}`,
+    `성함: ${name}`,
+    `이메일: ${email}`,
+    "",
+    "문의내용:",
+    message,
 ].join("\n");
 
-const buildContactHtml = ({ name, email, message }) => `
+const buildContactHtml = ({ name, email, message, requestId }) => `
         <h2>${escapeHtml(CONTACT_NOTIFICATION.subjectPrefix)} 프로젝트 진단 요청</h2>
+        <p><strong>접수 ID</strong>: ${escapeHtml(requestId)}</p>
         <p><strong>성함</strong>: ${escapeHtml(name)}</p>
         <p><strong>이메일</strong>: ${escapeHtml(email)}</p>
         <p><strong>문의내용</strong></p>
@@ -169,20 +175,22 @@ const saveContactRequest = async ({ name, email, message, userAgent, referer }) 
     });
 
     const requestId = contactDoc.name?.split("/").pop() || "";
+    return { requestId };
+};
 
-    await createFirestoreDocument(CONTACT_NOTIFICATION.emailQueueCollectionPath, {
+const sendContactNotification = async ({ name, email, message, requestId }) => {
+    await sendSmtpMail({
+        from: getSmtpFrom(),
         to: CONTACT_NOTIFICATION.to,
         replyTo: email,
-        requestId,
-        message: {
-            subject: `${CONTACT_NOTIFICATION.subjectPrefix} 프로젝트 진단 요청 - ${name}`,
-            text: buildContactText({ name, email, message }),
-            html: buildContactHtml({ name, email, message }),
+        subject: `${CONTACT_NOTIFICATION.subjectPrefix} 프로젝트 진단 요청 - ${name}`,
+        text: buildContactText({ name, email, message, requestId }),
+        html: buildContactHtml({ name, email, message, requestId }),
+        headers: {
+            "X-NERO-Request-ID": requestId,
+            "X-NERO-Source": "landing_contact",
         },
-        createdAt: now,
     });
-
-    return { requestId };
 };
 
 exports.handler = async (event) => {
@@ -214,16 +222,17 @@ exports.handler = async (event) => {
     }
 
     try {
-        await saveContactRequest({
+        const { requestId } = await saveContactRequest({
             name,
             email,
             message,
             userAgent: event.headers["user-agent"] || "",
             referer: event.headers.referer || "",
         });
+        await sendContactNotification({ name, email, message, requestId });
     } catch (error) {
         console.error(error);
-        return json(500, { ok: false, message: "접수 저장에 실패했습니다. 잠시 후 다시 시도해주세요." });
+        return json(500, { ok: false, message: "문의 접수 또는 이메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요." });
     }
 
     return json(200, { ok: true, message: "아이디어가 접수되었습니다. 곧 연락드리겠습니다." });

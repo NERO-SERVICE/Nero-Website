@@ -3,10 +3,18 @@ import { spawnSync } from "node:child_process";
 const requiredRuntimeEnv = [
     "FIREBASE_PROJECT_ID",
     "FIREBASE_SERVICE_ACCOUNT_BASE64",
+    "SMTP_USER",
+    "SMTP_PASS",
 ];
 
 const optionalRuntimeEnv = [
     "FIRESTORE_DATABASE_ID",
+    "SMTP_HOST",
+    "SMTP_PORT",
+    "SMTP_SECURE",
+    "SMTP_FROM",
+    "SMTP_REQUIRE_TLS",
+    "SMTP_EHLO_DOMAIN",
 ];
 
 const requiredDeployEnv = [
