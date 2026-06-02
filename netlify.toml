@@ -1,3 +1,13 @@
 [build]
-  publish = "/"        # 빌드 후 배포할 디렉터리
-  command = ""         # 정적 파일만 있을 경우 빈 값
+  publish = "."
+  command = ""
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 4173
+  port = 8888
+  publish = "."

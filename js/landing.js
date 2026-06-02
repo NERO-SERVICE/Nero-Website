@@ -870,12 +870,15 @@ landingRoot.innerHTML = `
                 <p class="eyebrow">아이디어만 있어도 됩니다. 3분 진단지를 작성해주시면 개발 방향과 필요한 기능을 정리해드립니다.</p>
                 <h2 id="contact-title">정리가 안 됐어도 괜찮습니다</h2>
             </div>
-            <form class="contact-form contact-form-simple reveal" id="contact-form" action="mailto:official@nero.ai.kr" method="post" enctype="text/plain">
+            <form class="contact-form contact-form-simple reveal" id="contact-form" action="/.netlify/functions/contact" method="post">
                 <label aria-label="이름">
                     <input type="text" name="name" autocomplete="name" placeholder="이름" required />
                 </label>
                 <label aria-label="이메일">
                     <input type="email" name="email" autocomplete="email" placeholder="이메일" required />
+                </label>
+                <label class="form-honeypot" aria-hidden="true">
+                    <input type="text" name="company" tabindex="-1" autocomplete="off" />
                 </label>
                 <label class="form-wide" aria-label="문의내용">
                     <textarea name="message" rows="15" placeholder="개발을 문의하고 싶은 아이디어와 내용들을 자유롭게 입력해주세요" required></textarea>
@@ -962,8 +965,22 @@ const setContactValue = (selector, value) => {
     if (element && value) element.value = value;
 };
 
+const getAnchorOffset = () => {
+    const headerHeight = document.querySelector(".site-header")?.offsetHeight ?? 74;
+    return headerHeight + (window.matchMedia("(max-width: 768px)").matches ? 18 : 28);
+};
+
+const scrollToSection = (target, { behavior = "smooth", updateHash = true } = {}) => {
+    if (!target) return;
+    const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - getAnchorOffset());
+    window.scrollTo({ top, behavior });
+    if (updateHash && target.id) {
+        window.history.pushState(null, "", `#${target.id}`);
+    }
+};
+
 const scrollToContact = () => {
-    document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    scrollToSection(document.querySelector("#contact"));
 };
 
 const wirePackageAndServiceCards = () => {
@@ -1010,6 +1027,7 @@ const wireFeatureTabs = () => {
             panel.innerHTML = renderFeatureCards(tab.dataset.featureCategory);
             requestAnimationFrame(() => {
                 wireFeatureCards();
+                prepareRevealStagger(panel);
                 revealNewElements(panel);
             });
         });
@@ -1084,25 +1102,38 @@ const wireContactForm = () => {
     const form = document.querySelector("#contact-form");
     if (!form) return;
     const status = form.querySelector(".form-status");
+    const submitButton = form.querySelector(".form-submit");
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const data = Object.fromEntries(new FormData(form).entries());
         trackEvent(TRACK_EVENTS.SUBMIT_DIAGNOSIS, {
             hasMessage: Boolean(data.message?.trim()),
         });
-        const subject = "[NERO] 프로젝트 진단 요청";
-        const body = [
-            `성함: ${data.name ?? ""}`,
-            `이메일: ${data.email ?? ""}`,
-            "",
-            "문의내용:",
-            data.message ?? "",
-        ].join("\n");
 
-        status.textContent = "이메일 앱을 열고 있습니다. 작성 내용을 확인한 뒤 전송해주세요.";
-        form.dataset.submitted = "true";
-        window.location.href = `mailto:official@nero.ai.kr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        status.textContent = "아이디어를 전송하고 있습니다.";
+        form.dataset.submitted = "pending";
+        if (submitButton) submitButton.disabled = true;
+
+        try {
+            const response = await fetch(form.action, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok || !result.ok) {
+                throw new Error(result.message || "전송에 실패했습니다.");
+            }
+            status.textContent = result.message || "아이디어가 접수되었습니다. 곧 연락드리겠습니다.";
+            form.dataset.submitted = "true";
+            form.reset();
+        } catch (error) {
+            status.textContent = error.message || "전송에 실패했습니다. 잠시 후 다시 시도해주세요.";
+            form.dataset.submitted = "false";
+        } finally {
+            if (submitButton) submitButton.disabled = false;
+        }
     });
 };
 
@@ -1261,6 +1292,80 @@ const wireDrawer = () => {
     });
 };
 
+const getHashTarget = (href) => {
+    if (!href?.startsWith("#")) return null;
+    const id = decodeURIComponent(href.slice(1));
+    return id ? document.getElementById(id) : null;
+};
+
+const wireAnchoredNavigation = () => {
+    const anchorLinks = Array.from(document.querySelectorAll('a[href^="#"]'));
+    const targetMap = new Map();
+
+    anchorLinks.forEach((link) => {
+        const href = link.getAttribute("href");
+        const target = getHashTarget(href);
+        if (!target) return;
+        targetMap.set(target.id, target);
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+            scrollToSection(target);
+        });
+    });
+
+    const targets = Array.from(targetMap.values()).sort((a, b) => a.offsetTop - b.offsetTop);
+    if (targets.length === 0) return;
+
+    let ticking = false;
+    const updateActive = () => {
+        const probe = window.scrollY + getAnchorOffset() + window.innerHeight * 0.22;
+        const activeTarget = targets.reduce((current, target) => {
+            if (target.offsetTop <= probe) return target;
+            return current;
+        }, targets[0]);
+        anchorLinks.forEach((link) => {
+            const target = getHashTarget(link.getAttribute("href"));
+            link.classList.toggle("is-active", Boolean(target && target.id === activeTarget.id));
+        });
+        ticking = false;
+    };
+
+    window.addEventListener("scroll", () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateActive);
+    }, { passive: true });
+    window.addEventListener("resize", updateActive);
+    updateActive();
+};
+
+const prepareRevealStagger = (root = document) => {
+    const groups = [
+        ".pain-grid",
+        ".comparison-grid",
+        ".package-grid",
+        ".service-grid",
+        ".feature-panel",
+        ".why-grid",
+        ".deliverable-grid",
+        ".faq-list",
+        ".process-timeline",
+    ];
+
+    groups.forEach((selector) => {
+        const matchedGroups = [
+            ...(root.matches?.(selector) ? [root] : []),
+            ...root.querySelectorAll(selector),
+        ];
+        matchedGroups.forEach((group) => {
+            const items = group.querySelectorAll(":scope > .reveal");
+            items.forEach((item, index) => {
+                item.style.setProperty("--reveal-delay", `${Math.min(index * 70, 360)}ms`);
+            });
+        });
+    });
+};
+
 let revealObserver = null;
 
 const revealNewElements = (root = document) => {
@@ -1314,7 +1419,7 @@ const scrollToInitialHash = () => {
         const hashId = decodeURIComponent(window.location.hash.slice(1));
         const target = document.getElementById(hashId);
         if (!target) return;
-        target.scrollIntoView({ block: "start" });
+        scrollToSection(target, { behavior: "auto", updateHash: false });
         revealNewElements(document);
     };
     [0, 80, 260, 700, 1300].forEach((delay) => window.setTimeout(move, delay));
@@ -1323,6 +1428,7 @@ const scrollToInitialHash = () => {
 
 hydrateAssetSlots();
 wireDrawer();
+wireAnchoredNavigation();
 wirePackageAndServiceCards();
 wireFeatureTabs();
 wireFeatureCards();
@@ -1332,5 +1438,6 @@ wireContactForm();
 wireProcessTimeline();
 wirePortfolioCarousel();
 wireScrollTracking();
+prepareRevealStagger();
 revealNewElements();
 scrollToInitialHash();
