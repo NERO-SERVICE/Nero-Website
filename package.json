@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "python3 -m http.server 4173 --bind 127.0.0.1",
+    "dev": "node scripts/local-dev-server.mjs",
+    "serve": "python3 -m http.server 4173 --bind 127.0.0.1",
     "netlify:dev": "npx --yes netlify-cli dev",
-    "check": "node --check js/landing.js && node --check backend/email/smtp-mailer.js && node --check netlify/functions/contact.js && node --check scripts/sync-netlify-env.mjs"
+    "check": "node --check js/landing.js && node --check backend/email/smtp-mailer.js && node --check netlify/functions/contact.js && node --check scripts/sync-netlify-env.mjs && node --check scripts/local-dev-server.mjs"
   }
 }
