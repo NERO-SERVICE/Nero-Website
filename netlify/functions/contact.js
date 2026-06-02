@@ -14,6 +14,17 @@ const normalize = (value, maxLength = 2000) => String(value ?? "").trim().slice(
 
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
+const errorCodeFrom = (error) => {
+    const message = String(error?.message || "");
+    if (message.includes("Missing Firebase environment variables")) return "firebase_env_missing";
+    if (message.includes("Firebase token request failed")) return "firebase_token_failed";
+    if (message.includes("Firestore write failed")) return "firestore_write_failed";
+    if (message.includes("Missing SMTP environment variables")) return "smtp_env_missing";
+    if (message.includes("SMTP connection timed out")) return "smtp_timeout";
+    if (message.includes("SMTP unexpected response")) return "smtp_response_failed";
+    return "contact_submit_failed";
+};
+
 const CONTACT_NOTIFICATION = {
     to: "cs123@nero.ai.kr",
     from: "NERO <cs123@nero.ai.kr>",
@@ -194,8 +205,27 @@ const sendContactNotification = async ({ name, email, message, requestId }) => {
 };
 
 exports.handler = async (event) => {
+    if (event.httpMethod === "GET") {
+        return json(200, {
+            ok: true,
+            message: "NERO contact function is running. Use POST to submit the contact form.",
+        });
+    }
+
+    if (event.httpMethod === "OPTIONS") {
+        return {
+            statusCode: 204,
+            headers: {
+                "Access-Control-Allow-Origin": event.headers.origin || "*",
+                "Access-Control-Allow-Methods": "POST, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
+            body: "",
+        };
+    }
+
     if (event.httpMethod !== "POST") {
-        return json(405, { ok: false, message: "POST 요청만 지원합니다." });
+        return json(405, { ok: false, message: "POST 요청만 지원합니다.", code: "method_not_allowed" });
     }
 
     let data;
@@ -231,8 +261,13 @@ exports.handler = async (event) => {
         });
         await sendContactNotification({ name, email, message, requestId });
     } catch (error) {
-        console.error(error);
-        return json(500, { ok: false, message: "문의 접수 또는 이메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요." });
+        const code = errorCodeFrom(error);
+        console.error("[contact]", code, error);
+        return json(500, {
+            ok: false,
+            code,
+            message: "문의 접수 또는 이메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.",
+        });
     }
 
     return json(200, { ok: true, message: "아이디어가 접수되었습니다. 곧 연락드리겠습니다." });
