@@ -15,6 +15,8 @@
     --line-dark: rgba(255, 255, 255, 0.11);
     --glass: rgba(255, 255, 255, 0.055);
     --glass-strong: rgba(255, 255, 255, 0.085);
+    --footer-surface: #070c16;
+    --footer-surface-soft: rgba(7, 12, 22, 0.84);
     --shadow: 0 28px 90px rgba(0, 0, 0, 0.36);
     --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.22);
     --radius: 24px;
@@ -597,8 +599,9 @@ section[id] {
     border: 1px solid transparent;
     border-radius: var(--radius);
     background:
-        linear-gradient(145deg, rgba(47, 111, 237, 0.13), rgba(255, 255, 255, 0.035)),
-        rgba(255, 255, 255, 0.055);
+        radial-gradient(ellipse at 74% 0%, rgba(47, 111, 237, 0.12), transparent 30rem),
+        linear-gradient(180deg, rgba(5, 7, 11, 0.1) 0%, var(--footer-surface-soft) 100%),
+        var(--footer-surface);
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.1),
         0 24px 70px rgba(0, 0, 0, 0.26);
@@ -609,16 +612,18 @@ section[id] {
 .asset-slot img {
     position: absolute;
     inset: 0;
+    z-index: 2;
     width: 100%;
     height: 100%;
     object-fit: cover;
     opacity: 0;
-    transition: opacity 260ms ease;
+    transition: opacity 560ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .asset-slot picture {
     position: absolute;
     inset: 0;
+    z-index: 2;
     display: block;
     width: 100%;
     height: 100%;
@@ -626,27 +631,39 @@ section[id] {
 
 .asset-slot::before {
     position: absolute;
-    inset: 16px;
+    inset: 0;
     z-index: 1;
-    border-radius: calc(var(--radius) - 12px);
-    background: rgba(255, 255, 255, 0.035);
+    border-radius: inherit;
+    background:
+        radial-gradient(ellipse at 74% 0%, rgba(47, 111, 237, 0.12), transparent 28rem),
+        linear-gradient(180deg, rgba(5, 7, 11, 0.1) 0%, var(--footer-surface-soft) 100%),
+        var(--footer-surface);
     content: "";
     pointer-events: none;
+    transition: opacity 420ms ease;
+}
+
+.asset-slot::after {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.045) 42%, transparent 72%);
+    content: "";
+    pointer-events: none;
+    transform: translateX(-100%);
+    animation: assetSkeletonSweep 1.8s ease-in-out infinite;
+    transition: opacity 320ms ease;
 }
 
 .asset-placeholder {
-    position: relative;
-    z-index: 2;
-    max-width: calc(100% - 48px);
-    border: 0;
-    border-radius: 999px;
-    background: rgba(5, 7, 11, 0.72);
-    color: rgba(249, 250, 251, 0.9);
-    padding: 11px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    text-align: center;
-    backdrop-filter: blur(18px);
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
 .asset-slot[data-loaded="true"] img {
@@ -654,7 +671,8 @@ section[id] {
 }
 
 .asset-slot[data-loaded="true"] .asset-placeholder,
-.asset-slot[data-loaded="true"]::before {
+.asset-slot[data-loaded="true"]::before,
+.asset-slot[data-loaded="true"]::after {
     opacity: 0;
 }
 
@@ -666,7 +684,10 @@ section[id] {
     min-height: 100%;
     border: 0;
     border-radius: inherit;
-    background: #05070b;
+    background:
+        radial-gradient(ellipse at 74% 0%, rgba(47, 111, 237, 0.12), transparent 30rem),
+        linear-gradient(180deg, rgba(5, 7, 11, 0.1) 0%, var(--footer-surface-soft) 100%),
+        var(--footer-surface);
     box-shadow: none;
 }
 
@@ -2042,6 +2063,17 @@ section[id] {
     50% {
         opacity: 0.42;
         transform: translateX(18%);
+    }
+}
+
+@keyframes assetSkeletonSweep {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    52%,
+    100% {
+        transform: translateX(100%);
     }
 }
 
