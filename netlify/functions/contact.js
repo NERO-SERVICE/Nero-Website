@@ -1,9 +1,11 @@
 const crypto = require("node:crypto");
 const { sendSmtpMail } = require("./_smtp-mailer");
 
-const CONTACT_TO = process.env.CONTACT_TO || "cs123@nero.ai.kr";
+const normalize = (value, maxLength = 2000) => String(value ?? "").trim().slice(0, maxLength);
+
+const CONTACT_TO = process.env.CONTACT_TO || process.env.SMTP_USER || "";
 const CONTACT_FROM = process.env.SMTP_FROM
-    || (process.env.SMTP_USER ? `NERO <${process.env.SMTP_USER}>` : "NERO <cs123@nero.ai.kr>");
+    || (process.env.SMTP_USER ? `NERO <${process.env.SMTP_USER}>` : CONTACT_TO);
 const SUBJECT_PREFIX = "[NERO]";
 
 const json = (statusCode, body) => ({
@@ -14,8 +16,6 @@ const json = (statusCode, body) => ({
     },
     body: JSON.stringify(body),
 });
-
-const normalize = (value, maxLength = 2000) => String(value ?? "").trim().slice(0, maxLength);
 
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 

@@ -31,21 +31,23 @@ Netlify UI 기준:
 
 Netlify Functions에서 `process.env.SMTP_USER`처럼 런타임에 읽으려면 해당 변수의 scope에 `Functions`가 포함되어야 합니다.
 
+중요: Netlify의 `Contains secret values` 표시는 실제 비밀번호인 `SMTP_PASS`에만 사용합니다. `SMTP_HOST`, `SMTP_USER`, `CONTACT_TO`, `SMTP_FROM`은 배포 코드나 문서에 공개 문자열로 등장할 수 있는 운영 설정값이므로 secret으로 표시하지 않습니다.
+
 필수값:
 
 ```bash
-SMTP_USER=cs123@nero.ai.kr
+SMTP_USER=your-smtp-account@example.com
 SMTP_PASS=google_app_password
 ```
 
 권장값:
 
 ```bash
-CONTACT_TO=cs123@nero.ai.kr
-SMTP_HOST=smtp.gmail.com
+CONTACT_TO=your-inbox@example.com
+SMTP_HOST=Gmail SMTP host
 SMTP_PORT=465
 SMTP_SECURE=true
-SMTP_FROM="NERO <cs123@nero.ai.kr>"
+SMTP_FROM="NERO <your-smtp-account@example.com>"
 ```
 
 Firebase를 Netlify Function에서 직접 사용할 때만 선택적으로 추가합니다. 현재 문의 폼 SMTP 발송에는 필요하지 않습니다.
@@ -64,7 +66,7 @@ FIREBASE_SERVICE_ACCOUNT_BASE64=base64_encoded_service_account_json
 → netlify/functions/contact.js
 → netlify/functions/_smtp-mailer.js
 → Gmail SMTP
-→ cs123@nero.ai.kr
+→ 운영 메일함
 ```
 
 프론트엔드는 `js/landing.js`의 `wireContactForm()`에서 문의 데이터를 JSON으로 보냅니다.
@@ -80,20 +82,20 @@ FIREBASE_SERVICE_ACCOUNT_BASE64=base64_encoded_service_account_json
 기본 수신 주소와 발신 표기는 아래 환경변수로 바꿀 수 있습니다.
 
 ```bash
-CONTACT_TO=cs123@nero.ai.kr
-SMTP_FROM="NERO <cs123@nero.ai.kr>"
+CONTACT_TO=your-inbox@example.com
+SMTP_FROM="NERO <your-smtp-account@example.com>"
 ```
 
 메일 구조:
 
 ```text
-From: NERO <cs123@nero.ai.kr>
-To: cs123@nero.ai.kr
+From: NERO <your-smtp-account@example.com>
+To: your-inbox@example.com
 Reply-To: 고객이 입력한 이메일
 Subject: [NERO] 프로젝트 진단 요청 - 고객명
 ```
 
-운영자는 `cs123@nero.ai.kr` 받은메일함에서 문의 메일을 열고 `답장`을 누르면 고객 이메일로 바로 회신할 수 있습니다.
+운영자는 운영 메일함에서 문의 메일을 열고 `답장`을 누르면 고객 이메일로 바로 회신할 수 있습니다.
 
 ## 3. GitHub Actions 역할
 
@@ -145,7 +147,7 @@ method_not_allowed: POST가 아닌 요청
 
 `SMTP_PASS`에는 일반 Gmail 로그인 비밀번호를 넣지 않습니다. Google 계정의 App Password를 사용합니다.
 
-1. `cs123@nero.ai.kr` 계정으로 Google 로그인
+1. 발송에 사용할 Google 계정으로 로그인
 2. Google Account → `Security`
 3. `2-Step Verification` 활성화
 4. `App passwords`로 이동
@@ -158,10 +160,10 @@ Google Workspace에서 App Password 메뉴가 보이지 않으면 관리자 콘�
 Gmail SMTP 기준:
 
 ```text
-Host: smtp.gmail.com
+Host: Gmail SMTP host
 Port: 465
 Secure: true
-User: cs123@nero.ai.kr
+User: 발송 계정 이메일
 Pass: Google App Password
 ```
 
