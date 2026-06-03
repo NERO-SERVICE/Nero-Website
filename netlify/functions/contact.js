@@ -18,6 +18,11 @@ const CONTACT_SOURCES = {
         subject: "홈 문의",
         success: "문의가 접수되었습니다. 곧 연락드리겠습니다.",
     },
+    overview_download: {
+        label: "소개서 다운로드 요청",
+        subject: "소개서 다운로드 요청",
+        success: "소개서 요청이 접수되었습니다. 입력하신 이메일로 안내드리겠습니다.",
+    },
 };
 
 const json = (statusCode, body) => ({
@@ -88,6 +93,70 @@ const buildContactHtml = ({ name, email, customerType, projectPurpose, message, 
     <div style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(message)}</div>
 `;
 
+const buildOverviewText = ({ companyName, name, phone, department, position, email, visitPath, message, requestId, source }) => [
+    `접수 ID: ${requestId}`,
+    `접수 구분: ${source.label}`,
+    `기업명: ${companyName}`,
+    `성함: ${name}`,
+    `연락처: ${phone}`,
+    `부서명: ${department}`,
+    `직급: ${position}`,
+    `이메일: ${email}`,
+    `방문 경로: ${visitPath}`,
+    "",
+    "문의사항:",
+    message || "없음",
+].join("\n");
+
+const buildOverviewHtml = ({ companyName, name, phone, department, position, email, visitPath, message, requestId, source }) => `
+    <h2>${escapeHtml(SUBJECT_PREFIX)} ${escapeHtml(source.subject)}</h2>
+    <p><strong>접수 ID</strong>: ${escapeHtml(requestId)}</p>
+    <p><strong>접수 구분</strong>: ${escapeHtml(source.label)}</p>
+    <p><strong>기업명</strong>: ${escapeHtml(companyName)}</p>
+    <p><strong>성함</strong>: ${escapeHtml(name)}</p>
+    <p><strong>연락처</strong>: ${escapeHtml(phone)}</p>
+    <p><strong>부서명</strong>: ${escapeHtml(department)}</p>
+    <p><strong>직급</strong>: ${escapeHtml(position)}</p>
+    <p><strong>이메일</strong>: ${escapeHtml(email)}</p>
+    <p><strong>방문 경로</strong>: ${escapeHtml(visitPath)}</p>
+    <p><strong>문의사항</strong></p>
+    <div style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(message || "없음")}</div>
+`;
+
+const handleOverviewDownload = async ({ data, source, requestId }) => {
+    const companyName = normalize(data.companyName, 160);
+    const name = normalize(data.name, 120);
+    const phone = normalize(data.phone, 80);
+    const department = normalize(data.department, 120);
+    const position = normalize(data.position, 120);
+    const email = normalize(data.email, 254);
+    const visitPath = normalize(data.visitPath, 160);
+    const message = normalize(data.message, 5000);
+
+    if (!companyName || !name || !phone || !department || !position || !email || !visitPath) {
+        return json(400, { ok: false, message: "기업명, 성함, 연락처, 부서명, 직급, 이메일, 방문 경로를 모두 입력해주세요." });
+    }
+
+    if (!isEmail(email)) {
+        return json(400, { ok: false, message: "이메일 형식이 올바르지 않습니다." });
+    }
+
+    await sendSmtpMail({
+        from: CONTACT_FROM,
+        to: CONTACT_TO,
+        replyTo: email,
+        subject: `${SUBJECT_PREFIX} ${source.subject} - ${companyName} ${name}`,
+        text: buildOverviewText({ companyName, name, phone, department, position, email, visitPath, message, requestId, source }),
+        html: buildOverviewHtml({ companyName, name, phone, department, position, email, visitPath, message, requestId, source }),
+        headers: {
+            "X-NERO-Request-ID": requestId,
+            "X-NERO-Source": source.key,
+        },
+    });
+
+    return json(200, { ok: true, message: source.success });
+};
+
 exports.handler = async (event) => {
     if (event.httpMethod === "GET" || event.httpMethod === "HEAD") {
         return {
@@ -121,6 +190,22 @@ exports.handler = async (event) => {
     const projectPurpose = normalize(data.projectPurpose, 160);
     const message = normalize(data.message, 5000);
     const source = getContactSource(data.source);
+    const requestId = crypto.randomUUID();
+
+    if (source.key === "overview_download") {
+        try {
+            return await handleOverviewDownload({ data, source, requestId });
+        } catch (error) {
+            const code = errorCodeFrom(error);
+            console.error("[contact]", code, error);
+            return json(500, {
+                ok: false,
+                code,
+                missing: code === "smtp_env_missing" ? missingSmtpKeys() : undefined,
+                message: "이메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.",
+            });
+        }
+    }
 
     if (!name || !email || !customerType || !projectPurpose || !message) {
         return json(400, { ok: false, message: "성함, 이메일, 문의자 유형, 희망 목적, 문의내용을 모두 입력해주세요." });
@@ -130,7 +215,6 @@ exports.handler = async (event) => {
         return json(400, { ok: false, message: "이메일 형식이 올바르지 않습니다." });
     }
 
-    const requestId = crypto.randomUUID();
     try {
         await sendSmtpMail({
             from: CONTACT_FROM,
