@@ -19,11 +19,15 @@ This is a static website for Nero (네로), a mental health data company. The si
 
 ```
 /
-├── index.html          # Main homepage
-├── services.html       # Services page
+├── pages/
+│   ├── home.html       # Main homepage
+│   ├── announcement.html
+│   ├── services.html
+│   ├── landing.html
+│   └── test/           # Test UI pages
 ├── css/
 │   └── styles.css      # Main stylesheet (Bootstrap + custom styles)
-├── js/
+├── scripts/
 │   └── scripts.js      # JavaScript functionality
 ├── assets/
 │   ├── favicon.ico
@@ -45,8 +49,8 @@ This is a static website with no build process. To develop:
 ## Key Architecture Notes
 
 ### Page Structure
-- **index.html**: Single-page application with sections for Portfolio, About, and Contact
-- **services.html**: Dedicated services page showcasing Nero's offerings
+- **pages/home.html**: Single-page application with sections for Portfolio, About, and Contact
+- **pages/services.html**: Dedicated services page showcasing Nero's offerings
 - Both pages share the same navigation structure and styling
 
 ### Styling Approach

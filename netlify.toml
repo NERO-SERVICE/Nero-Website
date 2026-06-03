@@ -9,6 +9,31 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+[[redirects]]
+  from = "/"
+  to = "/pages/home.html"
+  status = 200
+
+[[redirects]]
+  from = "/announcement"
+  to = "/pages/announcement.html"
+  status = 200
+
+[[redirects]]
+  from = "/landing"
+  to = "/pages/landing.html"
+  status = 200
+
+[[redirects]]
+  from = "/overview"
+  to = "/pages/overview.html"
+  status = 200
+
+[[redirects]]
+  from = "/services"
+  to = "/pages/services.html"
+  status = 200
+
 [dev]
   command = "npm run serve"
   targetPort = 4173

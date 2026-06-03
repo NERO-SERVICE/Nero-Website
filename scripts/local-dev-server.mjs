@@ -76,14 +76,24 @@ const isInsideRoot = (filePath) => {
     return relative === "" || relative.startsWith(sep);
 };
 
+const routeAliases = new Map([
+    ["/", "/pages/home.html"],
+    ["/announcement", "/pages/announcement.html"],
+    ["/services", "/pages/services.html"],
+    ["/landing", "/pages/landing.html"],
+    ["/overview", "/pages/overview.html"],
+]);
+
 const resolveStaticFile = (pathname) => {
-    const decodedPath = decodeURIComponent(pathname);
+    const requestPath = decodeURIComponent(pathname);
+    const decodedPath = routeAliases.get(requestPath) || requestPath;
     const candidates = [];
 
     if (decodedPath.endsWith("/")) {
         candidates.push(join(rootDir, decodedPath, "index.html"));
     } else {
         candidates.push(join(rootDir, decodedPath));
+        candidates.push(join(rootDir, `${decodedPath}.html`));
         candidates.push(join(rootDir, decodedPath, "index.html"));
     }
 
@@ -177,7 +187,7 @@ const listen = (candidatePort, attemptsLeft) => {
         activePort = candidatePort;
         server.off("error", handleListenError);
         console.log(`NERO local dev server ready: http://${displayHost}:${activePort}/`);
-        console.log(`Landing page ready: http://${displayHost}:${activePort}/landing/`);
+        console.log(`Landing page ready: http://${displayHost}:${activePort}/landing`);
         console.log("Contact function ready: /.netlify/functions/contact");
     });
 };

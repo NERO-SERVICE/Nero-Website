@@ -29,7 +29,7 @@ const trackEvent = (eventName, payload = {}) => {
     window.dispatchEvent(new CustomEvent("nero:track", { detail: { eventName, payload } }));
 };
 
-const asset = (fileName) => `../assets/img/landing/${fileName}`;
+const asset = (fileName) => `/assets/img/landing/${fileName}`;
 
 const heroAssets = [
     {
@@ -113,7 +113,7 @@ const packages = [
         event: TRACK_EVENTS.PACKAGE_STARTUP,
         name: "Grant-ready MVP",
         target: "예비창업자",
-        customerValue: "예비창업자·지원사업",
+        customerValue: "예비창업자",
         intro: "지원사업과 초기 검증에 필요한 MVP, 관리자, 전환 측정, 배포 URL을 빠르게 정리합니다.",
         features: ["랜딩", "MVP/PoC", "GA4", "관리자", "웹/앱 배포", "로드맵"],
     },
@@ -131,7 +131,7 @@ const packages = [
         event: TRACK_EVENTS.PACKAGE_OPERATION,
         name: "Operation Care",
         target: "기존 서비스 운영자",
-        customerValue: "기존 서비스 운영자",
+        customerValue: "서비스 운영자",
         intro: "이미 만들어진 서비스의 구조, 서버, 오류, 배포, API를 점검하고 운영 안정성을 회복합니다.",
         features: ["코드·서버 진단", "오류 수정", "배포 정상화", "API 대응", "월 유지보수"],
     },
@@ -522,9 +522,12 @@ const faqs = [
     ["연구·의료 데이터가 포함된 프로젝트도 가능한가요?", "가능합니다. 민감 데이터, 동의 흐름, 익명화, 권한, 리포트 구조를 상담 단계에서 함께 점검합니다."],
 ];
 
-const customerOptions = ["교수·연구자", "예비창업자·지원사업", "사업가·기업", "기존 서비스 운영자"];
-const buildOptions = ["전환형 랜딩·신청 페이지", "MVP/PoC", "운영형 웹서비스", "iOS·Android 앱서비스", "기존 서비스 Rescue"];
-const budgetOptions = ["300만 원~1,000만 원", "1,000만 원~2,000만 원", "2,000만 원~3,000만 원", "3,000만 원 이상", "아직 미정"];
+const customerOptions = ["교수·연구자", "예비창업자", "사업가·기업", "서비스 운영자"];
+const buildOptions = ["랜딩페이지 제작", "MVP 웹서비스 제작", "실운영 웹사이트 제작", "앱서비스 제작", "기존 서비스 업데이트", "서비스 유지보수"];
+const renderSelectOptions = (placeholder, options) => `
+    <option value="" disabled selected>${placeholder}</option>
+    ${options.map((option) => `<option value="${option}">${option}</option>`).join("")}
+`;
 
 const AssetSlot = ({ label, file, className = "", eager = false }) => `
     <figure class="asset-slot ${className}" data-label="${label}">
@@ -585,7 +588,81 @@ const renderFeatureCards = (categoryId = featureCategories[0].id) => {
     `).join("");
 };
 
+const pageConfig = {
+    navItems: [
+        ["추천 패키지", "#packages"],
+        ["서비스", "#services"],
+        ["기능 컴포넌트", "#features"],
+        ["포트폴리오", "#portfolio"],
+        ["진행 방식", "#process"],
+        ["FAQ", "#faq"],
+    ],
+    ctaHref: "#contact",
+    ctaLabel: "아이디어 보내기",
+    contactTargetId: "contact",
+    source: "landing_contact",
+};
+
+const renderHeaderLinks = (items, className = "") => items
+    .map(([label, href]) => `<a${className ? ` class="${className}"` : ""} href="${href}">${label}</a>`)
+    .join("");
+
+const renderLandingHeader = ({ navItems, ctaHref, ctaLabel }) => `
+    <header class="site-header" aria-label="주요 메뉴">
+        <a class="header-logo" href="#main" aria-label="NERO 홈">
+            <img src="/assets/img/landing/nero_logo.svg" alt="NERO" />
+        </a>
+
+        <nav class="desktop-nav" aria-label="데스크톱 메뉴">
+            ${renderHeaderLinks(navItems)}
+        </nav>
+
+        <a class="header-cta" href="${ctaHref}" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">${ctaLabel}</a>
+        <button class="menu-button" type="button" aria-label="모바일 메뉴 열기" aria-controls="mobile-drawer" aria-expanded="false">
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <div class="drawer-backdrop" data-drawer-close hidden></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-label="모바일 메뉴" hidden>
+        <div class="drawer-head">
+            <a class="header-logo" href="#main" aria-label="NERO 홈">
+                <img src="/assets/img/landing/nero_logo.svg" alt="NERO" />
+            </a>
+            <button class="drawer-close" type="button" aria-label="모바일 메뉴 닫기" data-drawer-close>닫기</button>
+        </div>
+        <nav class="drawer-nav" aria-label="모바일 내비게이션">
+            ${renderHeaderLinks(navItems)}
+            <a class="primary-button" href="${ctaHref}" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">${ctaLabel}</a>
+        </nav>
+    </aside>
+`;
+
+const renderLandingFooter = () => `
+    <footer class="landing-footer">
+        <div class="container landing-footer-row">
+            <div class="footer-left">
+                <img src="/assets/img/footer-logo.svg" alt="회사 로고" class="footer-logo" />
+                <ul>
+                    <li>대표이사 한동균</li>
+                    <li>본사 서울특별시 중구 퇴계로 36길 2, 충무로관 본관 130호</li>
+                    <li>메일 official@nero.ai.kr</li>
+                </ul>
+            </div>
+            <div class="footer-right">
+                <ul>
+                    <li>&copy; Nero Inc. All rights reserved.</li>
+                    <li><a href="mailto:official@nero.ai.kr" data-track="${TRACK_EVENTS.EMAIL_CONTACT}">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+`;
+
 const landingRoot = document.querySelector("#main");
+
+document.body.insertAdjacentHTML("afterbegin", renderLandingHeader(pageConfig));
 
 landingRoot.innerHTML = `
     <section class="hero section-dark" aria-labelledby="hero-title">
@@ -595,8 +672,8 @@ landingRoot.innerHTML = `
                 <h1 class="hero-title" id="hero-title">웹사이트, 앱개발, AI 모델, 관리자페이지까지</h1>
                 <p class="hero-content">기획, Figma 화면설계, 웹·앱, 서버·DB, 관리자, 배포, 유지보수까지 실제 운영 가능한 구조로 개발합니다</p>
                 <div class="hero-actions">
-                    <a class="primary-button" href="#contact" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">아이디어 보내기</a>
-                    <a class="secondary-button" href="#portfolio" data-track="${TRACK_EVENTS.PORTFOLIO_VIEW}">포트폴리오 보기</a>
+                    <a class="primary-button" href="${pageConfig.ctaHref}" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">${pageConfig.ctaLabel}</a>
+                    <a class="secondary-button" href="/overview" data-track="${TRACK_EVENTS.PORTFOLIO_VIEW}">소개서 다운로드</a>
                 </div>
             </div>
             <div class="hero-product-wrap reveal" aria-label="NERO 제품 히어로 이미지 영역">
@@ -764,7 +841,7 @@ landingRoot.innerHTML = `
                 <aside class="process-copy reveal">
                     <h2 id="process-title">명확한 절차로 예측 가능한 개발을 설계합니다</h2>
                     <p>상담부터 QA·배포·인수인계까지, 운영 가능한 제품을 만들기 위한 기준을 단계마다 확인합니다.</p>
-                    <a class="text-cta" href="#contact" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">아이디어 보내기</a>
+                    <a class="text-cta" href="${pageConfig.ctaHref}" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">${pageConfig.ctaLabel}</a>
                 </aside>
                 <div class="process-stage" aria-label="NERO 진행 프로세스">
                     <ol class="process-timeline" data-process-track>
@@ -871,11 +948,22 @@ landingRoot.innerHTML = `
                 <h2 id="contact-title">정리가 안 됐어도 괜찮습니다</h2>
             </div>
             <form class="contact-form contact-form-simple reveal" id="contact-form" action="/.netlify/functions/contact" method="post">
+                <input type="hidden" name="source" value="${pageConfig.source}" />
                 <label aria-label="이름">
                     <input type="text" name="name" autocomplete="name" placeholder="이름" required />
                 </label>
                 <label aria-label="이메일">
                     <input type="email" name="email" autocomplete="email" placeholder="이메일" required />
+                </label>
+                <label aria-label="문의자 유형">
+                    <select id="customer-type" name="customerType" required>
+                        ${renderSelectOptions("문의자 유형", customerOptions)}
+                    </select>
+                </label>
+                <label aria-label="희망 목적">
+                    <select id="build-type" name="projectPurpose" required>
+                        ${renderSelectOptions("희망 목적", buildOptions)}
+                    </select>
                 </label>
                 <label class="form-honeypot" aria-hidden="true">
                     <input type="text" name="company" tabindex="-1" autocomplete="off" />
@@ -889,24 +977,7 @@ landingRoot.innerHTML = `
         </div>
     </section>
 
-    <footer class="landing-footer">
-        <div class="container landing-footer-row">
-            <div class="footer-left">
-                <img src="../assets/img/footer-logo.svg" alt="회사 로고" class="footer-logo" />
-                <ul>
-                    <li>대표이사 한동균</li>
-                    <li>본사 서울특별시 중구 퇴계로 36길 2, 충무로관 본관 130호</li>
-                    <li>메일 official@nero.ai.kr</li>
-                </ul>
-            </div>
-            <div class="footer-right">
-                <ul>
-                    <li>&copy; Nero Inc. All rights reserved.</li>
-                    <li><a href="mailto:official@nero.ai.kr" data-track="${TRACK_EVENTS.EMAIL_CONTACT}">Contact Us</a></li>
-                </ul>
-            </div>
-        </div>
-    </footer>
+    ${renderLandingFooter()}
 
     <div class="modal-backdrop" id="feature-modal" hidden>
         <section class="feature-modal" role="dialog" aria-modal="true" aria-labelledby="feature-modal-title">
@@ -932,7 +1003,7 @@ landingRoot.innerHTML = `
                     <dd id="feature-modal-portfolio"></dd>
                 </div>
             </dl>
-            <a class="primary-button" href="#contact" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">이 기능 상담하기</a>
+            <a class="primary-button" href="${pageConfig.ctaHref}" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">이 기능 상담하기</a>
         </section>
     </div>
 `;
@@ -960,9 +1031,25 @@ const hydrateAssetSlots = () => {
     });
 };
 
+const contactSelectAliases = {
+    "#customer-type": {
+        "예비창업자·지원사업": "예비창업자",
+        "기존 서비스 운영자": "서비스 운영자",
+    },
+    "#build-type": {
+        "전환형 랜딩·신청 페이지": "랜딩페이지 제작",
+        "MVP/PoC": "MVP 웹서비스 제작",
+        "운영형 웹서비스": "실운영 웹사이트 제작",
+        "iOS·Android 앱서비스": "앱서비스 제작",
+        "기존 서비스 Rescue": "기존 서비스 업데이트",
+    },
+};
+
 const setContactValue = (selector, value) => {
     const element = document.querySelector(selector);
-    if (element && value) element.value = value;
+    if (!element || !value) return;
+    element.value = contactSelectAliases[selector]?.[value] || value;
+    element.dispatchEvent(new Event("change", { bubbles: true }));
 };
 
 const getAnchorOffset = () => {
@@ -980,7 +1067,7 @@ const scrollToSection = (target, { behavior = "smooth", updateHash = true } = {}
 };
 
 const scrollToContact = () => {
-    scrollToSection(document.querySelector("#contact"));
+    scrollToSection(document.querySelector(`#${pageConfig.contactTargetId}`));
 };
 
 const wirePackageAndServiceCards = () => {

@@ -69,13 +69,13 @@ FIREBASE_SERVICE_ACCOUNT_BASE64=base64_encoded_service_account_json
 → 운영 메일함
 ```
 
-프론트엔드는 `js/landing.js`의 `wireContactForm()`에서 문의 데이터를 JSON으로 보냅니다.
+프론트엔드는 `scripts/landing.js`의 `wireContactForm()`에서 문의 데이터를 JSON으로 보냅니다.
 
 서버리스 함수는 `netlify/functions/contact.js`입니다.
 
 최소 기능 경계:
 
-- `js/landing.js`: 입력값 수집, 버튼 상태, 성공/실패 메시지 표시
+- `scripts/landing.js`: 입력값 수집, 버튼 상태, 성공/실패 메시지 표시
 - `netlify/functions/contact.js`: 요청 방식 검증, 입력값 검증, 스팸 honeypot 확인, 메일 내용 구성
 - `netlify/functions/_smtp-mailer.js`: Gmail SMTP 연결, 인증, MIME 메시지 생성, 발송
 
