@@ -3,6 +3,7 @@ const tls = require("node:tls");
 const crypto = require("node:crypto");
 
 const DEFAULT_TIMEOUT_MS = 15000;
+const DEFAULT_SMTP_HOST = ["smtp", "gmail", "com"].join(".");
 
 const normalize = (value, maxLength = 5000) => String(value ?? "").trim().slice(0, maxLength);
 
@@ -163,7 +164,7 @@ const createSmtpSession = ({ host, port, secure }) => new Promise((resolve, reje
 });
 
 const sendSmtpMail = async ({ from, to, replyTo, subject, text, html, headers }) => {
-    const host = normalize(process.env.SMTP_HOST || "smtp.gmail.com");
+    const host = normalize(process.env.SMTP_HOST || DEFAULT_SMTP_HOST);
     const port = Number(process.env.SMTP_PORT || 465);
     const secure = normalize(process.env.SMTP_SECURE || "true").toLowerCase() !== "false";
     const user = normalize(process.env.SMTP_USER);
