@@ -164,6 +164,37 @@ body.test-page img {
     font-size: clamp(17px, 1.7vw, 21px);
 }
 
+.test-announcement-hero .hero-subtitle {
+    max-width: 620px;
+    margin: 0;
+    color: rgba(249, 250, 251, 0.56);
+    font-size: clamp(16px, 1.18vw, 18px);
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.test-announcement-hero .hero-title {
+    max-width: 830px;
+    margin: 14px 0 0;
+    color: #f9fafb;
+    font-size: clamp(38px, 4vw, 50px);
+    font-weight: 700;
+    line-height: 1.08;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+.test-announcement-hero .hero-content {
+    max-width: 680px;
+    margin: 24px 0 0;
+    color: rgba(249, 250, 251, 0.76);
+    font-size: clamp(16px, 1.25vw, 19px);
+    font-weight: 500;
+    line-height: 1.68;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
 .test-actions {
     display: flex;
     flex-wrap: wrap;
@@ -603,6 +634,26 @@ body.test-page img {
 
     .test-hero h1 {
         font-size: 36px;
+    }
+
+    .test-announcement-hero .hero-subtitle {
+        max-width: 100%;
+        color: rgba(249, 250, 251, 0.6);
+        font-size: 14.5px;
+        line-height: 1.42;
+    }
+
+    .test-announcement-hero .hero-title {
+        max-width: 100%;
+        font-size: clamp(28px, 8.2vw, 34px);
+        line-height: 1.16;
+    }
+
+    .test-announcement-hero .hero-content {
+        max-width: 100%;
+        color: rgba(249, 250, 251, 0.76);
+        font-size: clamp(14px, 3.9vw, 16px);
+        line-height: 1.62;
     }
 
     .test-visual {
