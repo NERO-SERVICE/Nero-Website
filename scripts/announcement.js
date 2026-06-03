@@ -1,42 +1,41 @@
 /**
  * 네로 기업 공고 게시판 시스템
  * - 데이터 로딩 및 렌더링
- * - 필터링 및 검색 기능 (포트폴리오 포함)
- * - 포트폴리오 연동 표시
+ * - 필터링 및 검색 기능
  * - 페이지네이션
  * - 모달 상세 보기
  * - 접근성 지원
  */
 
-const TEST_NAV_ITEMS = [
-    ['추천 패키지', '/test/#packages'],
-    ['서비스', '/test/#services'],
-    ['기능 컴포넌트', '/test/#features'],
-    ['포트폴리오', '/test/#portfolio'],
-    ['진행 방식', '/test/#process'],
-    ['FAQ', '/test/#faq'],
-    ['공지사항', '/test/announcement'],
+const SITE_NAV_ITEMS = [
+    ['추천 패키지', '/#packages'],
+    ['서비스', '/#services'],
+    ['기능 컴포넌트', '/#features'],
+    ['포트폴리오', '/#portfolio'],
+    ['진행 방식', '/#process'],
+    ['FAQ', '/#faq'],
+    ['공지사항', '/announcement'],
 ];
 
-const TEST_NAV_CONFIG = {
-    navItems: TEST_NAV_ITEMS,
-    ctaHref: '/test/#contact',
+const SITE_NAV_CONFIG = {
+    navItems: SITE_NAV_ITEMS,
+    ctaHref: '/#contact',
     ctaLabel: '문의 남기기',
-    activeHref: '/test/announcement',
+    activeHref: '/announcement',
 };
 
-const renderTestHeaderLinks = (items, activeHref = '') => items
+const renderSiteHeaderLinks = (items, activeHref = '') => items
     .map(([label, href]) => `<a class="${href === activeHref ? 'is-active' : ''}" href="${href}">${label}</a>`)
     .join('');
 
-const renderTestHeader = ({ navItems, ctaHref, ctaLabel, activeHref }) => `
+const renderSiteHeader = ({ navItems, ctaHref, ctaLabel, activeHref }) => `
     <header class="site-header" aria-label="주요 메뉴">
-        <a class="header-logo" href="/test" aria-label="NERO 테스트 홈">
+        <a class="header-logo" href="/" aria-label="NERO 홈">
             <img src="/assets/img/landing/nero_logo.svg" alt="NERO" />
         </a>
 
         <nav class="desktop-nav" aria-label="데스크톱 메뉴">
-            ${renderTestHeaderLinks(navItems, activeHref)}
+            ${renderSiteHeaderLinks(navItems, activeHref)}
         </nav>
 
         <a class="header-cta" href="${ctaHref}">${ctaLabel}</a>
@@ -49,19 +48,19 @@ const renderTestHeader = ({ navItems, ctaHref, ctaLabel, activeHref }) => `
     <div class="drawer-backdrop" data-drawer-close hidden></div>
     <aside class="mobile-drawer" id="mobile-drawer" aria-label="모바일 메뉴" hidden>
         <div class="drawer-head">
-            <a class="header-logo" href="/test" aria-label="NERO 테스트 홈">
+            <a class="header-logo" href="/" aria-label="NERO 홈">
                 <img src="/assets/img/landing/nero_logo.svg" alt="NERO" />
             </a>
             <button class="drawer-close" type="button" aria-label="모바일 메뉴 닫기" data-drawer-close>닫기</button>
         </div>
         <nav class="drawer-nav" aria-label="모바일 내비게이션">
-            ${renderTestHeaderLinks(navItems, activeHref)}
+            ${renderSiteHeaderLinks(navItems, activeHref)}
             <a class="primary-button" href="${ctaHref}">${ctaLabel}</a>
         </nav>
     </aside>
 `;
 
-const wireTestDrawer = () => {
+const wireSiteDrawer = () => {
     const button = document.querySelector('.menu-button');
     const drawer = document.querySelector('#mobile-drawer');
     const backdrop = document.querySelector('.drawer-backdrop');
@@ -96,16 +95,33 @@ const wireTestDrawer = () => {
     });
 };
 
-const mountTestHeader = () => {
-    if (!document.body.classList.contains('test-page') || document.querySelector('.site-header')) return;
-    document.body.insertAdjacentHTML('afterbegin', renderTestHeader(TEST_NAV_CONFIG));
-    wireTestDrawer();
+const mountSiteHeader = () => {
+    if (!document.body.classList.contains('announcement-page') || document.querySelector('.site-header')) return;
+    document.body.insertAdjacentHTML('afterbegin', renderSiteHeader(SITE_NAV_CONFIG));
+    wireSiteDrawer();
+};
+
+const revealAnnouncementElements = () => {
+    const items = document.querySelectorAll('.test-reveal');
+    if (!('IntersectionObserver' in window)) {
+        items.forEach((item) => item.classList.add('is-visible'));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+        });
+    }, { threshold: 0.18 });
+
+    items.forEach((item) => observer.observe(item));
 };
 
 class AnnouncementSystem {
     constructor() {
         this.data = null;
-        this.portfolioData = null;
         this.filteredData = [];
         this.currentPage = 1;
         this.itemsPerPage = 10;
@@ -132,21 +148,13 @@ class AnnouncementSystem {
 
     async loadData() {
         try {
-            // 공고 데이터와 포트폴리오 데이터 동시 로드
-            const [announcementResponse, portfolioResponse] = await Promise.all([
-                fetch('/data/announcements.json'),
-                fetch('/data/content.json')
-            ]);
+            const announcementResponse = await fetch('/data/announcements.json');
             
             if (!announcementResponse.ok) {
                 throw new Error(`Announcement data error! status: ${announcementResponse.status}`);
             }
-            if (!portfolioResponse.ok) {
-                throw new Error(`Portfolio data error! status: ${portfolioResponse.status}`);
-            }
             
             this.data = await announcementResponse.json();
-            this.portfolioData = await portfolioResponse.json();
             this.filteredData = [...this.data.announcements];
             this.itemsPerPage = this.data.settings.postsPerPage || 10;
         } catch (error) {
@@ -238,28 +246,17 @@ class AnnouncementSystem {
     renderNotifications() {
         const container = document.getElementById('announcements-list');
         const emptyState = document.getElementById('empty-state');
-        const portfolioEmptyState = document.getElementById('portfolio-empty-state');
         
         if (!container) return;
 
         // 빈 상태 처리
         if (this.filteredData.length === 0) {
             container.innerHTML = '';
-            
-            // 포트폴리오 카테고리인 경우 포트폴리오 전용 빈 상태 표시
-            if (this.currentCategory === '포트폴리오') {
-                portfolioEmptyState?.classList.remove('d-none');
-                emptyState?.classList.add('d-none');
-            } else {
-                emptyState?.classList.remove('d-none');
-                portfolioEmptyState?.classList.add('d-none');
-            }
-            
+            emptyState?.classList.remove('d-none');
             this.renderPagination(0);
             return;
         } else {
             emptyState?.classList.add('d-none');
-            portfolioEmptyState?.classList.add('d-none');
         }
 
         // 페이지네이션 계산
@@ -285,21 +282,6 @@ class AnnouncementSystem {
     createAnnouncementCard(announcement) {
         const previewText = this.truncateText(announcement.content, 120);
         const formattedDate = this.formatDate(announcement.date);
-        const importantBadge = announcement.isImportant ? '' : '';
-        
-        // 포트폴리오 연동 정보 추가
-        const portfolioLinkInfo = this.getPortfolioLinkInfo(announcement);
-        const portfolioLink = portfolioLinkInfo ? `
-            <div class="portfolio-link-info">
-                <a href="/#portfolio" class="btn btn-outline-secondary btn-sm">
-                    <i class="fas fa-external-link-alt me-1"></i>
-                    메인 페이지에서 보기
-                </a>
-            </div>
-        ` : '';
-
-        // 외부 링크 정보 처리
-        const externalLinkInfo = this.getExternalLinkInfo(announcement);
         const isExternalLink = !!announcement.externalLink;
         
         // 외부 링크가 있는 경우 다른 UI 표시
@@ -323,13 +305,10 @@ class AnnouncementSystem {
             </button>
         `;
 
-        // 외부 링크 소스 정보 제거 (아이콘만 유지)
-        const sourceInfo = '';
-
         return `
-            <article class="announcement-card ${announcement.isImportant ? 'important' : ''} ${announcement.type === '포트폴리오' ? 'portfolio-card' : ''} ${isExternalLink ? 'external-link-card' : ''}" 
-                     data-id="${announcement.id}" 
-                     tabindex="0" 
+            <article class="announcement-card ${announcement.isImportant ? 'important' : ''} ${isExternalLink ? 'external-link-card' : ''}"
+                     data-id="${announcement.id}"
+                     tabindex="0"
                      role="button"
                      aria-label="${announcement.title} ${isExternalLink ? '기사' : '공고'} 보기">
                 <div class="announcement-header">
@@ -344,10 +323,7 @@ class AnnouncementSystem {
                         </div>
                         <h3 class="announcement-title">${this.escapeHtml(announcement.title)}</h3>
                         <p class="announcement-preview">${this.escapeHtml(previewText)}</p>
-                        ${sourceInfo}
-                        ${portfolioLink}
                     </div>
-                    ${importantBadge}
                 </div>
                 <div class="announcement-actions">
                     ${actionButton}
@@ -504,7 +480,7 @@ class AnnouncementSystem {
                     this.renderNotifications();
                     
                     // 페이지 변경 시 상단으로 스크롤
-                    document.querySelector('.announcements-container').scrollIntoView({
+                    document.querySelector('#announcements-list')?.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
@@ -526,20 +502,6 @@ class AnnouncementSystem {
 
         if (modalBody) {
             const formattedDate = this.formatDate(announcement.date);
-            
-            // 포트폴리오 연동 정보 확인
-            const portfolioInfo = this.getPortfolioLinkInfo(announcement);
-            const portfolioSection = portfolioInfo ? `
-                <div class="alert alert-info mt-3">
-                    <h6><i class="fas fa-link me-2"></i>연동된 포트폴리오 항목</h6>
-                    <p class="mb-2"><strong>${portfolioInfo.title}</strong></p>
-                    <p class="mb-2">${portfolioInfo.description}</p>
-                    <a href="/#portfolio" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-external-link-alt me-1"></i>
-                        메인 페이지에서 자세히 보기
-                    </a>
-                </div>
-            ` : '';
 
             modalBody.innerHTML = `
                 <div class="mb-3">
@@ -552,7 +514,6 @@ class AnnouncementSystem {
                 <div class="announcement-content">
                     ${this.formatContent(announcement.content)}
                 </div>
-                ${portfolioSection}
             `;
         }
     }
@@ -631,22 +592,6 @@ class AnnouncementSystem {
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
-    }
-
-    getPortfolioLinkInfo(announcement) {
-        // 포트폴리오 타입 공고에 대한 연동 정보 반환
-        if (announcement.type === '포트폴리오' && announcement.portfolioRef && this.portfolioData) {
-            const portfolioItem = this.portfolioData.portfolio.find(
-                item => item.id === announcement.portfolioRef
-            );
-            return portfolioItem || null;
-        }
-        return null;
-    }
-
-    getExternalLinkInfo(announcement) {
-        // 외부 링크 정보 반환
-        return announcement.externalLink || null;
     }
 
     isValidUrl(string) {
@@ -778,7 +723,8 @@ class AnnouncementSystem {
 
 // 페이지 로드 완료 시 시스템 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    mountTestHeader();
+    mountSiteHeader();
+    revealAnnouncementElements();
     new AnnouncementSystem();
 });
 

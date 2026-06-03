@@ -2,103 +2,82 @@
 <html lang="ko">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="네로 공지사항 - 법정공고, 일반공지" />
-        <meta name="author" content="네로" />
-        <title>네로 - 공지사항</title>
-        <!-- Favicon-->
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="NERO 공지사항 페이지" />
+        <title>NERO | Announcement</title>
         <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
-        <!-- Font Awesome icons (free version)-->
+        <link rel="stylesheet" href="/css/styles.css" />
+        <link rel="stylesheet" href="/css/landing.css?v=20260603-home-split" />
+        <link rel="stylesheet" href="/css/announcement.css?v=20260603-main-routes" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="/css/styles.css" rel="stylesheet" />
-        <!-- Page specific CSS -->
-        <link href="/css/announcement.css" rel="stylesheet" />
-        <!-- Enhanced Modal CSS -->
-        <link href="/css/modal.css" rel="stylesheet" />
     </head>
-    <body id="page-announcements">
-        <!-- Navigation-->
-        <div id="navbar-container"></div>
+    <body class="announcement-page">
+        <main id="main">
+            <section class="test-hero test-announcement-hero">
+                <div class="test-shell">
+                    <p class="hero-subtitle">Announcement</p>
+                    <h1 class="hero-title">공지사항</h1>
+                    <p class="hero-content">공지를 빠르게 찾고, 중요한 업데이트를 놓치지 않게</p>
+                </div>
+            </section>
 
-        <!-- Hero Section -->
-        <section class="announcement-hero">
-            <div class="container text-center">
-                <h1>공지사항</h1>
-                <p class="lead">주식회사 네로의 공지사항을 확인하실 수 있습니다</p>
-            </div>
-        </section>
-
-        <!-- Filter Section -->
-        <section class="announcement-filters">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-8">
-                        <div class="filter-tabs" role="tablist" aria-label="공고 카테고리 필터">
+            <section class="test-section">
+                <div class="test-shell">
+                    <div class="test-filter-bar test-reveal">
+                        <div class="test-tabs" role="tablist" aria-label="공고 카테고리 필터">
                             <button class="filter-tab active" data-category="전체" role="tab" aria-selected="true">전체</button>
                             <button class="filter-tab" data-category="법정공고" role="tab" aria-selected="false">법정공고</button>
                             <button class="filter-tab" data-category="일반공지" role="tab" aria-selected="false">일반공지</button>
                             <button class="filter-tab" data-category="보도자료" role="tab" aria-selected="false">보도자료</button>
                         </div>
-                    </div>
-                    <div class="col-lg-4">
                         <div class="search-container">
-                            <input type="text" class="search-input" placeholder="공고 제목으로 검색..." aria-label="공고 검색">
-                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" class="search-input" placeholder="공고 제목으로 검색" aria-label="공고 검색" />
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- Notifications Container -->
-        <section class="announcements-container">
-            <div class="container">
-                <div id="announcements-list" role="main" aria-label="공고 목록">
-                    <!-- 로딩 스피너 -->
-                    <div class="loading-spinner" id="loading-spinner">
-                        <div class="spinner"></div>
+                    <div id="announcements-list" class="announcements-list" role="main" aria-label="공고 목록">
+                        <div class="loading-spinner" id="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
                     </div>
-                    <!-- 공고 카드들이 여기에 동적으로 생성됩니다 -->
-                </div>
-                <ul class="pagination" id="pagination"></ul>
+                    <ul class="pagination" id="pagination"></ul>
 
-                <!-- 빈 상태 -->
-                <div class="empty-state d-none" id="empty-state">
-                    <i class="fas fa-search"></i>
-                    <h3>검색 결과가 없습니다</h3>
-                    <p>다른 키워드로 다시 검색해보세요.</p>
-                </div>
+                    <div class="empty-state d-none" id="empty-state">
+                        <h3>검색 결과가 없습니다</h3>
+                        <p>다른 키워드로 다시 검색해보세요.</p>
+                    </div>
 
-                <!-- 포트폴리오 전용 빈 상태 -->
-                <div class="empty-state d-none" id="portfolio-empty-state">
-                    <i class="fas fa-trophy"></i>
-                    <h3>포트폴리오 항목이 없습니다</h3>
-                    <p>아직 등록된 포트폴리오 항목이 없습니다.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="landing-footer">
+            <div class="container landing-footer-row">
+                <div class="footer-left">
+                    <img src="/assets/img/footer-logo.svg" alt="회사 로고" class="footer-logo" />
+                    <ul>
+                        <li>대표이사 한동균</li>
+                        <li>본사 서울특별시 중구 퇴계로 36길 2, 충무로관 본관 130호</li>
+                        <li>메일 official@nero.ai.kr</li>
+                    </ul>
+                </div>
+                <div class="footer-right">
+                    <ul>
+                        <li>&copy; Nero Inc. All rights reserved.</li>
+                        <li><a href="mailto:official@nero.ai.kr">Contact Us</a></li>
+                    </ul>
                 </div>
             </div>
-        </section>
+        </footer>
 
-        <!-- 포트폴리오 모달 (동적 생성) -->
-        <div id="portfolio-modals-container"></div>
-
-        <!-- Footer-->
-        <div id="footer-container"></div>
-
-        <!-- 상세보기 모달 -->
-        <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal fade test-modal" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="announcementModalLabel">공고 상세</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
                     </div>
-                    <div class="modal-body" id="announcementModalBody">
-                        <!-- 모달 내용이 동적으로 채워집니다 -->
-                    </div>
+                    <div class="modal-body" id="announcementModalBody"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                     </div>
@@ -106,13 +85,7 @@
             </div>
         </div>
 
-        <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Components JS -->
-        <script src="/scripts/components.js"></script>
-        <!-- Announcements JS -->
-        <script src="/scripts/announcement.js"></script>
-        <!-- Core theme JS-->
-        <script src="/scripts/scripts.js"></script>
+        <script src="/scripts/announcement.js?v=20260603-main-routes"></script>
     </body>
 </html>

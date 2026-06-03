@@ -593,7 +593,7 @@ const pageConfig = {
         ["포트폴리오", "#portfolio"],
         ["진행 방식", "#process"],
         ["FAQ", "#faq"],
-        ["공지사항", "/test/announcement"],
+        ["공지사항", "/announcement"],
     ],
     ctaHref: "#contact",
     ctaLabel: "문의 남기기",

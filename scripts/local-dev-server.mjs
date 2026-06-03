@@ -78,42 +78,14 @@ const isInsideRoot = (filePath) => {
 
 const routeAliases = new Map([
     ["/", "/pages/home.html"],
-    ["/home", "/pages/home.html"],
-    ["/home/", "/pages/home.html"],
-    ["/home.html", "/pages/home.html"],
-    ["/index.html", "/pages/home.html"],
     ["/announcement", "/pages/announcement.html"],
-    ["/announcement/", "/pages/announcement.html"],
-    ["/announcement.html", "/pages/announcement.html"],
     ["/services", "/pages/services.html"],
-    ["/services/", "/pages/services.html"],
-    ["/services.html", "/pages/services.html"],
-    ["/intro", "/pages/intro.html"],
-    ["/intro/", "/pages/intro.html"],
-    ["/intro.html", "/pages/intro.html"],
     ["/landing", "/pages/landing.html"],
-    ["/landing/", "/pages/landing.html"],
-    ["/landing.html", "/pages/landing.html"],
-    ["/test", "/pages/test/home.html"],
-    ["/test/", "/pages/test/home.html"],
-    ["/test/home", "/pages/test/home.html"],
-    ["/test/home/", "/pages/test/home.html"],
-    ["/test/home.html", "/pages/test/home.html"],
-    ["/test/index", "/pages/test/home.html"],
-    ["/test/index/", "/pages/test/home.html"],
-    ["/test/announcement", "/pages/test/announcement.html"],
-    ["/test/announcement/", "/pages/test/announcement.html"],
-    ["/test/announcement.html", "/pages/test/announcement.html"],
-    ["/test/services", "/pages/test/services.html"],
-    ["/test/services/", "/pages/test/services.html"],
-    ["/test/services.html", "/pages/test/services.html"],
 ]);
 
 const resolveStaticFile = (pathname) => {
     const requestPath = decodeURIComponent(pathname);
-    const decodedPath = requestPath.startsWith("/landing/")
-        ? "/pages/landing.html"
-        : routeAliases.get(requestPath) || requestPath;
+    const decodedPath = routeAliases.get(requestPath) || requestPath;
     const candidates = [];
 
     if (decodedPath.endsWith("/")) {
@@ -214,7 +186,7 @@ const listen = (candidatePort, attemptsLeft) => {
         activePort = candidatePort;
         server.off("error", handleListenError);
         console.log(`NERO local dev server ready: http://${displayHost}:${activePort}/`);
-        console.log(`Landing page ready: http://${displayHost}:${activePort}/landing/`);
+        console.log(`Landing page ready: http://${displayHost}:${activePort}/landing`);
         console.log("Contact function ready: /.netlify/functions/contact");
     });
 };
