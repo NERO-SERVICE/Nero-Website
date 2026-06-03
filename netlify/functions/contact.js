@@ -34,6 +34,8 @@ const errorCodeFrom = (error) => {
     return "smtp_submit_failed";
 };
 
+const missingSmtpKeys = () => ["SMTP_USER", "SMTP_PASS"].filter((key) => !normalize(process.env[key], 10000));
+
 const parseFormBody = (event) => {
     const contentType = normalize(event.headers?.["content-type"] || event.headers?.["Content-Type"]).toLowerCase();
     const body = event.body || "";
@@ -122,6 +124,7 @@ exports.handler = async (event) => {
         return json(500, {
             ok: false,
             code,
+            missing: code === "smtp_env_missing" ? missingSmtpKeys() : undefined,
             message: "이메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.",
         });
     }
