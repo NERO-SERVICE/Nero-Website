@@ -593,11 +593,12 @@ const pageConfig = {
         ["포트폴리오", "#portfolio"],
         ["진행 방식", "#process"],
         ["FAQ", "#faq"],
+        ["공지사항", "/test/announcement"],
     ],
     ctaHref: "#contact",
-    ctaLabel: "아이디어 보내기",
+    ctaLabel: "문의 남기기",
     contactTargetId: "contact",
-    source: "landing_contact",
+    source: "test_home_quote",
 };
 
 const renderHeaderLinks = (items, className = "") => items
@@ -655,6 +656,34 @@ const renderLandingFooter = () => `
             </div>
         </div>
     </footer>
+`;
+
+const renderHomeQuoteSection = () => `
+    <section class="home-quote-section" id="contact" aria-labelledby="quote-title">
+        <div class="container home-quote-shell">
+            <div class="home-quote-copy reveal">
+                <h2 id="quote-title">Contact</h2>
+                <p>아이디어, 기존 자료, 막연한 고민만 있어도 괜찮습니다. 문의 남겨주시면 영업일 기준 24시간 이내 빠르게 답변해드리겠습니다.</p>
+            </div>
+            <form class="contact-form contact-form-simple home-quote-form reveal" id="contact-form" action="/.netlify/functions/contact" method="post">
+                <input type="hidden" name="source" value="${pageConfig.source}" />
+                <label aria-label="이름">
+                    <input type="text" name="name" autocomplete="name" placeholder="이름" required />
+                </label>
+                <label aria-label="이메일">
+                    <input type="email" name="email" autocomplete="email" placeholder="이메일" required />
+                </label>
+                <label class="form-honeypot" aria-hidden="true">
+                    <input type="text" name="company" tabindex="-1" autocomplete="off" />
+                </label>
+                <label class="form-wide" aria-label="문의사항">
+                    <textarea name="message" rows="8" placeholder="문의사항" required></textarea>
+                </label>
+                <button class="primary-button form-submit" type="submit">문의 남기기</button>
+                <p class="form-status form-wide" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </section>
 `;
 
 const landingRoot = document.querySelector("#main");
@@ -891,36 +920,6 @@ landingRoot.innerHTML = `
         </div>
     </section>
 
-    <section class="section section-light estimate-section" aria-labelledby="estimate-title">
-        <div class="container">
-            <div class="section-heading reveal">
-                <p class="eyebrow">견적 산정 방식</p>
-                <h2 id="estimate-title">가격표가 아니라 과업 범위를 확정하는 기준입니다</h2>
-            </div>
-            <div class="estimate-table-wrap reveal">
-                <table class="estimate-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">개발 형태</th>
-                            <th scope="col">시작 예산</th>
-                            <th scope="col">기준 범위</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${estimates.map(([name, price, scope]) => `
-                            <tr>
-                                <th scope="row">${name}</th>
-                                <td>${price}</td>
-                                <td>${scope}</td>
-                            </tr>
-                        `).join("")}
-                    </tbody>
-                </table>
-            </div>
-            <p class="notice reveal">최종 견적은 기능정의서, 과업범위서를 기준으로 확정됩니다.</p>
-        </div>
-    </section>
-
     <section class="section section-dark faq-section" id="faq" aria-labelledby="faq-title">
         <div class="container">
             <div class="section-heading reveal">
@@ -938,31 +937,7 @@ landingRoot.innerHTML = `
         </div>
     </section>
 
-    <section class="contact-section" id="contact" aria-labelledby="contact-title">
-        <div class="container">
-            <div class="section-heading reveal">
-                <p class="eyebrow">아이디어만 있어도 됩니다. 3분 진단지를 작성해주시면 개발 방향과 필요한 기능을 정리해드립니다.</p>
-                <h2 id="contact-title">정리가 안 됐어도 괜찮습니다</h2>
-            </div>
-            <form class="contact-form contact-form-simple reveal" id="contact-form" action="/.netlify/functions/contact" method="post">
-                <input type="hidden" name="source" value="${pageConfig.source}" />
-                <label aria-label="이름">
-                    <input type="text" name="name" autocomplete="name" placeholder="이름" required />
-                </label>
-                <label aria-label="이메일">
-                    <input type="email" name="email" autocomplete="email" placeholder="이메일" required />
-                </label>
-                <label class="form-honeypot" aria-hidden="true">
-                    <input type="text" name="company" tabindex="-1" autocomplete="off" />
-                </label>
-                <label class="form-wide" aria-label="문의내용">
-                    <textarea name="message" rows="15" placeholder="개발을 문의하고 싶은 아이디어와 내용들을 자유롭게 입력해주세요" required></textarea>
-                </label>
-                <button class="primary-button form-submit" type="submit">아이디어 보내기</button>
-                <p class="form-status form-wide" role="status" aria-live="polite"></p>
-            </form>
-        </div>
-    </section>
+    ${renderHomeQuoteSection()}
 
     ${renderLandingFooter()}
 

@@ -8,6 +8,100 @@
  * - 접근성 지원
  */
 
+const TEST_NAV_ITEMS = [
+    ['추천 패키지', '/test/#packages'],
+    ['서비스', '/test/#services'],
+    ['기능 컴포넌트', '/test/#features'],
+    ['포트폴리오', '/test/#portfolio'],
+    ['진행 방식', '/test/#process'],
+    ['FAQ', '/test/#faq'],
+    ['공지사항', '/test/announcement'],
+];
+
+const TEST_NAV_CONFIG = {
+    navItems: TEST_NAV_ITEMS,
+    ctaHref: '/test/#contact',
+    ctaLabel: '문의 남기기',
+    activeHref: '/test/announcement',
+};
+
+const renderTestHeaderLinks = (items, activeHref = '') => items
+    .map(([label, href]) => `<a class="${href === activeHref ? 'is-active' : ''}" href="${href}">${label}</a>`)
+    .join('');
+
+const renderTestHeader = ({ navItems, ctaHref, ctaLabel, activeHref }) => `
+    <header class="site-header" aria-label="주요 메뉴">
+        <a class="header-logo" href="/test" aria-label="NERO 테스트 홈">
+            <img src="/assets/img/landing/nero_logo.svg" alt="NERO" />
+        </a>
+
+        <nav class="desktop-nav" aria-label="데스크톱 메뉴">
+            ${renderTestHeaderLinks(navItems, activeHref)}
+        </nav>
+
+        <a class="header-cta" href="${ctaHref}">${ctaLabel}</a>
+        <button class="menu-button" type="button" aria-label="모바일 메뉴 열기" aria-controls="mobile-drawer" aria-expanded="false">
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <div class="drawer-backdrop" data-drawer-close hidden></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-label="모바일 메뉴" hidden>
+        <div class="drawer-head">
+            <a class="header-logo" href="/test" aria-label="NERO 테스트 홈">
+                <img src="/assets/img/landing/nero_logo.svg" alt="NERO" />
+            </a>
+            <button class="drawer-close" type="button" aria-label="모바일 메뉴 닫기" data-drawer-close>닫기</button>
+        </div>
+        <nav class="drawer-nav" aria-label="모바일 내비게이션">
+            ${renderTestHeaderLinks(navItems, activeHref)}
+            <a class="primary-button" href="${ctaHref}">${ctaLabel}</a>
+        </nav>
+    </aside>
+`;
+
+const wireTestDrawer = () => {
+    const button = document.querySelector('.menu-button');
+    const drawer = document.querySelector('#mobile-drawer');
+    const backdrop = document.querySelector('.drawer-backdrop');
+    const closeTargets = document.querySelectorAll('[data-drawer-close], .drawer-nav a');
+    if (!button || !drawer || !backdrop) return;
+
+    const setOpen = (isOpen) => {
+        button.setAttribute('aria-expanded', String(isOpen));
+        if (isOpen) {
+            drawer.hidden = false;
+            backdrop.hidden = false;
+            requestAnimationFrame(() => {
+                drawer.classList.add('is-open');
+                backdrop.classList.add('is-open');
+                document.body.dataset.drawerOpen = 'true';
+            });
+        } else {
+            drawer.classList.remove('is-open');
+            backdrop.classList.remove('is-open');
+            delete document.body.dataset.drawerOpen;
+            window.setTimeout(() => {
+                drawer.hidden = true;
+                backdrop.hidden = true;
+            }, 220);
+        }
+    };
+
+    button.addEventListener('click', () => setOpen(button.getAttribute('aria-expanded') !== 'true'));
+    closeTargets.forEach((target) => target.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && button.getAttribute('aria-expanded') === 'true') setOpen(false);
+    });
+};
+
+const mountTestHeader = () => {
+    if (!document.body.classList.contains('test-page') || document.querySelector('.site-header')) return;
+    document.body.insertAdjacentHTML('afterbegin', renderTestHeader(TEST_NAV_CONFIG));
+    wireTestDrawer();
+};
+
 class AnnouncementSystem {
     constructor() {
         this.data = null;
@@ -684,6 +778,7 @@ class AnnouncementSystem {
 
 // 페이지 로드 완료 시 시스템 초기화
 document.addEventListener('DOMContentLoaded', () => {
+    mountTestHeader();
     new AnnouncementSystem();
 });
 
