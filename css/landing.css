@@ -1725,21 +1725,22 @@ section[id] {
 .contact-form select,
 .contact-form textarea {
     width: 100%;
-    min-height: 50px;
-    font-size: 14px;
-    line-height: 1.2;
+    min-height: 62px;
+    font-size: clamp(17px, 1.28vw, 20px);
+    font-weight: 500;
+    line-height: 1.55;
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 18px;
     background: rgba(5, 7, 11, 0.62);
     color: var(--text);
-    padding: 13px 15px;
+    padding: 14px 16px;
     outline: none;
     transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
 .contact-form input,
 .contact-form select {
-    height: 50px;
+    height: 62px;
 }
 
 .contact-form select {
@@ -1752,7 +1753,16 @@ section[id] {
         calc(100% - 14px) 50%;
     background-repeat: no-repeat;
     background-size: 6px 6px, 6px 6px;
-    padding: 0 42px 0 15px;
+    padding: 0 42px 0 16px;
+}
+
+.contact-form select:required:invalid {
+    color: rgba(249, 250, 251, 0.38);
+}
+
+.contact-form select option {
+    background: #070c16;
+    color: var(--text);
 }
 
 .contact-form textarea {
@@ -1766,6 +1776,9 @@ section[id] {
 .contact-form input::placeholder,
 .contact-form textarea::placeholder {
     color: rgba(249, 250, 251, 0.38);
+    font-size: clamp(17px, 1.28vw, 20px);
+    font-weight: 500;
+    line-height: 1.55;
 }
 
 .contact-form input:focus,

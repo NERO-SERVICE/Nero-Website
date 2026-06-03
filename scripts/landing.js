@@ -113,7 +113,7 @@ const packages = [
         event: TRACK_EVENTS.PACKAGE_STARTUP,
         name: "Grant-ready MVP",
         target: "예비창업자",
-        customerValue: "예비창업자·지원사업",
+        customerValue: "예비창업자",
         intro: "지원사업과 초기 검증에 필요한 MVP, 관리자, 전환 측정, 배포 URL을 빠르게 정리합니다.",
         features: ["랜딩", "MVP/PoC", "GA4", "관리자", "웹/앱 배포", "로드맵"],
     },
@@ -131,7 +131,7 @@ const packages = [
         event: TRACK_EVENTS.PACKAGE_OPERATION,
         name: "Operation Care",
         target: "기존 서비스 운영자",
-        customerValue: "기존 서비스 운영자",
+        customerValue: "서비스 운영자",
         intro: "이미 만들어진 서비스의 구조, 서버, 오류, 배포, API를 점검하고 운영 안정성을 회복합니다.",
         features: ["코드·서버 진단", "오류 수정", "배포 정상화", "API 대응", "월 유지보수"],
     },
@@ -522,9 +522,12 @@ const faqs = [
     ["연구·의료 데이터가 포함된 프로젝트도 가능한가요?", "가능합니다. 민감 데이터, 동의 흐름, 익명화, 권한, 리포트 구조를 상담 단계에서 함께 점검합니다."],
 ];
 
-const customerOptions = ["교수·연구자", "예비창업자·지원사업", "사업가·기업", "기존 서비스 운영자"];
-const buildOptions = ["전환형 랜딩·신청 페이지", "MVP/PoC", "운영형 웹서비스", "iOS·Android 앱서비스", "기존 서비스 Rescue"];
-const budgetOptions = ["300만 원~1,000만 원", "1,000만 원~2,000만 원", "2,000만 원~3,000만 원", "3,000만 원 이상", "아직 미정"];
+const customerOptions = ["교수·연구자", "예비창업자", "사업가·기업", "서비스 운영자"];
+const buildOptions = ["랜딩페이지 제작", "MVP 웹서비스 제작", "실운영 웹사이트 제작", "앱서비스 제작", "기존 서비스 업데이트", "서비스 유지보수"];
+const renderSelectOptions = (placeholder, options) => `
+    <option value="" disabled selected>${placeholder}</option>
+    ${options.map((option) => `<option value="${option}">${option}</option>`).join("")}
+`;
 
 const AssetSlot = ({ label, file, className = "", eager = false }) => `
     <figure class="asset-slot ${className}" data-label="${label}">
@@ -952,6 +955,16 @@ landingRoot.innerHTML = `
                 <label aria-label="이메일">
                     <input type="email" name="email" autocomplete="email" placeholder="이메일" required />
                 </label>
+                <label aria-label="문의자 유형">
+                    <select id="customer-type" name="customerType" required>
+                        ${renderSelectOptions("문의자 유형", customerOptions)}
+                    </select>
+                </label>
+                <label aria-label="희망 목적">
+                    <select id="build-type" name="projectPurpose" required>
+                        ${renderSelectOptions("희망 목적", buildOptions)}
+                    </select>
+                </label>
                 <label class="form-honeypot" aria-hidden="true">
                     <input type="text" name="company" tabindex="-1" autocomplete="off" />
                 </label>
@@ -1018,9 +1031,25 @@ const hydrateAssetSlots = () => {
     });
 };
 
+const contactSelectAliases = {
+    "#customer-type": {
+        "예비창업자·지원사업": "예비창업자",
+        "기존 서비스 운영자": "서비스 운영자",
+    },
+    "#build-type": {
+        "전환형 랜딩·신청 페이지": "랜딩페이지 제작",
+        "MVP/PoC": "MVP 웹서비스 제작",
+        "운영형 웹서비스": "실운영 웹사이트 제작",
+        "iOS·Android 앱서비스": "앱서비스 제작",
+        "기존 서비스 Rescue": "기존 서비스 업데이트",
+    },
+};
+
 const setContactValue = (selector, value) => {
     const element = document.querySelector(selector);
-    if (element && value) element.value = value;
+    if (!element || !value) return;
+    element.value = contactSelectAliases[selector]?.[value] || value;
+    element.dispatchEvent(new Event("change", { bubbles: true }));
 };
 
 const getAnchorOffset = () => {

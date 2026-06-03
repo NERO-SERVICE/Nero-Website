@@ -13,9 +13,9 @@ const CONTACT_SOURCES = {
         subject: "프로젝트 진단 요청",
         success: "아이디어가 접수되었습니다. 곧 연락드리겠습니다.",
     },
-    test_home_quote: {
-        label: "테스트 홈 문의",
-        subject: "테스트 홈 문의",
+    home_contact: {
+        label: "홈 문의",
+        subject: "홈 문의",
         success: "문의가 접수되었습니다. 곧 연락드리겠습니다.",
     },
 };
@@ -64,22 +64,26 @@ const getContactSource = (value) => {
     return CONTACT_SOURCES[key] ? { key, ...CONTACT_SOURCES[key] } : { key: "landing_contact", ...CONTACT_SOURCES.landing_contact };
 };
 
-const buildContactText = ({ name, email, message, requestId, source }) => [
+const buildContactText = ({ name, email, customerType, projectPurpose, message, requestId, source }) => [
     `접수 ID: ${requestId}`,
     `접수 구분: ${source.label}`,
     `성함: ${name}`,
     `이메일: ${email}`,
+    `문의자 유형: ${customerType}`,
+    `희망 목적: ${projectPurpose}`,
     "",
     "문의내용:",
     message,
 ].join("\n");
 
-const buildContactHtml = ({ name, email, message, requestId, source }) => `
+const buildContactHtml = ({ name, email, customerType, projectPurpose, message, requestId, source }) => `
     <h2>${escapeHtml(SUBJECT_PREFIX)} ${escapeHtml(source.subject)}</h2>
     <p><strong>접수 ID</strong>: ${escapeHtml(requestId)}</p>
     <p><strong>접수 구분</strong>: ${escapeHtml(source.label)}</p>
     <p><strong>성함</strong>: ${escapeHtml(name)}</p>
     <p><strong>이메일</strong>: ${escapeHtml(email)}</p>
+    <p><strong>문의자 유형</strong>: ${escapeHtml(customerType)}</p>
+    <p><strong>희망 목적</strong>: ${escapeHtml(projectPurpose)}</p>
     <p><strong>문의내용</strong></p>
     <div style="white-space: pre-wrap; line-height: 1.6;">${escapeHtml(message)}</div>
 `;
@@ -113,11 +117,13 @@ exports.handler = async (event) => {
 
     const name = normalize(data.name, 120);
     const email = normalize(data.email, 254);
+    const customerType = normalize(data.customerType, 120);
+    const projectPurpose = normalize(data.projectPurpose, 160);
     const message = normalize(data.message, 5000);
     const source = getContactSource(data.source);
 
-    if (!name || !email || !message) {
-        return json(400, { ok: false, message: "성함, 이메일, 문의내용을 모두 입력해주세요." });
+    if (!name || !email || !customerType || !projectPurpose || !message) {
+        return json(400, { ok: false, message: "성함, 이메일, 문의자 유형, 희망 목적, 문의내용을 모두 입력해주세요." });
     }
 
     if (!isEmail(email)) {
@@ -131,8 +137,8 @@ exports.handler = async (event) => {
             to: CONTACT_TO,
             replyTo: email,
             subject: `${SUBJECT_PREFIX} ${source.subject} - ${name}`,
-            text: buildContactText({ name, email, message, requestId, source }),
-            html: buildContactHtml({ name, email, message, requestId, source }),
+            text: buildContactText({ name, email, customerType, projectPurpose, message, requestId, source }),
+            html: buildContactHtml({ name, email, customerType, projectPurpose, message, requestId, source }),
             headers: {
                 "X-NERO-Request-ID": requestId,
                 "X-NERO-Source": source.key,
