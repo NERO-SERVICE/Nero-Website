@@ -1,6 +1,6 @@
 # Landing image slots
 
-Place image files in this folder with the names below. The `/landing` page uses `AssetSlot` markup from `js/landing.js`, so adding a file with the matching name will replace the placeholder automatically.
+Place image files in this folder with the names below. The `/landing` page uses `AssetSlot` markup from `scripts/landing.js`, so adding a file with the matching name will replace the placeholder automatically.
 
 ## Hero product
 

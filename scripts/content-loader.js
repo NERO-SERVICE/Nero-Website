@@ -26,7 +26,7 @@ class ContentLoader {
      */
     async loadContentData() {
         try {
-            const response = await fetch('data/content.json');
+            const response = await fetch('/data/content.json');
             if (!response.ok) {
                 throw new Error(`콘텐츠 데이터 로드 실패: ${response.status}`);
             }
@@ -42,7 +42,7 @@ class ContentLoader {
      */
     async loadNotificationData() {
         try {
-            const response = await fetch('data/announcements.json');
+            const response = await fetch('/data/announcements.json');
             if (!response.ok) {
                 throw new Error(`알림 데이터 로드 실패: ${response.status}`);
             }

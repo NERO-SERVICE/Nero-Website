@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', event => {
 class ComponentLoader {
     static async loadComponent(componentName, targetElement) {
         try {
-            const response = await fetch(`components/${componentName}.html`);
+            const response = await fetch(`/components/${componentName}.html`);
             if (!response.ok) {
                 throw new Error(`Failed to load ${componentName}: ${response.status}`);
             }
@@ -88,16 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
  * 현재 페이지에 따른 네비게이션 활성화
  */
 function setActiveNavigation() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const pathname = window.location.pathname.replace(/\/$/, '') || '/';
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
     
     navLinks.forEach(link => {
         link.classList.remove('active');
         const href = link.getAttribute('href');
         
-        if (href === currentPage || 
-            (currentPage === '' && href === 'index.html') ||
-            (currentPage === 'index.html' && href.includes('#'))) {
+        if (href === pathname || (pathname === '/' && href === '/')) {
             link.classList.add('active');
         }
     });

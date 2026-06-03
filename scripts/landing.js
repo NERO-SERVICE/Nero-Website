@@ -29,7 +29,7 @@ const trackEvent = (eventName, payload = {}) => {
     window.dispatchEvent(new CustomEvent("nero:track", { detail: { eventName, payload } }));
 };
 
-const asset = (fileName) => `../assets/img/landing/${fileName}`;
+const asset = (fileName) => `/assets/img/landing/${fileName}`;
 
 const heroAssets = [
     {
@@ -892,7 +892,7 @@ landingRoot.innerHTML = `
     <footer class="landing-footer">
         <div class="container landing-footer-row">
             <div class="footer-left">
-                <img src="../assets/img/footer-logo.svg" alt="회사 로고" class="footer-logo" />
+                <img src="/assets/img/footer-logo.svg" alt="회사 로고" class="footer-logo" />
                 <ul>
                     <li>대표이사 한동균</li>
                     <li>본사 서울특별시 중구 퇴계로 36길 2, 충무로관 본관 130호</li>

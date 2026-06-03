@@ -20,7 +20,7 @@ class SimpleContentLoader {
 
     async loadContentData() {
         try {
-            const response = await fetch('data/content.json');
+            const response = await fetch('/data/content.json');
             if (!response.ok) {
                 throw new Error(`데이터 로드 실패: ${response.status}`);
             }

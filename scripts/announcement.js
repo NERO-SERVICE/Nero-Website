@@ -40,8 +40,8 @@ class AnnouncementSystem {
         try {
             // 공고 데이터와 포트폴리오 데이터 동시 로드
             const [announcementResponse, portfolioResponse] = await Promise.all([
-                fetch('data/announcements.json'),
-                fetch('data/content.json')
+                fetch('/data/announcements.json'),
+                fetch('/data/content.json')
             ]);
             
             if (!announcementResponse.ok) {
@@ -197,7 +197,7 @@ class AnnouncementSystem {
         const portfolioLinkInfo = this.getPortfolioLinkInfo(announcement);
         const portfolioLink = portfolioLinkInfo ? `
             <div class="portfolio-link-info">
-                <a href="index.html#portfolio" class="btn btn-outline-secondary btn-sm">
+                <a href="/#portfolio" class="btn btn-outline-secondary btn-sm">
                     <i class="fas fa-external-link-alt me-1"></i>
                     메인 페이지에서 보기
                 </a>
@@ -440,7 +440,7 @@ class AnnouncementSystem {
                     <h6><i class="fas fa-link me-2"></i>연동된 포트폴리오 항목</h6>
                     <p class="mb-2"><strong>${portfolioInfo.title}</strong></p>
                     <p class="mb-2">${portfolioInfo.description}</p>
-                    <a href="index.html#portfolio" class="btn btn-outline-primary btn-sm">
+                    <a href="/#portfolio" class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-external-link-alt me-1"></i>
                         메인 페이지에서 자세히 보기
                     </a>
