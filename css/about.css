@@ -50,23 +50,41 @@
 .about-hero {
     display: grid;
     min-height: 122vh;
-    align-items: center;
-    padding: 160px 20px 28vh;
+    align-items: start;
+    padding: 34vh 20px 28vh;
 }
 
-.about-hero-title {
+.about-hero-copy {
     max-width: min(920px, calc(100vw - 40px));
     margin: 0 auto;
-    color: var(--text);
-    font-size: 86px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: 1.06;
     text-align: center;
     text-shadow: 0 24px 90px rgba(0, 0, 0, 0.62);
     transform: translate3d(0, var(--about-title-offset, 0px), 0);
     transition: opacity 180ms ease;
     will-change: transform;
+}
+
+.about-hero-title {
+    max-width: 830px;
+    margin: 0 auto;
+    color: var(--text);
+    font-size: 50px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.08;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+.about-hero-content {
+    max-width: 680px;
+    margin: 18px auto 0;
+    color: rgba(249, 250, 251, 0.76);
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.68;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
 
 .about-content {
@@ -95,6 +113,21 @@
     color: rgba(249, 250, 251, 0.74);
 }
 
+.about-content .process-detail-list {
+    display: grid;
+    gap: 8px;
+    padding: 0;
+    margin: 10px 0 0;
+    list-style: none;
+}
+
+.about-content .process-detail-list li {
+    color: rgba(249, 250, 251, 0.68);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.68;
+}
+
 .about-content .process-card-panel {
     border-color: rgba(255, 255, 255, 0.12);
     background: rgba(7, 12, 22, 0.54);
@@ -109,19 +142,25 @@
 
 @media (max-width: 1100px) {
     .about-hero-title {
-        font-size: 70px;
+        font-size: 44px;
     }
 }
 
 @media (max-width: 900px) {
     .about-hero {
         min-height: 104vh;
-        padding: 140px 20px 22vh;
+        padding: 30vh 20px 22vh;
     }
 
     .about-hero-title {
-        font-size: 54px;
-        line-height: 1.08;
+        font-size: 34px;
+        line-height: 1.16;
+    }
+
+    .about-hero-content {
+        margin-top: 14px;
+        font-size: 16px;
+        line-height: 1.62;
     }
 
     .about-content {
@@ -140,11 +179,15 @@
 @media (max-width: 480px) {
     .about-hero {
         min-height: 96vh;
-        padding-top: 124px;
+        padding-top: 28vh;
     }
 
     .about-hero-title {
         max-width: calc(100vw - 40px);
-        font-size: 42px;
+        font-size: 32px;
+    }
+
+    .about-hero-content {
+        font-size: 15px;
     }
 }

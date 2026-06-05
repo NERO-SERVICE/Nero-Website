@@ -1,6 +1,7 @@
 const TRACK_EVENTS = Object.freeze({
     HERO_DIAGNOSIS: "click_hero_diagnosis",
     SCOPE_SPRINT: "click_scope_sprint",
+    EMAIL_CONTACT: "click_email_contact",
 });
 
 window.NERO_TRACK_EVENTS = TRACK_EVENTS;
@@ -14,16 +15,24 @@ const trackEvent = (eventName, payload = {}) => {
 };
 
 const processSteps = [
-    ["무료 상담", "아이디어 기반 서비스 개발을 위한 빠른 진단을 도와드립니다."],
-    ["1차 미팅", "고객 유형, 개발 형태, 예산, 일정, 핵심 기능을 확인합니다."],
-    ["요구사항 정의", "목표, 이해관계자, 기존 자료, 운영 조건을 함께 점검합니다."],
-    ["기능 범위 산정", "기능정의서, 화면 목록, 관리자 범위, 데이터 구조를 좁힙니다."],
-    ["맞춤 제안·견적", "우선순위와 과업범위서를 기준으로 견적을 확정합니다."],
-    ["계약/착수", "일정, 산출물, 검수 기준, 커뮤니케이션 방식을 확정합니다."],
-    ["QA·배포·인수인계", "테스트, 배포, 운영 문서, 유지보수 범위를 정리해 제공합니다."],
+    ["2026.03", "2026 서울캠퍼스타운 입주기업 선정", ["동국대학교 HAI-STARTUP TOWN 입주경진대회 선발"]],
+    ["2026.02", "2025 예비창업패키지 수료", ["중소벤처기업부 창업사업화 지원사업", "벤처기업협회 소셜벤처 인증"]],
+    ["2025.09", "2025 KIMES 국제의료기기박람회 서비스 출품", ["부산 BEXCO 공식 부스 운영"]],
+    [
+        "2025.08",
+        "2025 보건의료빅데이터활용 창업경진대회 수상",
+        [
+            "건강보험심사평가원, 보건복지부 주최",
+            "제품&서비스분야 본선 3위",
+            "심평원 청구자료 및 맞춤형연구분석DB 수수료 면제(3년)",
+        ],
+    ],
+    ["2025.07", "의료마이데이터 기반 온디바이스 AI 기술 특허 출원", ["PATENT-2025-0027805"]],
+    ["2025.07", "주식회사 네로 법인 설립", ["2025.07.29 설립"]],
+    ["2025.03", "2025 한국장학재단 서울청년창업센터 입주", ["컨설팅", "네트워크", "법률상담"]],
+    ["2025.03", "시계열 건강데이터 기반 건강위험도 계층화 및 위험도 분석 알고리즘 특허 출원", ["PATENT-2025-0096616"]],
+    ["2024.12", "2024 국민체육진흥공단 창업경진대회 수상", ["국민체육진흥공단 주최", "건강데이터 기반 AI 모델 개발 및 활용"]],
 ];
-
-const processLabels = ["CONSULTATION", "FIRST MEETING", "REQUIREMENTS", "SCOPE", "PROPOSAL", "CONTRACT", "QA & HANDOVER"];
 
 const pageConfig = {
     navItems: [
@@ -34,6 +43,7 @@ const pageConfig = {
         ["진행 방식", "#process"],
         ["FAQ", "/#faq"],
         ["공지사항", "/announcement"],
+        ["회사소개", "/about"],
     ],
     ctaHref: "/#contact",
     ctaLabel: "문의 남기기",
@@ -75,18 +85,48 @@ const renderLandingHeader = ({ navItems, ctaHref, ctaLabel }) => `
     </aside>
 `;
 
+const renderLandingFooter = () => `
+    <footer class="landing-footer">
+        <div class="container landing-footer-row">
+            <div class="footer-left">
+                <img src="/assets/img/footer-logo.svg" alt="회사 로고" class="footer-logo" />
+                <ul>
+                    <li>대표이사 한동균</li>
+                    <li>본사 서울특별시 중구 퇴계로 36길 2, 충무로관 본관 130호</li>
+                    <li>메일 official@nero.ai.kr</li>
+                </ul>
+            </div>
+            <div class="footer-right">
+                <ul>
+                    <li>&copy; Nero Inc. All rights reserved.</li>
+                    <li><a href="mailto:official@nero.ai.kr" data-track="${TRACK_EVENTS.EMAIL_CONTACT}">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+`;
+
+const renderProcessDetails = (details) => {
+    const lines = Array.isArray(details) ? details : [details];
+    return `
+        <ul class="process-detail-list">
+            ${lines.map((line) => `<li>${line}</li>`).join("")}
+        </ul>
+    `;
+};
+
 const renderAboutProcess = () => `
     <section class="process-section process-scroll-section" id="process" aria-labelledby="process-title" data-process-section>
         <div class="process-sticky">
             <div class="process-layout">
                 <aside class="process-copy reveal">
-                    <h2 id="process-title">명확한 절차로 예측 가능한 개발을 설계합니다</h2>
-                    <p>상담부터 QA·배포·인수인계까지, 운영 가능한 제품을 만들기 위한 기준을 단계마다 확인합니다.</p>
+                    <h2 id="process-title">네로가 걸어온 길</h2>
+                    <p>입주, 수상, 특허, 법인 설립까지 제품과 기술을 검증해온 이력</p>
                     <a class="text-cta" href="${pageConfig.ctaHref}" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">${pageConfig.ctaLabel}</a>
                 </aside>
                 <div class="process-stage" aria-label="NERO 진행 프로세스">
                     <ol class="process-timeline" data-process-track>
-                        ${processSteps.map(([title, copy], index) => `
+                        ${processSteps.map(([date, title, details], index) => `
                             <li class="process-step reveal" data-process-step>
                                 <div class="process-marker" aria-hidden="true">
                                     <span class="process-number">${String(index + 1).padStart(2, "0")}</span>
@@ -94,12 +134,12 @@ const renderAboutProcess = () => `
                                 </div>
                                 <article class="process-card">
                                     <div class="process-card-head">
-                                        <span>${processLabels[index]}</span>
+                                        <span>${date}</span>
                                         <h3>${title}</h3>
                                     </div>
                                     <div class="process-card-panel">
-                                        <strong>진행 기준</strong>
-                                        <p>${copy}</p>
+                                        <strong>주요 내용</strong>
+                                        ${renderProcessDetails(details)}
                                     </div>
                                 </article>
                             </li>
@@ -110,10 +150,6 @@ const renderAboutProcess = () => `
             <div class="process-dots" aria-hidden="true">
                 ${processSteps.map((_, index) => `<span data-process-dot="${index}"></span>`).join("")}
             </div>
-            <button class="process-skip" type="button" data-process-skip aria-label="프로세스 섹션 건너뛰기">
-                <span>skip</span>
-                <span aria-hidden="true">⌄</span>
-            </button>
         </div>
     </section>
 `;
@@ -127,11 +163,15 @@ landingRoot.innerHTML = `
         <iframe src="https://my.spline.design/claritystream-q3XLEZVMc4DNFxANoN99pN00/" frameborder="0" width="100%" height="100%" title="NERO 인터랙티브 회사 소개 배경"></iframe>
     </div>
     <section class="about-hero" aria-labelledby="about-title">
-        <h1 class="about-hero-title reveal" id="about-title">회사 소개</h1>
+        <div class="about-hero-copy reveal">
+            <h1 class="about-hero-title" id="about-title">회사 소개</h1>
+            <p class="about-hero-content">회사의 연혁과 이력을 소개합니다</p>
+        </div>
     </section>
     <div class="about-content">
         ${renderAboutProcess()}
     </div>
+    ${renderLandingFooter()}
 `;
 
 const getAnchorOffset = () => {
@@ -198,13 +238,13 @@ const wireTracking = () => {
 
 const updateHeroTitleMotion = () => {
     const hero = document.querySelector(".about-hero");
-    const title = document.querySelector(".about-hero-title");
-    if (!hero || !title) return;
+    const copy = document.querySelector(".about-hero-copy");
+    if (!hero || !copy) return;
 
     const rect = hero.getBoundingClientRect();
     const distance = Math.min(Math.max(-rect.top, 0), window.innerHeight * 0.55);
-    title.style.setProperty("--about-title-offset", `${distance * 0.34}px`);
-    title.style.opacity = String(Math.max(0.18, 1 - distance / (window.innerHeight * 0.8)));
+    copy.style.setProperty("--about-title-offset", `${distance * 0.34}px`);
+    copy.style.opacity = String(Math.max(0.18, 1 - distance / (window.innerHeight * 0.8)));
 };
 
 const wireHeroMotion = () => {
@@ -251,7 +291,6 @@ const wireProcessTimeline = () => {
     const track = section?.querySelector("[data-process-track]");
     const steps = Array.from(section?.querySelectorAll("[data-process-step]") ?? []);
     const dots = Array.from(section?.querySelectorAll("[data-process-dot]") ?? []);
-    const skipButton = section?.querySelector("[data-process-skip]");
     if (!section || !stage || !track || steps.length === 0) return;
 
     const mobileQuery = window.matchMedia("(max-width: 900px)");
@@ -308,11 +347,6 @@ const wireProcessTimeline = () => {
         section.style.setProperty("--process-height", `${window.innerHeight + lead + travel}px`);
         update();
     };
-
-    skipButton?.addEventListener("click", () => {
-        const sectionBottom = section.offsetTop + section.offsetHeight;
-        window.scrollTo({ top: sectionBottom, behavior: "smooth" });
-    });
 
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", measure);

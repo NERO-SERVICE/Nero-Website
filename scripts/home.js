@@ -597,6 +597,7 @@ const pageConfig = {
         ["진행 방식", "#process"],
         ["FAQ", "#faq"],
         ["공지사항", "/announcement"],
+        ["회사소개", "/about"],
     ],
     ctaHref: "#contact",
     ctaLabel: "문의 남기기",

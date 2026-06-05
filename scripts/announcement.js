@@ -15,6 +15,7 @@ const SITE_NAV_ITEMS = [
     ['진행 방식', '/#process'],
     ['FAQ', '/#faq'],
     ['공지사항', '/announcement'],
+    ['회사소개', '/about'],
 ];
 
 const SITE_NAV_CONFIG = {
