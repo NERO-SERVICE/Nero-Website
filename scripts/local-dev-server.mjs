@@ -82,6 +82,7 @@ const routeAliases = new Map([
     ["/services", "/pages/services.html"],
     ["/landing", "/pages/landing.html"],
     ["/overview", "/pages/overview.html"],
+    ["/about", "/pages/about.html"],
 ]);
 
 const resolveStaticFile = (pathname) => {
