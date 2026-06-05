@@ -121,7 +121,7 @@ const renderAboutProcess = () => `
             <div class="process-layout">
                 <aside class="process-copy reveal">
                     <h2 id="process-title">네로가 걸어온 길</h2>
-                    <p>입주, 수상, 특허, 법인 설립까지 제품과 기술을 검증해온 이력</p>
+                    <p>입주, 수상, 특허, 법인 설립까지 제품과 기술을 검증해온 이력을 소개합니다</p>
                     <a class="text-cta" href="${pageConfig.ctaHref}" data-track="${TRACK_EVENTS.SCOPE_SPRINT}">${pageConfig.ctaLabel}</a>
                 </aside>
                 <div class="process-stage" aria-label="NERO 진행 프로세스">
@@ -159,9 +159,19 @@ const landingRoot = document.querySelector("#main");
 document.body.insertAdjacentHTML("afterbegin", renderLandingHeader(pageConfig));
 
 landingRoot.innerHTML = `
+    <div class="about-loader" data-about-loader aria-live="polite" aria-label="회사 소개 3D 배경 로딩 중">
+        <div class="about-loader-inner">
+            <span class="about-loader-kicker">Loading...</span>
+            <strong><span data-loader-progress>00</span>%</strong>
+            <span class="about-loader-bar" aria-hidden="true">
+                <span data-loader-bar></span>
+            </span>
+        </div>
+    </div>
     <div class="about-spline-bg" aria-hidden="true">
         <iframe src="https://my.spline.design/claritystream-q3XLEZVMc4DNFxANoN99pN00/" frameborder="0" width="100%" height="100%" title="NERO 인터랙티브 회사 소개 배경"></iframe>
     </div>
+    <a class="about-home-chip" href="/" aria-label="홈으로 이동">홈으로</a>
     <section class="about-hero" aria-labelledby="about-title">
         <div class="about-hero-copy reveal">
             <h1 class="about-hero-title" id="about-title">회사 소개</h1>
@@ -234,6 +244,51 @@ const wireTracking = () => {
             trackEvent(element.dataset.track, { label: element.textContent.trim() });
         });
     });
+};
+
+const wireAboutIframeLoader = () => {
+    const loader = document.querySelector("[data-about-loader]");
+    const iframe = document.querySelector(".about-spline-bg iframe");
+    const progressText = document.querySelector("[data-loader-progress]");
+    const progressBar = document.querySelector("[data-loader-bar]");
+    if (!loader || !iframe || !progressText || !progressBar) return;
+
+    let progress = 0;
+    let completed = false;
+
+    const setProgress = (nextProgress) => {
+        progress = Math.max(0, Math.min(100, nextProgress));
+        progressText.textContent = String(Math.round(progress)).padStart(2, "0");
+        progressBar.style.transform = `scaleX(${progress / 100})`;
+    };
+
+    const idleProgress = window.setInterval(() => {
+        if (completed) return;
+        const nextProgress = progress + Math.max(0.8, (92 - progress) * 0.055);
+        setProgress(Math.min(nextProgress, 92));
+    }, 110);
+
+    const finish = () => {
+        if (completed) return;
+        completed = true;
+        window.clearInterval(idleProgress);
+
+        const finishProgress = window.setInterval(() => {
+            if (progress >= 100) {
+                window.clearInterval(finishProgress);
+                document.body.classList.add("about-iframe-ready");
+                window.setTimeout(() => {
+                    loader.hidden = true;
+                }, 760);
+                return;
+            }
+            setProgress(Math.min(100, progress + 7));
+        }, 28);
+    };
+
+    iframe.addEventListener("load", finish, { once: true });
+    window.setTimeout(finish, 12000);
+    setProgress(0);
 };
 
 const updateHeroTitleMotion = () => {
@@ -359,6 +414,7 @@ const wireProcessTimeline = () => {
 
 wireDrawer();
 wireTracking();
+wireAboutIframeLoader();
 wireAnchors();
 wireHeroMotion();
 wireReveal();
