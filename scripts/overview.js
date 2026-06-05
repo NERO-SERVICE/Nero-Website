@@ -92,8 +92,8 @@ landingRoot.innerHTML = `
     <section class="overview-section" aria-labelledby="overview-title">
         <div class="container overview-shell">
             <div class="overview-heading reveal">
-                <h2 id="overview-title">소개서 다운로드</h2>
-                <p>상세한 제품 소개서를 이메일로 보내드립니다</p>
+                <h2 id="overview-title">제안서 받아보기</h2>
+                <p>상세한 제품 제안서를 이메일로 보내드립니다</p>
             </div>
             <form class="contact-form overview-form reveal" id="overview-form" action="/.netlify/functions/contact" method="post">
                 <input type="hidden" name="source" value="${pageConfig.source}" />
