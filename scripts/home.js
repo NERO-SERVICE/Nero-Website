@@ -597,6 +597,7 @@ const pageConfig = {
         ["진행 방식", "#process"],
         ["FAQ", "#faq"],
         ["공지사항", "/announcement"],
+        ["회사소개", "/about"],
     ],
     ctaHref: "#contact",
     ctaLabel: "문의 남기기",
@@ -712,7 +713,7 @@ landingRoot.innerHTML = `
                 <p class="hero-content">기획, Figma 화면설계, 웹·앱, 서버·DB, 관리자, 배포, 유지보수까지 실제 운영 가능한 구조로 개발합니다</p>
                 <div class="hero-actions">
                     <a class="primary-button" href="${pageConfig.ctaHref}" data-track="${TRACK_EVENTS.HERO_DIAGNOSIS}">${pageConfig.ctaLabel}</a>
-                    <a class="secondary-button" href="/overview" data-track="${TRACK_EVENTS.PORTFOLIO_VIEW}">소개서 다운로드</a>
+                    <a class="secondary-button" href="/overview" data-track="${TRACK_EVENTS.PORTFOLIO_VIEW}">제안서 받아보기</a>
                 </div>
             </div>
             <div class="hero-product-wrap reveal" aria-label="NERO 제품 히어로 이미지 영역">

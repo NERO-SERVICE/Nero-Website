@@ -6,6 +6,6 @@
     "dev": "node scripts/local-dev-server.mjs",
     "serve": "python3 -m http.server 4173 --bind 127.0.0.1",
     "netlify:dev": "npx --yes netlify-cli dev",
-    "check": "node --check scripts/landing.js && node --check scripts/home.js && node --check scripts/overview.js && node --check scripts/announcement.js && node --check scripts/components.js && node --check scripts/scripts.js && node --check netlify/functions/_smtp-mailer.js && node --check netlify/functions/contact.js && node --check scripts/local-dev-server.mjs"
+    "check": "node --check scripts/landing.js && node --check scripts/home.js && node --check scripts/overview.js && node --check scripts/about.js && node --check scripts/announcement.js && node --check scripts/components.js && node --check scripts/scripts.js && node --check netlify/functions/_smtp-mailer.js && node --check netlify/functions/contact.js && node --check scripts/local-dev-server.mjs"
   }
 }
