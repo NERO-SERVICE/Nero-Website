@@ -522,8 +522,23 @@ const faqs = [
     ["연구·의료 데이터가 포함된 프로젝트도 가능한가요?", "가능합니다. 민감 데이터, 동의 흐름, 익명화, 권한, 리포트 구조를 상담 단계에서 함께 점검합니다."],
 ];
 
-const customerOptions = ["교수·연구자", "예비창업자", "사업가·기업", "서비스 운영자"];
-const buildOptions = ["랜딩페이지 제작", "MVP 웹서비스 제작", "실운영 웹사이트 제작", "앱서비스 제작", "기존 서비스 업데이트", "서비스 유지보수"];
+const customerOptions = ["교수·연구자", "예비창업자", "사업가·기업", "서비스 운영자", "기타"];
+const buildOptions = [
+    "랜딩페이지 제작",
+    "MVP 웹서비스 제작",
+    "실운영 웹사이트 제작",
+    "iOS/Android 앱서비스 제작",
+    "기존 서비스 업데이트",
+    "서비스 유지보수",
+    "기초 논문 통계 분석",
+    "변수 간 관계분석",
+    "머신러닝/딥러닝 모델 학습",
+    "고급 데이터 분석",
+    "2차 자료 분석",
+    "메타분석",
+    "MLOps·LLMOps 기반 운영 고도화",
+    "기타",
+];
 const renderSelectOptions = (placeholder, options) => `
     <option value="" disabled selected>${placeholder}</option>
     ${options.map((option) => `<option value="${option}">${option}</option>`).join("")}

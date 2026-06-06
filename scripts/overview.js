@@ -97,8 +97,8 @@ landingRoot.innerHTML = `
             </div>
             <form class="contact-form overview-form reveal" id="overview-form" action="/.netlify/functions/contact" method="post">
                 <input type="hidden" name="source" value="${pageConfig.source}" />
-                <label class="form-wide" aria-label="기업명">
-                    <input type="text" name="companyName" autocomplete="organization" placeholder="기업명" required />
+                <label class="form-wide" aria-label="소속명">
+                    <input type="text" name="companyName" autocomplete="organization" placeholder="소속명" required />
                 </label>
                 <label aria-label="성함">
                     <input type="text" name="name" autocomplete="name" placeholder="성함" required />
