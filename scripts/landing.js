@@ -472,6 +472,11 @@ const portfolio = [
     },
 ];
 
+const partnerLogos = Array.from({ length: 7 }, (_, index) => ({
+    src: `/assets/img/partner/logo_list_${index + 1}.png`,
+    alt: `파트너 및 협력기관 로고 ${index + 1}`,
+}));
+
 const whyNero = [
     ["범위정리/Figma", "요구사항, 화면 목록, 예외 케이스를 개발 전 먼저 정리합니다."],
     ["운영구조", "사용자 화면과 관리자, 데이터, 권한, 운영 로그를 함께 설계합니다."],
@@ -560,6 +565,12 @@ const renderPortfolioCards = (isDuplicate = false) => portfolio.map((item) => `
             <div class="verification-row" aria-label="검증 배지">${badges(item.verification)}</div>
         </div>
     </article>
+`).join("");
+
+const renderPartnerCards = () => partnerLogos.map((partner) => `
+    <figure class="partner-card">
+        <img src="${partner.src}" alt="${partner.alt}" loading="lazy" decoding="async" />
+    </figure>
 `).join("");
 
 const renderFeatureTabs = () => featureCategories.map((category, index) => `
@@ -814,6 +825,20 @@ landingRoot.innerHTML = `
                     <button type="button" class="portfolio-nav-button" data-portfolio-prev aria-label="이전 포트폴리오">‹</button>
                     <span class="portfolio-count" data-portfolio-count>01 / ${String(portfolio.length).padStart(2, "0")}</span>
                     <button type="button" class="portfolio-nav-button" data-portfolio-next aria-label="다음 포트폴리오">›</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-dark partner-section" id="partners" aria-labelledby="partner-title">
+        <div class="container">
+            <div class="section-heading reveal">
+                <h2 id="partner-title">파트너 & 협력기관</h2>
+                <p class="eyebrow">함께 기술과 서비스를 검증해온 기관과 파트너입니다</p>
+            </div>
+            <div class="partner-orbit reveal" data-partner-orbit tabindex="0" aria-label="좌우로 스크롤하거나 드래그해서 파트너 및 협력기관 로고 보기">
+                <div class="partner-orbit-stage">
+                    ${renderPartnerCards()}
                 </div>
             </div>
         </div>
@@ -1348,6 +1373,111 @@ const wirePortfolioCarousel = () => {
     setActive(0);
 };
 
+const wirePartnerOrbit = () => {
+    document.querySelectorAll("[data-partner-orbit]").forEach((orbit) => {
+        const stage = orbit.querySelector(".partner-orbit-stage");
+        const cards = Array.from(orbit.querySelectorAll(".partner-card"));
+        if (!stage || cards.length === 0) return;
+
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+        let rotation = 0;
+        let targetRotation = 0;
+        let isDragging = false;
+        let lastX = 0;
+        let rafId = 0;
+
+        const measure = () => {
+            const rect = orbit.getBoundingClientRect();
+            return {
+                radiusX: Math.max(118, Math.min(rect.width * 0.36, 420)),
+                radiusY: Math.max(54, Math.min(rect.height * 0.22, 142)),
+            };
+        };
+
+        let geometry = measure();
+
+        const render = () => {
+            rotation += (targetRotation - rotation) * 0.09;
+
+            cards.forEach((card, index) => {
+                const count = cards.length;
+                const phi = Math.acos(-1 + (2 * (index + 0.5)) / count);
+                const theta = goldenAngle * index + rotation;
+                const sphereX = Math.cos(theta) * Math.sin(phi);
+                const sphereY = Math.cos(phi);
+                const sphereZ = Math.sin(theta) * Math.sin(phi);
+                const front = (sphereZ + 1) / 2;
+                const scale = 0.68 + front * 0.36;
+                const opacity = 0.55 + front * 0.45;
+
+                card.style.setProperty("--partner-x", `${sphereX * geometry.radiusX}px`);
+                card.style.setProperty("--partner-y", `${sphereY * geometry.radiusY}px`);
+                card.style.setProperty("--partner-scale", String(scale));
+                card.style.setProperty("--partner-opacity", String(opacity));
+                card.style.setProperty("--partner-blur", `${(1 - front) * 1.8}px`);
+                card.style.zIndex = String(Math.round(100 + front * 100));
+            });
+
+            if (!isDragging && !reducedMotion.matches) {
+                targetRotation += 0.0026;
+            }
+            rafId = window.requestAnimationFrame(render);
+        };
+
+        const rotateBy = (delta) => {
+            targetRotation += delta;
+        };
+
+        orbit.addEventListener("wheel", (event) => {
+            event.preventDefault();
+            const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+            rotateBy(delta * 0.008);
+        }, { passive: false });
+
+        orbit.addEventListener("pointerdown", (event) => {
+            isDragging = true;
+            lastX = event.clientX;
+            orbit.classList.add("is-dragging");
+            orbit.setPointerCapture?.(event.pointerId);
+        });
+
+        orbit.addEventListener("pointermove", (event) => {
+            if (!isDragging) return;
+            const delta = event.clientX - lastX;
+            lastX = event.clientX;
+            rotateBy(delta * 0.014);
+        });
+
+        const stopDragging = (event) => {
+            if (!isDragging) return;
+            isDragging = false;
+            orbit.classList.remove("is-dragging");
+            orbit.releasePointerCapture?.(event.pointerId);
+        };
+
+        orbit.addEventListener("pointerup", stopDragging);
+        orbit.addEventListener("pointercancel", stopDragging);
+        orbit.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                rotateBy(-0.42);
+            }
+            if (event.key === "ArrowRight") {
+                event.preventDefault();
+                rotateBy(0.42);
+            }
+        });
+
+        window.addEventListener("resize", () => {
+            geometry = measure();
+        });
+
+        render();
+        window.addEventListener("pagehide", () => window.cancelAnimationFrame(rafId), { once: true });
+    });
+};
+
 const wireDrawer = () => {
     const button = document.querySelector(".menu-button");
     const drawer = document.querySelector("#mobile-drawer");
@@ -1527,6 +1657,7 @@ wireTracking();
 wireContactForm();
 wireProcessTimeline();
 wirePortfolioCarousel();
+wirePartnerOrbit();
 wireScrollTracking();
 prepareRevealStagger();
 revealNewElements();
