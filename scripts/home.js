@@ -23,7 +23,9 @@ window.NERO_TRACK_EVENTS = TRACK_EVENTS;
 
 const trackEvent = (eventName, payload = {}) => {
     if (!eventName) return;
-    if (typeof window.gtag === "function") {
+    if (window.NERO_ANALYTICS?.track) {
+        window.NERO_ANALYTICS.track(eventName, payload);
+    } else if (typeof window.gtag === "function") {
         window.gtag("event", eventName, payload);
     }
     window.dispatchEvent(new CustomEvent("nero:track", { detail: { eventName, payload } }));
@@ -1370,24 +1372,44 @@ const wirePartnerOrbit = () => {
 
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
         const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-        let rotation = 0;
-        let targetRotation = 0;
+        const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+        let rotation = -0.28;
+        let targetRotation = rotation;
+        let velocity = reducedMotion.matches ? 0 : 0.0016;
+        let tilt = 0;
+        let targetTilt = 0;
         let isDragging = false;
         let lastX = 0;
         let rafId = 0;
+        let tiltTimeout = 0;
 
         const measure = () => {
             const rect = orbit.getBoundingClientRect();
+            const isCompact = rect.width < 720;
             return {
-                radiusX: Math.max(118, Math.min(rect.width * 0.36, 420)),
-                radiusY: Math.max(54, Math.min(rect.height * 0.22, 142)),
+                radiusX: clamp(rect.width * (isCompact ? 0.36 : 0.35), 128, 410),
+                radiusY: clamp(rect.height * (isCompact ? 0.18 : 0.24), 58, 160),
+                radiusZ: clamp(rect.width * (isCompact ? 0.18 : 0.23), 118, 270),
             };
         };
 
         let geometry = measure();
 
+        const easeTilt = (amount) => {
+            targetTilt = clamp(amount, -8, 8);
+            window.clearTimeout(tiltTimeout);
+            tiltTimeout = window.setTimeout(() => {
+                targetTilt = 0;
+            }, 220);
+        };
+
         const render = () => {
+            targetRotation += velocity;
             rotation += (targetRotation - rotation) * 0.09;
+            tilt += (targetTilt - tilt) * 0.08;
+            velocity *= isDragging ? 0.76 : 0.94;
+            if (Math.abs(velocity) < 0.00001) velocity = 0;
+            stage.style.setProperty("--partner-stage-tilt", `${tilt}deg`);
 
             cards.forEach((card, index) => {
                 const count = cards.length;
@@ -1397,37 +1419,47 @@ const wirePartnerOrbit = () => {
                 const sphereY = Math.cos(phi);
                 const sphereZ = Math.sin(theta) * Math.sin(phi);
                 const front = (sphereZ + 1) / 2;
-                const scale = 0.68 + front * 0.36;
-                const opacity = 0.55 + front * 0.45;
+                const scale = 0.62 + front * 0.48;
+                const opacity = 0.42 + front * 0.58;
+                const z = sphereZ * geometry.radiusZ;
 
                 card.style.setProperty("--partner-x", `${sphereX * geometry.radiusX}px`);
                 card.style.setProperty("--partner-y", `${sphereY * geometry.radiusY}px`);
+                card.style.setProperty("--partner-z", `${z}px`);
+                card.style.setProperty("--partner-rotate", `${sphereX * 4.5}deg`);
                 card.style.setProperty("--partner-scale", String(scale));
                 card.style.setProperty("--partner-opacity", String(opacity));
-                card.style.setProperty("--partner-blur", `${(1 - front) * 1.8}px`);
-                card.style.zIndex = String(Math.round(100 + front * 100));
+                card.style.setProperty("--partner-blur", `${(1 - front) * 2.4}px`);
+                card.style.setProperty("--partner-brightness", String(0.74 + front * 0.26));
+                card.style.setProperty("--partner-shadow-alpha", String(0.14 + front * 0.24));
+                card.style.zIndex = String(Math.round(100 + front * 120));
             });
 
-            if (!isDragging && !reducedMotion.matches) {
-                targetRotation += 0.0026;
+            if (!isDragging && !reducedMotion.matches && Math.abs(velocity) < 0.0006) {
+                targetRotation += 0.0018;
             }
             rafId = window.requestAnimationFrame(render);
         };
 
-        const rotateBy = (delta) => {
+        const rotateBy = (delta, momentum = 0.06) => {
             targetRotation += delta;
+            velocity = clamp(delta * momentum, -0.035, 0.035);
         };
 
         orbit.addEventListener("wheel", (event) => {
+            const usesHorizontalScroll = Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.shiftKey;
+            if (!usesHorizontalScroll) return;
             event.preventDefault();
-            const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-            rotateBy(delta * 0.008);
+            const delta = event.deltaX || event.deltaY;
+            rotateBy(delta * 0.0055, 0.08);
+            easeTilt(delta * 0.018);
         }, { passive: false });
 
         orbit.addEventListener("pointerdown", (event) => {
             isDragging = true;
             lastX = event.clientX;
             orbit.classList.add("is-dragging");
+            orbit.focus({ preventScroll: true });
             orbit.setPointerCapture?.(event.pointerId);
         });
 
@@ -1435,7 +1467,8 @@ const wirePartnerOrbit = () => {
             if (!isDragging) return;
             const delta = event.clientX - lastX;
             lastX = event.clientX;
-            rotateBy(delta * 0.014);
+            rotateBy(delta * 0.011, 0.05);
+            easeTilt(delta * 0.15);
         });
 
         const stopDragging = (event) => {
@@ -1450,11 +1483,13 @@ const wirePartnerOrbit = () => {
         orbit.addEventListener("keydown", (event) => {
             if (event.key === "ArrowLeft") {
                 event.preventDefault();
-                rotateBy(-0.42);
+                rotateBy(-0.42, 0.07);
+                easeTilt(-5);
             }
             if (event.key === "ArrowRight") {
                 event.preventDefault();
-                rotateBy(0.42);
+                rotateBy(0.42, 0.07);
+                easeTilt(5);
             }
         });
 
