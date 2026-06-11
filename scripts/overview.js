@@ -5,7 +5,9 @@ const TRACK_EVENTS = Object.freeze({
 
 const trackEvent = (eventName, payload = {}) => {
     if (!eventName) return;
-    if (typeof window.gtag === "function") {
+    if (window.NERO_ANALYTICS?.track) {
+        window.NERO_ANALYTICS.track(eventName, payload);
+    } else if (typeof window.gtag === "function") {
         window.gtag("event", eventName, payload);
     }
     window.dispatchEvent(new CustomEvent("nero:track", { detail: { eventName, payload } }));
