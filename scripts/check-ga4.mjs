@@ -16,10 +16,16 @@ const pagePaths = [
 const analyticsSource = readFileSync(analyticsPath, "utf8");
 const measurementMatch = analyticsSource.match(/const\s+GA4_MEASUREMENT_ID\s*=\s*"([^"]+)"/);
 const measurementId = measurementMatch?.[1] || "";
+const placeholderMatch = analyticsSource.match(/const\s+GA4_PLACEHOLDER_ID\s*=\s*"([^"]+)"/);
+const placeholderId = placeholderMatch?.[1] || "G-XXXXXXXXXX";
 const failures = [];
 
-if (!/^G-[A-Z0-9]+$/i.test(measurementId) || measurementId === "G-XXXXXXXXXX") {
+if (!/^G-[A-Z0-9]+$/i.test(measurementId) || measurementId === placeholderId) {
     failures.push("scripts/analytics.js의 GA4_MEASUREMENT_ID를 실제 G- 측정 ID로 교체해야 합니다.");
+}
+
+if (analyticsSource.includes(`measurementId !== "${measurementId}"`)) {
+    failures.push("scripts/analytics.js의 활성화 조건이 실제 측정 ID와 직접 비교되어 GA4가 비활성화될 수 있습니다.");
 }
 
 const requiredSnippets = [

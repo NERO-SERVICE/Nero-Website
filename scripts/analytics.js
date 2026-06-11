@@ -1,8 +1,9 @@
+const GA4_PLACEHOLDER_ID = "G-XXXXXXXXXX";
 const GA4_MEASUREMENT_ID = "G-T4M4PX09GB";
 
 (() => {
     const measurementId = GA4_MEASUREMENT_ID.trim();
-    const isConfigured = /^G-[A-Z0-9]+$/i.test(measurementId) && measurementId !== "G-T4M4PX09GB";
+    const isConfigured = /^G-[A-Z0-9]+$/i.test(measurementId) && measurementId !== GA4_PLACEHOLDER_ID;
     const params = new URLSearchParams(window.location.search);
     const debugMode = params.has("ga4_debug") || (() => {
         try {
