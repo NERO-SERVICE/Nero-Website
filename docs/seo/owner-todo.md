@@ -1,5 +1,7 @@
 # 소유자가 실행할 항목
 
+최신 배포 실패 수정은 `.env.example`의 SMTP_HOST 예시값을 빈 값으로 복원한 것이다. 기존 SMTP 환경변수나 Secret 검사 설정을 바꾸지 않고 수정 커밋으로 다시 배포한다. 사용자가 선택한 SEO·내부자료 제외 방식은 유지한다. [원인과 검증 범위](secrets-scan-fix.md)를 확인한다.
+
 운영 배포·DNS 변경·검색엔진 등록/제출·IndexNow 전송·운영 문의 실제 발송은 자동 실행하지 않는다. 실패 플러그인 제거 후 로컬 검사는 Node 51/51 및 check·build·GA4 통과다. 이전 브라우저 28/28·Python 9/9·robots 1/1 결과를 이번 재실행 결과로 표현하지 않는다. 상세 결과와 한계는 `completion-report.md`에서 확인한다. 운영 환경을 확인했다는 뜻은 아니다.
 
 배포 전 [공개 파일 경계와 배포 순서](deployment-boundary.md)를 확인한다. 실패한 public-deploy 플러그인과 별도 deploy:check 명령은 삭제했다. 이 변경을 커밋·푸시하면 기존 Git 연결이 일반 빌드로 `dist`를 게시한다. 변경 후 실제 Netlify 배포·Functions·CDN 응답은 소유자가 확인한다.
