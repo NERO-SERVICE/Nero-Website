@@ -1,0 +1,185 @@
+{
+  "checked_at_utc": "2026-09-15T03:06:26.009818+00:00",
+  "base_url": "http://127.0.0.1:4173",
+  "canonical_origin": "https://www.nero.ai.kr",
+  "scope": "initial HTTP HTML smoke test; no indexing/WAF/robots-policy certification",
+  "sitemap_reports": [
+    {
+      "requested_url": "http://127.0.0.1:4173/sitemap.xml",
+      "status": 200,
+      "final_url": "http://127.0.0.1:4173/sitemap.xml",
+      "truncated": false,
+      "sha256": "308dcc1b4bf684686dfdcd8444302a2b46658141a9dcc05230bd579c626dd56d",
+      "content_type": "application/xml; charset=utf-8",
+      "issues": [],
+      "kind": "urlset",
+      "entry_count": 6
+    }
+  ],
+  "pages": [
+    {
+      "url": "http://127.0.0.1:4173/",
+      "expected_canonical": "https://www.nero.ai.kr/",
+      "status": 200,
+      "final_url": "http://127.0.0.1:4173/",
+      "issues": [],
+      "title": [
+        "NERO | Home"
+      ],
+      "description": [
+        "외주개발·앱개발 파트너 NERO. 사용자 화면부터 서버·DB·API·관리자까지 풀스택 개발과 배포·유지보수·인수인계를 지원합니다."
+      ],
+      "canonical": [
+        "https://www.nero.ai.kr/"
+      ],
+      "h1_count": 1,
+      "body_text_chars": 6388,
+      "anchor_count": 25,
+      "jsonld_block_count": 1,
+      "jsonld_syntax_errors": [],
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:4173/landing",
+      "expected_canonical": "https://www.nero.ai.kr/landing",
+      "status": 200,
+      "final_url": "http://127.0.0.1:4173/landing",
+      "issues": [],
+      "title": [
+        "NERO | 연구자·창업자·기업을 위한 0→1 외주개발 파트너"
+      ],
+      "description": [
+        "연구자·창업자·기업을 위한 웹·앱 외주개발. MVP/PoC, 관리자, 서버·DB·API, 앱 배포까지 프로젝트 범위와 산출물을 확인하고 상담하세요."
+      ],
+      "canonical": [
+        "https://www.nero.ai.kr/landing"
+      ],
+      "h1_count": 1,
+      "body_text_chars": 6633,
+      "anchor_count": 25,
+      "jsonld_block_count": 1,
+      "jsonld_syntax_errors": [],
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:4173/about",
+      "expected_canonical": "https://www.nero.ai.kr/about",
+      "status": 200,
+      "final_url": "http://127.0.0.1:4173/about",
+      "issues": [],
+      "title": [
+        "NERO | 회사 소개"
+      ],
+      "description": [
+        "NERO의 회사 소개와 공개 연혁, 회사 연락처를 확인하세요."
+      ],
+      "canonical": [
+        "https://www.nero.ai.kr/about"
+      ],
+      "h1_count": 1,
+      "body_text_chars": 955,
+      "anchor_count": 23,
+      "jsonld_block_count": 1,
+      "jsonld_syntax_errors": [],
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:4173/overview",
+      "expected_canonical": "https://www.nero.ai.kr/overview",
+      "status": 200,
+      "final_url": "http://127.0.0.1:4173/overview",
+      "issues": [
+        "H1_REVIEW: project convention is one main H1"
+      ],
+      "title": [
+        "NERO | 소개서 다운로드"
+      ],
+      "description": [
+        "NERO 제품 소개서가 필요하다면 기업명과 회신 정보를 남겨 소개서를 요청하세요."
+      ],
+      "canonical": [
+        "https://www.nero.ai.kr/overview"
+      ],
+      "h1_count": 0,
+      "body_text_chars": 256,
+      "anchor_count": 21,
+      "jsonld_block_count": 1,
+      "jsonld_syntax_errors": [],
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:4173/services",
+      "expected_canonical": "https://www.nero.ai.kr/services",
+      "status": 200,
+      "final_url": "http://127.0.0.1:4173/services",
+      "issues": [
+        "H1_REVIEW: project convention is one main H1"
+      ],
+      "title": [
+        "네로 - Services"
+      ],
+      "description": [
+        "Nero CARE는 약물 복용과 부작용 기록을 위한 환자 중심의 정신건강 통합관리 플랫폼입니다. 서비스 소개와 앱 다운로드 정보를 확인하세요."
+      ],
+      "canonical": [
+        "https://www.nero.ai.kr/services"
+      ],
+      "h1_count": 0,
+      "body_text_chars": 242,
+      "anchor_count": 10,
+      "jsonld_block_count": 1,
+      "jsonld_syntax_errors": [],
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "url": "http://127.0.0.1:4173/announcement",
+      "expected_canonical": "https://www.nero.ai.kr/announcement",
+      "status": 200,
+      "final_url": "http://127.0.0.1:4173/announcement",
+      "issues": [],
+      "title": [
+        "NERO | Announcement"
+      ],
+      "description": [
+        "NERO 홈페이지에 공개된 공지사항과 기업 공고의 제목, 게시일, 내용을 확인하세요."
+      ],
+      "canonical": [
+        "https://www.nero.ai.kr/announcement"
+      ],
+      "h1_count": 1,
+      "body_text_chars": 497,
+      "anchor_count": 1,
+      "jsonld_block_count": 1,
+      "jsonld_syntax_errors": [],
+      "content_type": "text/html; charset=utf-8"
+    }
+  ],
+  "issues": [],
+  "robots": {
+    "requested_url": "http://127.0.0.1:4173/robots.txt",
+    "status": 200,
+    "final_url": "http://127.0.0.1:4173/robots.txt",
+    "headers": {
+      "content-type": "text/plain; charset=utf-8",
+      "cache-control": "no-store",
+      "date": "Tue, 15 Sep 2026 03:06:26 GMT",
+      "connection": "close",
+      "transfer-encoding": "chunked"
+    },
+    "truncated": false,
+    "sha256": "ec5a17a0c51927f703a34adea88cadc3b0eabfd2099fb3582c754d0ef849887d",
+    "body": "User-agent: *\nDisallow: /.git/\nDisallow: /.env\nDisallow: /.netlify/\nDisallow: /api/\nDisallow: /admin/\nDisallow: /docs/\nDisallow: /seo-kit/\nDisallow: /tests/\nDisallow: /test-results/\nDisallow: /content/\nDisallow: /netlify/\nDisallow: /firebase/\n\nSitemap: https://www.nero.ai.kr/sitemap.xml\n",
+    "policy_evaluation": "NOT_IMPLEMENTED: review effective per-bot groups separately"
+  },
+  "sitemap_url_count": 6,
+  "sample_capped": false,
+  "nonexistent_path": {
+    "requested_url": "http://127.0.0.1:4173/__nero_seo_nonexistent_1789441586__",
+    "status": 404,
+    "final_url": "http://127.0.0.1:4173/__nero_seo_nonexistent_1789441586__",
+    "truncated": false,
+    "sha256": "e3ebaa16dd9d9b9fc107c42183fb6cf9d22927e1af03dbbdfa0ccc38e4e4ac31"
+  },
+  "inspected_count": 6,
+  "review_item_count": 2
+}

@@ -1,0 +1,84 @@
+{
+  "note": "Planning manifest only, not a production sitemap input. Promote entries after real implementation, factual review and build verification.",
+  "canonicalOriginCandidate": "https://www.nero.ai.kr",
+  "canonicalOriginConfirmed": false,
+  "pages": [
+    {
+      "path": "/",
+      "type": "home",
+      "publicationStatus": "observed_in_search",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/services/research-platform",
+      "type": "service",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/services/startup-mvp",
+      "type": "service",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/services/maintenance",
+      "type": "service",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/cases/nero-platform",
+      "type": "case",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/cases/sausalito-commerce",
+      "type": "case",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/guides/mvp-cost",
+      "type": "guide",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/guides/research-app-checklist",
+      "type": "guide",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/guides/software-handover",
+      "type": "guide",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/about",
+      "type": "about",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    },
+    {
+      "path": "/contact",
+      "type": "contact",
+      "publicationStatus": "planned",
+      "indexable": false,
+      "modifiedAt": null
+    }
+  ]
+}

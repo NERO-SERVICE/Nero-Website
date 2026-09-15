@@ -4,9 +4,23 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/local-dev-server.mjs",
-    "serve": "python3 -m http.server 4173 --bind 127.0.0.1",
-    "netlify:dev": "npx --yes netlify-cli dev",
+    "serve": "node scripts/preview.mjs",
+    "netlify:dev": "npm run build && npx --yes netlify-cli dev",
     "ga4:check": "node scripts/check-ga4.mjs",
-    "check": "node --check scripts/analytics.js && node --check scripts/landing.js && node --check scripts/home.js && node --check scripts/overview.js && node --check scripts/about.js && node --check scripts/announcement.js && node --check scripts/components.js && node --check scripts/scripts.js && node --check netlify/functions/_smtp-mailer.js && node --check netlify/functions/contact.js && node --check scripts/local-dev-server.mjs"
+    "check": "node --check scripts/analytics.js && node --check scripts/landing.js && node --check scripts/home.js && node --check scripts/overview.js && node --check scripts/about.js && node --check scripts/announcement.js && node --check scripts/components.js && node --check scripts/scripts.js && node --check netlify/functions/_smtp-mailer.js && node --check netlify/functions/contact.js && node --check scripts/local-dev-server.mjs && node scripts/check-source.mjs",
+    "build": "node scripts/build.mjs",
+    "deploy:check": "node scripts/verify-deploy.mjs",
+    "preview": "node scripts/preview.mjs",
+    "test": "npm run build && node --test tests/*.test.cjs tests/*.test.mjs",
+    "test:seo-audit": "python3 -m unittest discover -s seo-kit/tests -v",
+    "test:browser": "playwright test",
+    "test:robots": "python3 -m unittest discover -s tests -p \"test_*.py\" -v"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

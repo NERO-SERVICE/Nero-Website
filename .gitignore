@@ -5,3 +5,12 @@
 node_modules/
 npm-debug.log*
 test-results/
+dist/
+playwright-report/
+__pycache__/
+# Private keys and service-account credential exports must stay outside Git/public output.
+*.pem
+*.key
+*service-account*.json
+*service_account*.json
+firebase-adminsdk*.json
