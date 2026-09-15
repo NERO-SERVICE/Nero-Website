@@ -6,8 +6,8 @@
 
 | 항목 | 코드의 설정·처리 |
 |---|---|
-| 빌드·공개 디렉터리 | base `.`, `npm run build`, publish `dist`. Netlify 로컬 플러그인이 빌드 전 publish 경로·빌드 후 공개 파일 검증 |
-| 배포 파일 검사 | `npm run deploy:check`. 이미지·CSS까지 명시적 허용 목록 사용, 정적 산출물 50개 유지 |
+| 빌드·공개 디렉터리 | base `.`, `npm run build`, publish `dist`. 별도 Netlify 플러그인 없음 |
+| 배포 파일 검사 | `npm run build` 마지막에 자동 검사. 이미지·CSS까지 명시적 허용 목록 사용, 정적 산출물 50개 유지 |
 | Functions 디렉터리 | `netlify/functions` |
 | Node | Netlify `NODE_VERSION = "22"`, GitHub Actions Node 22, package engines `>=22` |
 | 로컬 Node 관측 | `v22.18.0`. Netlify의 실제 설치 패치는 운영 빌드 로그에서 확인 필요 |
@@ -73,7 +73,7 @@ context는 **빌드할 때** 적용한다. 서버를 시작할 때만 값을 바
 
 ## 소유자의 배포 전후 실행 순서
 
-1. 최신 `completion-report.md`의 검증 결과·한계를 검토한다. 최종 코드 기준 Node 59/59, 브라우저 28/28, Python 9/9, robots 1/1과 check·GA4·deploy:check 통과가 보고되었다. production·branch-deploy·deploy-preview의 별도 임시 빌드·HTTP 검증도 포함한다. 운영 Netlify 검증을 대신하지 않는다. [공개 파일 경계와 배포 절차](deployment-boundary.md)의 새 빌드 파일을 함께 포함하고 저장소 루트 수동 업로드를 피한다.
+1. 최신 `completion-report.md`의 검증 결과·한계를 검토한다. 실패 플러그인 제거 후 Node 51/51과 check·build·GA4 통과를 확인했다. 이전 브라우저 28/28, Python 9/9, robots 1/1은 이번에 재실행하지 않았다. production·branch-deploy·deploy-preview의 별도 임시 빌드·HTTP 검증도 포함한다. 운영 Netlify 검증을 대신하지 않는다. [공개 파일 경계와 배포 절차](deployment-boundary.md)의 새 빌드 파일을 함께 포함하고 저장소 루트 수동 업로드를 피한다.
 2. Netlify build·publish·Functions·Node 22 설정을 위 표와 대조한다. UI에 SMTP와 실제 공개 검증 토큰만 개별 설정한다.
 3. 검토 배포를 소유자가 선택한다면 noindex 메타·헤더, 빈 sitemap, 운영 canonical을 확인한다. 운영 문의를 실제 발송하지 않는다.
 4. production 배포 시점은 소유자가 결정한다. 이 작업은 배포·push·DNS 변경을 하지 않는다. 자동 배포에 연결된 브랜치 push도 배포를 일으킬 수 있다.
