@@ -1,10 +1,14 @@
 # SEO 변경 결과와 검증 범위
 
+최신 사용자 선택은 기존 FAQ 섹션의 문답 보강이다. 홈/landing에 기존 7개를 유지하고 질문 10개를 추가했다. FAQ 스타일·메뉴·문의·분석과 FAQ 밖의 원문은 유지하며 추가 질문만큼 섹션 높이는 늘어난다. [FAQ 변경·근거·실행 검사·롤백](faq-expansion.md)을 이전의 전체 본문 보존 기록보다 우선한다.
+
+최신 검색 보강은 홈의 1인창업가·정부지원사업 준비용 MVP/앱제작 설명, 기존 본문의 개발 범위를 구체화한 Service, 공개 법인명을 연결한 Organization이다. 화면과 기존 6개 URL·배포 설정은 보존했다. Node 55/55, 브라우저 28/28, Python 9/9, robots 1/1 통과. 운영에서는 기존 설명문이 반환돼 최신 코드 배포가 별도로 필요하다. [이번 변경·운영 관찰·한계·롤백](search-readiness-update.md)을 아래 과거 작업 기록보다 우선한다.
+
 최신 SMTP_HOST Secret 검사 실패는 `.env.example` 예시값을 빈 값으로 복원해 수정했다. 사용자는 SEO·내부자료 제외 방식 유지를 선택했다. 이 차수의 변경·실제 실행 검사·미검증 항목은 [Secret 검사 수정 기록](secrets-scan-fix.md)에 있다. 아래 전체 회귀 결과와 이번 실행 범위를 구분한다.
 
 기존 6개 공개 URL과 화면·문의·분석 소스를 보존하고, 사전 렌더링·메타데이터·robots·sitemap에 환경변수 분리, 공개 파일 검증, 비운영 색인 차단과 사실 기반 서비스 설명을 보완했다. 아래는 현재 범위에서 실제 확인한 결과다. 운영 배포·DNS 변경·검색엔진 등록/제출·운영 문의 실제 전송은 하지 않았다.
 
-추가 검색어 요청은 홈의 앱외주개발·iOS 앱개발, landing의 지원사업용 MVP, 회사소개의 정부지원사업 수료 연혁을 설명하는 메타데이터로 반영했다. 모두의창업·사주앱·디지털노마드는 미확인 관계를 추가하지 않고 보류했다. 이번 변경 파일·근거·검사 결과·개별 롤백은 [추가 검색어 작업 기록](keyword-targeting.md)에 있다.
+추가 검색어 요청은 홈의 앱외주개발·iOS 앱개발, landing의 지원사업용 MVP, 회사소개의 정부지원사업 수료 연혁을 설명하는 메타데이터로 반영했다. 이후 사용자가 모두의창업 준비자·사주앱·디지털노마드의 개발 상담 가능 범위를 확인해 landing 검색·공유 설명문에 반영했다. 원본 화면과 JSON-LD의 기존 본문 요약은 유지한다. 최신 변경 파일·근거·검사 결과·개별 롤백은 [서비스 대상 후속 반영](service-context-update.md)에 있다. 아래의 이전 작업 검증 결과와 구분한다.
 
 Netlify Deploy Preview 실패 로그에서 추가한 로컬 플러그인의 경로 가정 오류를 확인해 플러그인·중복 검사 명령을 제거했다. GitHub Actions는 구문 검사와 빌드만 실행한다. 빌드 자체의 정확한 공개 파일 목록·비밀값 검사, 정적 산출물 50개와 기존 화면·SEO는 유지한다. [실패 원인·수정 기록](deploy-preview-fix.md), [현재 배포 절차](deployment-boundary.md)를 확인한다.
 
@@ -15,7 +19,7 @@ Netlify Deploy Preview 실패 로그에서 추가한 로컬 플러그인의 경�
 - 로컬 개발 서버의 `.env`·`.git`·내부 문서·함수 소스 정적 제공 경로를 차단했다. 임시 fixture로만 검증했으며 실제 secret HTTP 본문을 요청하지 않았다.
 - 공개 산출물은 50개 파일로 검사한다. 허용되지 않은 파일, symlink, 알려진 비밀키 형식과 제공된 비밀 환경변수 값 유출을 검사하며 오류에 비밀값을 출력하지 않는다. 공고 JSON은 현재 브라우저가 사용하는 공개 필드만 선택한다.
 - Netlify production은 6개 sitemap URL, branch/deploy-preview 등 비운영 context는 noindex 메타·HTTP 헤더와 빈 sitemap을 생성한다. canonical·og:url·JSON-LD는 모두 `https://www.nero.ai.kr` 기준을 유지한다. robots 비공개 경로·학습봇 정책은 바꾸지 않았다.
-- 홈·landing 설명과 Service JSON-LD에 기존 외주개발·앱개발 범위를 반영했다. 풀스택은 기존 화면·서버·DB·API·관리자·배포 범위의 요약이다. 사용자가 모두의창업 미수행을 확인했으므로 해당 사업 관련 키워드·실적·제휴 관계는 넣지 않았다.
+- 홈·landing 설명과 Service JSON-LD에 기존 외주개발·앱개발 범위를 반영했다. 풀스택은 기존 화면·서버·DB·API·관리자·배포 범위의 요약이다. 모두의창업은 미수행 확인을 유지하며 후속 검색 설명에서 준비자 대상 개발 상담만 안내한다. 실적·제휴 관계는 추가하지 않았다.
 - Netlify와 CI의 Node 설정을 22로 맞췄다. Node 20은 공식 EOL, 22는 지원 중인 LTS이고 현재 로컬 검증 환경도 22다. [Node 릴리스](https://nodejs.org/en/about/previous-releases), [Netlify Node 설정](https://docs.netlify.com/build/configure-builds/manage-dependencies/)
 
 ## 변경 파일
