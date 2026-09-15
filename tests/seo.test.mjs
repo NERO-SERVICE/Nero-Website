@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import { readFile, readdir } from 'node:fs/promises';
 import { after, before, test } from 'node:test';
+import vm from 'node:vm';
 import { site, pages, publishedPages, outputFile, absoluteUrl, privatePaths, developmentService } from '../content/site.mjs';
 import { out, redirectRules, sitemapFor } from '../scripts/build.mjs';
 import { serializeJsonLd } from '../scripts/seo-render.mjs';
@@ -131,8 +132,8 @@ test('home addresses founder development needs without claiming government progr
     const description = meta(html, 'name', 'description')[0];
     assert.match(description, /1인창업가·예비창업자의 정부지원사업 준비용 MVP\/PoC와 앱제작/);
     assert.doesNotMatch(description, /공식|선정|제휴|지원금|보장|인증 업체|수행사/);
-    const withoutDescriptions = html.replace(/<meta\b[^>]*(?:name="description"|property="og:description")[^>]*>/gi, '');
-    assert.doesNotMatch(withoutDescriptions, /1인창업가|정부지원사업|앱제작/, 'new audience wording stays out of original UI and schema');
+    const withoutDescriptions = html.replace(/<meta\b[^>]*(?:name="description"|property="og:description")[^>]*>/gi, '').replace(/<section\b[^>]*id="faq"[^>]*>[\s\S]*?<\/section>/, '');
+    assert.doesNotMatch(withoutDescriptions, /1인창업가|정부지원사업|앱제작/, 'new audience wording is limited to descriptions and the authorized FAQ');
     const announcements = JSON.parse(await readFile(`${out}/data/announcements.json`, 'utf8'));
     assert.ok(announcements.announcements.some((item) => item.content.includes('주식회사 네로') && item.content.includes('Nero Inc.')), 'organization names have a public company source');
     assert.match(plainText(html), /Nero Inc\./);
@@ -187,7 +188,7 @@ test('search descriptions stay grounded in each page body without turning grant 
     }
 });
 
-test('landing explains owner-confirmed development contexts only in search and sharing descriptions', async () => {
+test('landing explains owner-confirmed development contexts in descriptions and the authorized FAQ', async () => {
     const html = (await get('/landing')).body;
     const description = meta(html, 'name', 'description')[0];
     assert.match(description, /모두의창업 준비자의 MVP\/PoC/);
@@ -196,10 +197,40 @@ test('landing explains owner-confirmed development contexts only in search and s
     assert.match(description, /외주개발 범위를 상담하세요/);
     assert.doesNotMatch(description, /공식|제휴|선정|수행사|납품|수익|보장|신청 대행/);
     assert.deepEqual(meta(html, 'property', 'og:description'), [description]);
-    const withoutDescriptions = html.replace(/<meta\b[^>]*(?:name="description"|property="og:description")[^>]*>/gi, '');
-    assert.doesNotMatch(withoutDescriptions, /모두의\s*창업|사주\s*앱|디지털\s*노마드/, 'no new body, title, link, schema or hidden keyword content');
+    const withoutDescriptions = html.replace(/<meta\b[^>]*(?:name="description"|property="og:description")[^>]*>/gi, '').replace(/<section\b[^>]*id="faq"[^>]*>[\s\S]*?<\/section>/, '');
+    assert.doesNotMatch(withoutDescriptions, /모두의\s*창업|사주\s*앱|디지털\s*노마드/, 'no unrelated body, title, link, schema or hidden keyword content');
     const schema = JSON.parse(html.match(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/i)[1]);
     assert.match(schema['@graph'].find((entity) => entity['@type'] === 'WebPage').description, /지원사업과 초기 검증에 필요한 MVP\/PoC/);
+});
+
+test('the same 17 fact-grounded FAQs appear in both initial documents and browser source data', async () => {
+    let firstEntries;
+    for (const [path, source] of [['/', 'home'], ['/landing', 'landing']]) {
+        const html = (await get(path)).body;
+        const section = html.match(/<section\b[^>]*id="faq"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+        assert.ok(section, `${path} existing FAQ section`);
+        const entries = [...section.matchAll(/<details class="faq-item reveal">\s*<summary>([\s\S]*?)<\/summary>\s*<p>([\s\S]*?)<\/p>\s*<\/details>/g)].map((match) => [plainText(match[1]), plainText(match[2])]);
+        assert.equal(entries.length, 17);
+        assert.equal(new Set(entries.map(([question]) => question)).size, 17);
+        const script = await readFile(`${out}/scripts/${source}.js`, 'utf8');
+        const literal = script.match(/const faqs = (\[[\s\S]*?\n\]);/)[1];
+        const browserEntries = JSON.parse(JSON.stringify(vm.runInNewContext(literal, {}, { timeout: 500 })));
+        assert.deepEqual(entries, browserEntries, 'initial HTML does not lose answers after JavaScript runs');
+        if (firstEntries) assert.deepEqual(entries, firstEntries, 'home and landing remain consistent');
+        firstEntries = entries;
+        assert.ok(entries.every(([question, answer]) => question.endsWith('?') && answer.length > 10));
+        assert.doesNotMatch(section, /<a\b|<input\b|<form\b|data-nosnippet|\bhidden\b/, 'existing native accordion without extra links or collection');
+        const programme = entries.find(([question]) => question.includes('모두의창업'))[1];
+        assert.match(programme, /모두의창업 수행 이력은 없으며/);
+        assert.match(programme, /선정이나 사업비 집행 가능성을 의미하지는 않습니다/);
+        const portfolio = entries.find(([question]) => question.includes('공개 사례'))[1];
+        const originalPortfolio = html.match(/<section\b[^>]*id="portfolio"[^>]*>([\s\S]*?)<\/section>/)?.[1] ?? '';
+        for (const name of ['Nero 정신건강 통합관리 플랫폼', '소살리토 공식 온라인 사이트', '소프티 Softie']) {
+            assert.ok(portfolio.includes(name));
+            assert.ok(plainText(originalPortfolio).includes(name), `${name} already appears in the portfolio`);
+        }
+        assert.doesNotMatch(entries.slice(7).flat().join(' '), /\d[\d,]*(?:만\s*원|억\s*원|명|주|개월)|보장합니다|업계\s*1위|공식\s*수행사/);
+    }
 });
 
 test('sitemap is XML containing exactly the 6 public indexable canonical 200 URLs', async () => {

@@ -15,10 +15,16 @@ const baseline = {
 };
 
 for (const [name, hashes] of Object.entries(baseline)) {
-    test(`${name}: original header and complete body remain byte-for-byte unchanged`, async () => {
+    test(`${name}: original header and body outside the authorized FAQ additions remain byte-for-byte unchanged`, async () => {
         const rendered = renderLegacyPage(name, await source(name));
         assert.equal(digest(rendered.header), hashes.header);
-        assert.equal(digest(rendered.main), hashes.main);
+        let originalMain = rendered.main;
+        if (name === 'home' || name === 'landing') {
+            let count = 0;
+            originalMain = originalMain.replace(/\n                    <details class="faq-item reveal">[\s\S]*?<\/details>\n                /g, (item) => count++ < 7 ? item : '');
+            assert.equal(count, 17, 'seven original and ten authorized new FAQs');
+        }
+        assert.equal(digest(originalMain), hashes.main, 'all original markup, including the first seven FAQs, is preserved');
         assert.match(rendered.header, /class="site-header"/);
         assert.match(rendered.main, /official@nero\.ai\.kr/);
         assert.doesNotMatch(rendered.main, /seo-discovery|seo-about-intro|\/services\/research-platform/);
@@ -46,7 +52,7 @@ test('legacy rendering rejects missing or ambiguous browser-wiring boundaries', 
 test('legacy rendering does not execute browser wiring or permit network effects', async () => {
     const original = await source('home');
     const wiringProbe = original.replace('const hydrateAssetSlots = () => {', 'const hydrateAssetSlots = (() => { throw new Error("browser wiring executed"); })();\nconst unused = () => {');
-    assert.equal(digest(renderLegacyPage('home', wiringProbe).main), baseline.home.main);
+    assert.equal(renderLegacyPage('home', wiringProbe).main, renderLegacyPage('home', original).main);
     const networkProbe = original.replace('landingRoot.innerHTML = `', 'fetch("https://example.invalid/must-not-send");\nlandingRoot.innerHTML = `');
     assert.throws(() => renderLegacyPage('home', networkProbe), /unavailable during prerender/);
 });

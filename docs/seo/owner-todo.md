@@ -1,5 +1,7 @@
 # 소유자가 실행할 항목
 
+최신 FAQ 변경은 기존 홈 `/#faq`와 `/landing#faq`에 10개 문답을 추가한 것이다. 기존 Netlify 흐름으로 배포 후 17개 질문과 펼친 답변, JavaScript 실행 전 HTML의 답변 포함 여부를 확인한다. 새 /faq 페이지나 메뉴는 없다. 질문별 근거·검증·롤백은 [FAQ 작업 기록](faq-expansion.md)에 있다.
+
 현재 우선순위는 최신 코드를 기존 Netlify 흐름으로 배포하고 `/`와 `/landing` 최초 HTML의 설명을 확인하는 것이다. 2026-09-15 운영 GET에서는 이전 설명문이 확인됐다. 다음으로 Search Console·Bing의 실제 색인 상태, 회사명 없는 추천 질문의 NERO URL 인용, 기존 GA4 유입·문의를 구분해 점검한다. [최신 검색 보강과 측정 순서](search-readiness-update.md)에 현재 검사 결과와 본문 변경 없이 가능한 한계를 기록했다.
 
 최신 배포 실패 수정은 `.env.example`의 SMTP_HOST 예시값을 빈 값으로 복원한 것이다. 기존 SMTP 환경변수나 Secret 검사 설정을 바꾸지 않고 수정 커밋으로 다시 배포한다. 사용자가 선택한 SEO·내부자료 제외 방식은 유지한다. [원인과 검증 범위](secrets-scan-fix.md)를 확인한다.

@@ -180,6 +180,31 @@ function accessibilityKeys(results) {
     return results.violations.flatMap((violation) => violation.nodes.map((node) => JSON.stringify({ id: violation.id, impact: violation.impact, target: node.target }))).sort();
 }
 
+for (const path of ['/', '/landing']) {
+    test(`expanded FAQ retains native keyboard controls and analytics: ${path}`, async ({ context, baseURL }) => {
+        const network = await isolateNetwork(context, new URL(baseURL).origin);
+        const page = await context.newPage();
+        await settle(page, path, new URL(baseURL).origin);
+        const faqs = page.locator('#faq details.faq-item');
+        await expect(faqs).toHaveCount(17);
+        for (const index of [7, 16]) {
+            const item = faqs.nth(index);
+            const summary = item.locator('summary');
+            const question = (await summary.textContent()).trim();
+            await summary.scrollIntoViewIfNeeded();
+            await summary.focus();
+            await page.keyboard.press('Enter');
+            await expect(item).toHaveAttribute('open', '');
+            await expect(item.locator('p')).toBeVisible();
+            await expect.poll(() => page.evaluate((text) => [...window.dataLayer].some((entry) => entry[0] === 'event' && entry[1] === 'open_faq' && entry[2]?.question === text), question)).toBe(true);
+            await page.keyboard.press('Space');
+            await expect(item).not.toHaveAttribute('open', '');
+        }
+        expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+        expect(network.contactRequests).toEqual([]);
+    });
+}
+
 for (const path of routes) {
     test(`existing page matches repository baseline: ${path}`, async ({ context, baseURL }, testInfo) => {
         const previewOrigin = new URL(baseURL).origin;
