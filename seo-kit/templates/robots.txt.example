@@ -1,0 +1,8 @@
+# EXAMPLE ONLY. Do NOT overwrite existing robots.txt without review.
+# Merge actual private-path restrictions and existing training-bot policy.
+# This simple baseline applies only to an entirely public marketing site.
+# An explicit bot group can override the wildcard group's restrictions.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.nero.ai.kr/sitemap.xml

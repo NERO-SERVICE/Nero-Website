@@ -1,46 +1,27 @@
 [build]
-  publish = "."
-  command = ""
+  base = "."
+  publish = "dist"
+  command = "npm run build"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
+
+# Explicit generated rewrites preserve existing extensionless canonical URLs.
+# Netlify normalizes trailing slashes; slash-only redirect rules would loop.
+[build.processing.html]
+  pretty_urls = false
 
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-[[redirects]]
-  from = "/"
-  to = "/pages/home.html"
-  status = 200
-
-[[redirects]]
-  from = "/announcement"
-  to = "/pages/announcement.html"
-  status = 200
-
-[[redirects]]
-  from = "/landing"
-  to = "/pages/landing.html"
-  status = 200
-
-[[redirects]]
-  from = "/overview"
-  to = "/pages/overview.html"
-  status = 200
-
-[[redirects]]
-  from = "/about"
-  to = "/pages/about.html"
-  status = 200
-
-[[redirects]]
-  from = "/services"
-  to = "/pages/services.html"
-  status = 200
+# Check Netlify's resolved publish directory and the final allowlisted output.
+# This local build plugin is not part of the public site or the mail Functions.
+[[plugins]]
+  package = "./netlify/plugins/public-deploy"
 
 [dev]
   command = "npm run serve"
   targetPort = 4173
   port = 8888
-  publish = "."
+  publish = "dist"

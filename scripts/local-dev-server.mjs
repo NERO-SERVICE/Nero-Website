@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
-import { readFileSync, statSync, createReadStream, existsSync } from "node:fs";
-import { extname, join, normalize, resolve, sep } from "node:path";
+import { readFileSync, statSync, createReadStream, existsSync, realpathSync } from "node:fs";
+import { extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 
@@ -25,6 +25,8 @@ const mimeTypes = {
     ".svg": "image/svg+xml",
     ".txt": "text/plain; charset=utf-8",
     ".webp": "image/webp",
+    ".woff": "font/woff",
+    ".woff2": "font/woff2",
 };
 
 const parseEnvValue = (value) => {
@@ -71,11 +73,6 @@ const collectBody = (request) => new Promise((resolveBody, rejectBody) => {
     request.on("error", rejectBody);
 });
 
-const isInsideRoot = (filePath) => {
-    const relative = normalize(filePath).slice(rootDir.length);
-    return relative === "" || relative.startsWith(sep);
-};
-
 const routeAliases = new Map([
     ["/", "/pages/home.html"],
     ["/announcement", "/pages/announcement.html"],
@@ -85,24 +82,49 @@ const routeAliases = new Map([
     ["/about", "/pages/about.html"],
 ]);
 
-const resolveStaticFile = (pathname) => {
-    const requestPath = decodeURIComponent(pathname);
-    const decodedPath = routeAliases.get(requestPath) || requestPath;
-    const candidates = [];
+const publicPages = new Set([...routeAliases.values()].map((path) => path.slice(1)));
+const browserScripts = new Set([
+    "analytics.js", "home.js", "landing.js", "about.js", "overview.js",
+    "announcement.js", "components.js", "scripts.js",
+].map((file) => `scripts/${file}`));
+const publicComponents = new Set(["components/navbar.html", "components/footer.html"]);
+const publicAssetTypes = new Set([".gif", ".ico", ".jpg", ".jpeg", ".png", ".svg", ".webp", ".woff", ".woff2"]);
 
-    if (decodedPath.endsWith("/")) {
-        candidates.push(join(rootDir, decodedPath, "index.html"));
-    } else {
-        candidates.push(join(rootDir, decodedPath));
-        candidates.push(join(rootDir, `${decodedPath}.html`));
-        candidates.push(join(rootDir, decodedPath, "index.html"));
-    }
+const isPublicFile = (path) => publicPages.has(path)
+    || browserScripts.has(path)
+    || publicComponents.has(path)
+    || path === "data/announcements.json"
+    || (path.startsWith("css/") && extname(path).toLowerCase() === ".css")
+    || (path.startsWith("assets/") && publicAssetTypes.has(extname(path).toLowerCase()));
 
-    return candidates.find((candidate) => {
-        if (!isInsideRoot(candidate) || !existsSync(candidate)) return false;
-        return statSync(candidate).isFile();
-    });
+// Keep the existing browser files available without exposing the repository or
+// local credentials. The factory also permits tests against an isolated fixture.
+export const createStaticResolver = (publicRoot = rootDir) => {
+    const base = realpathSync(resolve(publicRoot));
+    return (pathname) => {
+        let requestPath;
+        try { requestPath = decodeURIComponent(pathname); } catch { return undefined; }
+        if (!requestPath.startsWith("/") || requestPath.includes("\\") || requestPath.includes("\0")) return undefined;
+        if (requestPath.split("/").some((part) => part.startsWith("."))) return undefined;
+        requestPath = requestPath.replace(/\/+$/, "") || "/";
+        const decodedPath = (routeAliases.get(requestPath) || requestPath).slice(1);
+        const candidates = [decodedPath, `${decodedPath}.html`].filter(isPublicFile);
+        for (const candidate of candidates) {
+            try {
+                const file = realpathSync(resolve(base, candidate));
+                if (!file.startsWith(`${base}${sep}`)) continue;
+                const resolvedPath = relative(base, file).split(sep).join("/");
+                if (!isPublicFile(resolvedPath) || resolvedPath.split("/").some((part) => part.startsWith("."))) continue;
+                if (statSync(file).isFile()) return file;
+            } catch {
+                // Missing files and unavailable symlink targets are ordinary 404s.
+            }
+        }
+        return undefined;
+    };
 };
+
+const resolveStaticFile = createStaticResolver();
 
 const serveStatic = (request, response, pathname) => {
     const filePath = resolveStaticFile(pathname);
@@ -138,8 +160,6 @@ const invokeContactFunction = async (request, response) => {
     response.writeHead(result.statusCode || 200, result.headers || {});
     response.end(result.body || "");
 };
-
-loadLocalEnv();
 
 const createAppServer = () => createServer(async (request, response) => {
     const url = new URL(request.url || "/", `http://${request.headers.host || `${displayHost}:${activePort}`}`);
@@ -193,4 +213,7 @@ const listen = (candidatePort, attemptsLeft) => {
     });
 };
 
-listen(preferredPort, portScanLimit);
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+    loadLocalEnv();
+    listen(preferredPort, portScanLimit);
+}

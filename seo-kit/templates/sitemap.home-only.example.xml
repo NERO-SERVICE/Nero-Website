@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- EXAMPLE ONLY. This is not the verified live sitemap.
+     Confirm the canonical host and generate real published routes at build time.
+     New, unimplemented routes are deliberately absent. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.nero.ai.kr/</loc>
+  </url>
+</urlset>
