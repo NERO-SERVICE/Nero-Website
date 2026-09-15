@@ -102,6 +102,8 @@ test('all 6 existing canonical routes return complete initial HTTP HTML with uni
         const organization = schema['@graph'].find((node) => node['@type'] === 'Organization');
         assert.equal(organization?.email, site.email);
         assert.equal(organization?.url, absoluteUrl('/'));
+        assert.equal(organization?.legalName, '주식회사 네로');
+        assert.equal(organization?.alternateName, 'Nero Inc.');
         const services = schema['@graph'].filter((node) => node['@type'] === 'Service');
         assert.equal(services.length, page.developmentService ? 1 : 0);
         if (page.developmentService) {
@@ -111,7 +113,7 @@ test('all 6 existing canonical routes return complete initial HTTP HTML with uni
             assert.equal(service.url, absoluteUrl('/'));
             assert.equal(service.provider['@id'], organization['@id']);
             assert.equal(webpage.about['@id'], service['@id']);
-            for (const fact of ['외주개발', '앱개발', 'iOS', 'Android', '서버', 'DB', 'API', '관리자', '배포']) {
+            for (const fact of ['외주개발', '앱개발', 'iOS', 'Android', '서버', 'DB', 'API', '관리자', '배포', 'MVP/PoC', '핵심 사용자 흐름', '인증', '시연 데이터', '배포 URL', '스토어 자료', '심사 대응']) {
                 assert.ok(plainText(main).includes(fact), `${page.path} body supports ${fact}`);
             }
         }
@@ -122,6 +124,38 @@ test('all 6 existing canonical routes return complete initial HTTP HTML with uni
         assert.doesNotMatch(JSON.stringify(schema), /모두의\s*창업|사주\s*앱|디지털\s*노마드/);
         if (page.path !== '/landing') assert.doesNotMatch(searchMetadata, /모두의\s*창업|사주\s*앱|디지털\s*노마드/);
     }
+});
+
+test('home addresses founder development needs without claiming government programme affiliation', async () => {
+    const html = (await get('/')).body;
+    const description = meta(html, 'name', 'description')[0];
+    assert.match(description, /1인창업가·예비창업자의 정부지원사업 준비용 MVP\/PoC와 앱제작/);
+    assert.doesNotMatch(description, /공식|선정|제휴|지원금|보장|인증 업체|수행사/);
+    const withoutDescriptions = html.replace(/<meta\b[^>]*(?:name="description"|property="og:description")[^>]*>/gi, '');
+    assert.doesNotMatch(withoutDescriptions, /1인창업가|정부지원사업|앱제작/, 'new audience wording stays out of original UI and schema');
+    const announcements = JSON.parse(await readFile(`${out}/data/announcements.json`, 'utf8'));
+    assert.ok(announcements.announcements.some((item) => item.content.includes('주식회사 네로') && item.content.includes('Nero Inc.')), 'organization names have a public company source');
+    assert.match(plainText(html), /Nero Inc\./);
+});
+
+test('search and user-fetch agents receive the same indexable initial HTML without snippet restrictions', async () => {
+    // User-agent simulation tests serving behaviour, not genuine bot IP access or ranking.
+    for (const agent of ['Googlebot', 'bingbot', 'OAI-SearchBot', 'ChatGPT-User']) {
+        for (const path of expectedPaths) {
+            const response = await fetch(`${previewOrigin}${path}`, { headers: { 'User-Agent': agent }, redirect: 'manual' });
+            assert.equal(response.status, 200, `${agent} ${path}`);
+            const html = await response.text();
+            assert.equal(html, (await get(path)).body, `${agent} gets the same document as a visitor`);
+            assert.doesNotMatch(response.headers.get('x-robots-tag') ?? '', /noindex|nosnippet|max-snippet:\s*0\b/i);
+            const botMeta = tags(html, 'meta').filter((tag) => ['robots', 'googlebot', 'bingbot', 'oai-searchbot'].includes(tag.name?.toLowerCase())).map((tag) => tag.content).join(',');
+            assert.doesNotMatch(botMeta, /noindex|nosnippet|max-snippet:\s*0\b/i);
+            assert.ok(!tags(html).some((tag) => Object.hasOwn(tag, 'data-nosnippet')), `${path} main content can be quoted`);
+        }
+    }
+    const attributed = await get('/?utm_source=chatgpt.com');
+    assert.equal(attributed.status, 200);
+    assert.deepEqual(canonical(attributed.body), [absoluteUrl('/')]);
+    assert.deepEqual(meta(attributed.body, 'property', 'og:url'), [absoluteUrl('/')]);
 });
 
 test('search descriptions stay grounded in each page body without turning grant history into service affiliation', async () => {

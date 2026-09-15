@@ -3,13 +3,21 @@ export const site = Object.freeze({
     origin: 'https://www.nero.ai.kr',
     name: 'NERO',
     organizationName: 'NERO',
+    // Public incorporation announcement and existing site footer, not another NERO brand.
+    legalName: '주식회사 네로',
+    alternateName: 'Nero Inc.',
     email: 'official@nero.ai.kr',
     logo: '/assets/img/landing/nero_logo.svg',
     image: '/assets/img/landing/hero-product-desktop.png',
 });
 export const absoluteUrl = (path) => new URL(path, `${site.origin}/`).href;
 export const pages = [
-    { path: '/', source: 'home', title: 'NERO | Home', description: '웹·앱외주개발 파트너 NERO. iOS 앱과 Android 앱개발, 서버·DB·API·관리자의 풀스택 개발과 배포·유지보수·인수인계를 지원합니다.', developmentService: true },
+    {
+        path: '/', source: 'home', title: 'NERO | Home',
+        description: '1인창업가·예비창업자의 정부지원사업 준비용 MVP/PoC와 앱제작을 돕는 NERO. iOS 앱과 Android 앱개발, 서버·DB·API·관리자의 풀스택 앱외주개발부터 배포·유지보수·인수인계까지 상담하세요.',
+        bodyDescription: '웹·앱외주개발 파트너 NERO. iOS 앱과 Android 앱개발, 서버·DB·API·관리자의 풀스택 개발과 배포·유지보수·인수인계를 지원합니다.',
+        developmentService: true,
+    },
     {
         path: '/landing', source: 'landing', title: 'NERO | 연구자·창업자·기업을 위한 0→1 외주개발 파트너',
         // Owner-confirmed consultation contexts, not delivery history or affiliations.
@@ -33,5 +41,5 @@ export const privatePaths = ['/.git/', '/.env', '/.netlify/', '/api/', '/admin/'
 export const developmentService = Object.freeze({
     name: '웹·앱 외주개발',
     serviceType: '웹사이트·iOS/Android 앱개발 및 풀스택 개발',
-    description: 'iOS·Android 앱과 사용자 화면, 서버·DB·API, 관리자 페이지의 풀스택 개발부터 배포·유지보수·인수인계까지 지원합니다.',
+    description: 'MVP/PoC의 핵심 사용자 흐름·인증·DB/API·시연 데이터·배포 URL, iOS·Android 앱과 서버·관리자, 스토어 자료·심사 대응을 지원합니다. 풀스택 개발과 배포·유지보수·인수인계 범위를 상담합니다.',
 });
