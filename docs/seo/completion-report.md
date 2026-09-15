@@ -1,10 +1,12 @@
 # SEO 변경 결과와 검증 범위
 
+최신 SMTP_HOST Secret 검사 실패는 `.env.example` 예시값을 빈 값으로 복원해 수정했다. 사용자는 SEO·내부자료 제외 방식 유지를 선택했다. 이 차수의 변경·실제 실행 검사·미검증 항목은 [Secret 검사 수정 기록](secrets-scan-fix.md)에 있다. 아래 전체 회귀 결과와 이번 실행 범위를 구분한다.
+
 기존 6개 공개 URL과 화면·문의·분석 소스를 보존하고, 사전 렌더링·메타데이터·robots·sitemap에 환경변수 분리, 공개 파일 검증, 비운영 색인 차단과 사실 기반 서비스 설명을 보완했다. 아래는 현재 범위에서 실제 확인한 결과다. 운영 배포·DNS 변경·검색엔진 등록/제출·운영 문의 실제 전송은 하지 않았다.
 
 추가 검색어 요청은 홈의 앱외주개발·iOS 앱개발, landing의 지원사업용 MVP, 회사소개의 정부지원사업 수료 연혁을 설명하는 메타데이터로 반영했다. 모두의창업·사주앱·디지털노마드는 미확인 관계를 추가하지 않고 보류했다. 이번 변경 파일·근거·검사 결과·개별 롤백은 [추가 검색어 작업 기록](keyword-targeting.md)에 있다.
 
-Netlify 배포 준비에서는 이미지·CSS도 정확한 공개 파일 목록으로 제한하고, 실제 publish 경로와 최종 산출물을 검사하는 로컬 빌드 플러그인을 연결했다. 최신 변경 파일·소유자 배포 순서·롤백과 운영 미검증 항목은 [공개 파일 경계 보강](deployment-boundary.md)에 있다. 정적 산출물 50개와 기존 화면·SEO 메타데이터는 유지한다.
+Netlify Deploy Preview 실패 로그에서 추가한 로컬 플러그인의 경로 가정 오류를 확인해 플러그인·중복 검사 명령을 제거했다. GitHub Actions는 구문 검사와 빌드만 실행한다. 빌드 자체의 정확한 공개 파일 목록·비밀값 검사, 정적 산출물 50개와 기존 화면·SEO는 유지한다. [실패 원인·수정 기록](deploy-preview-fix.md), [현재 배포 절차](deployment-boundary.md)를 확인한다.
 
 ## 이번 환경·검색 보완
 
@@ -56,14 +58,14 @@ Netlify 배포 준비에서는 이미지·CSS도 정확한 공개 파일 목록�
 | 기존 프런트엔드·API 원본 비교 | 기준 HEAD `9e30d40`과 차이 없음, `git diff --exit-code` 종료 0 |
 | `npm run check` | 통과. 기존 JS/API와 새 빌드·검사 소스의 구문 검사 |
 | `npm run ga4:check` | 통과. 기존 GA4 정적 설정 검사 |
-| `npm test` | Node 22.18.0에서 build 및 Node 테스트 59/59 통과. 검색어·본문 근거, Netlify 플러그인 9개, 엄격한 자산 목록·심링크 3개 검사 포함 |
-| `npm run deploy:check` | `dist` 경로와 50개 공개 파일 검사 통과. 실제 배포는 하지 않음 |
-| `npm run test:seo-audit` | 사용자 SEO 패키지 Python 단위 검사 9/9 통과 |
-| `npm run test:robots` | robots 정책 검사 1/1 통과 |
-| HTTP·HTML·공개 파일 테스트 | 기존 6개 canonical의 200, 메타·본문·원래 H1 수·링크·JSON-LD, sitemap 필터, robots, 별칭·없는 URL·내부 자료 비노출 및 공개 파일 보존 검사 통과. 위 Node 59개에 포함 |
-| 환경·배포 경계 | 공개 설정 reader 9개, 로컬 resolver 7개, production/branch/preview 실제 빌드·HTTP 및 산출물 보안 9개 통과. 위 Node 59개에 포함 |
+| `npm test` | 플러그인 제거 후 Node 22.18.0에서 build 및 Node 테스트 51/51 통과. 배포 설정 1개와 자산 목록·심링크 3개 포함 |
+| `npm run build` | GitHub의 간소화된 검사와 동일한 명령으로 6개 페이지·50개 공개 파일 생성 및 검증 통과 |
+| 앞선 `npm run test:seo-audit` | Python 9/9 통과. 이번 플러그인 제거에서는 재실행하지 않음 |
+| 앞선 `npm run test:robots` | robots 1/1 통과. 이번 플러그인 제거에서는 Node HTTP 검사로 정책 보존 확인 |
+| HTTP·HTML·공개 파일 테스트 | 기존 6개 canonical의 200, 메타·본문·원래 H1 수·링크·JSON-LD, sitemap 필터, robots, 별칭·없는 URL·내부 자료 비노출 및 공개 파일 보존 검사 통과. 위 Node 51개에 포함 |
+| 환경·배포 경계 | 공개 설정 reader 9개, 로컬 resolver 7개, production/branch/preview 실제 빌드·HTTP 및 산출물 보안 9개 통과. 위 Node 51개에 포함 |
 | 앞선 실제 로컬 HTTP 감사 | 6/6 URL 200, sitemap URL 6개, robots TXT, sitemap XML, 없는 URL 404 확인. 검토 항목 2개는 원래 `/overview`·`/services`에 H1이 없는 점만 해당. 추가 검색어 작업에서는 이 감사 파일을 재생성하지 않고 위 Node HTTP 검사를 재실행 |
-| 브라우저 검사 | 최종 28/28 통과(45.3초): 원본 대조 12개, JS 비활성 HTTP·본문 검사 2개, 세 문의 폼 성공·실패 6개, 기존 버튼 중복 클릭 6개, 공고 2개 |
+| 앞선 브라우저 검사 | 28/28 통과(45.3초), 이번 플러그인 제거에서는 재실행하지 않음: 원본 대조 12개, JS 비활성 HTTP·본문 검사 2개, 세 문의 폼 성공·실패 6개, 기존 버튼 중복 클릭 6개, 공고 2개 |
 | 추가 중복 제출 검사 | 6/6 통과, 위 브라우저 28개에 포함. 처리 중인 기존 disabled 버튼의 반복 클릭에서 요청 1개를 유지하며 원본·preview가 같음 확인. 서버 중복·멱등성 검사는 아님 |
 | 모바일·데스크톱·접근성 회귀 | 1440×1000·390×844에서 JS 초기화 후 원본과 화면 상태를 대조. axe의 기존 위반을 기준으로 추가 위반 0 확인. 전체 접근성 위반 0 또는 적합성 인증을 의미하지 않음 |
 | 별도 lint·typecheck | 해당 이름의 스크립트가 없어 실행하지 않음 |

@@ -7,5 +7,3 @@ for (const directory of ['scripts', 'content', 'tests']) {
         if (result.status !== 0) process.exit(result.status || 1);
     }
 }
-const plugin = spawnSync(process.execPath, ['--check', 'netlify/plugins/public-deploy/index.js'], { stdio: 'inherit' });
-if (plugin.status !== 0) process.exit(plugin.status || 1);

@@ -15,11 +15,6 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Check Netlify's resolved publish directory and the final allowlisted output.
-# This local build plugin is not part of the public site or the mail Functions.
-[[plugins]]
-  package = "./netlify/plugins/public-deploy"
-
 [dev]
   command = "npm run serve"
   targetPort = 4173
