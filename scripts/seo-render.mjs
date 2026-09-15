@@ -6,7 +6,7 @@ const orgId = `${site.origin}/#organization`;
 export function structuredData(page) {
     const organization = { '@type': 'Organization', '@id': orgId, name: site.organizationName, url: `${site.origin}/`, logo: absoluteUrl(site.logo), email: site.email };
     const website = { '@type': 'WebSite', '@id': `${site.origin}/#website`, url: `${site.origin}/`, name: site.name, inLanguage: 'ko', publisher: { '@id': orgId } };
-    const webpage = { '@type': 'WebPage', '@id': `${page.canonical}#webpage`, url: page.canonical, name: page.title, description: page.description, inLanguage: 'ko', isPartOf: { '@id': website['@id'] } };
+    const webpage = { '@type': 'WebPage', '@id': `${page.canonical}#webpage`, url: page.canonical, name: page.title, description: page.bodyDescription ?? page.description, inLanguage: 'ko', isPartOf: { '@id': website['@id'] } };
     const graph = [organization, website, webpage];
     webpage.publisher = { '@id': orgId };
     if (page.aboutOrganization) webpage.mainEntity = { '@id': orgId };

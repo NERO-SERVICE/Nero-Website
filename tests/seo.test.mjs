@@ -98,7 +98,7 @@ test('all 6 existing canonical routes return complete initial HTTP HTML with uni
         const webpage = schema['@graph'].find((node) => node['@type'] === 'WebPage');
         assert.equal(webpage?.url, page.canonical);
         assert.equal(webpage?.name, page.title);
-        assert.equal(webpage?.description, page.description);
+        assert.equal(webpage?.description, page.bodyDescription ?? page.description);
         const organization = schema['@graph'].find((node) => node['@type'] === 'Organization');
         assert.equal(organization?.email, site.email);
         assert.equal(organization?.url, absoluteUrl('/'));
@@ -118,7 +118,9 @@ test('all 6 existing canonical routes return complete initial HTTP HTML with uni
         if (page.aboutOrganization) assert.equal(webpage.mainEntity['@id'], organization['@id']);
         assert.ok(!meta(html, 'name', 'keywords').length);
         const searchMetadata = `${meta(html, 'name', 'description')} ${meta(html, 'property', 'og:description')} ${JSON.stringify(schema)}`;
-        assert.doesNotMatch(searchMetadata, /모두의\s*창업|사주\s*앱|디지털\s*노마드|AggregateRating|Review|\"(?:award|funder|sponsor|memberOf|offers|keywords|knowsAbout)\"/);
+        assert.doesNotMatch(searchMetadata, /AggregateRating|Review|\"(?:award|funder|sponsor|memberOf|offers|keywords|knowsAbout)\"/);
+        assert.doesNotMatch(JSON.stringify(schema), /모두의\s*창업|사주\s*앱|디지털\s*노마드/);
+        if (page.path !== '/landing') assert.doesNotMatch(searchMetadata, /모두의\s*창업|사주\s*앱|디지털\s*노마드/);
     }
 });
 
@@ -132,7 +134,7 @@ test('search descriptions stay grounded in each page body without turning grant 
     assert.match(mainText(home), /iOS·Android 앱서비스/);
 
     const landing = (await get('/landing')).body;
-    assert.match(meta(landing, 'name', 'description')[0], /지원사업.*MVP\/PoC/);
+    assert.match(meta(landing, 'name', 'description')[0], /모두의창업 준비자의 MVP\/PoC/);
     assert.match(mainText(landing), /지원사업과 초기 검증에 필요한 MVP/);
 
     const about = (await get('/about')).body;
@@ -149,6 +151,21 @@ test('search descriptions stay grounded in each page body without turning grant 
             assert.doesNotMatch(meta(html, 'name', 'description')[0], /앱외주개발|정부지원사업|지원사업.*MVP/, `${path} retains its original topic`);
         }
     }
+});
+
+test('landing explains owner-confirmed development contexts only in search and sharing descriptions', async () => {
+    const html = (await get('/landing')).body;
+    const description = meta(html, 'name', 'description')[0];
+    assert.match(description, /모두의창업 준비자의 MVP\/PoC/);
+    assert.match(description, /사주앱 개발/);
+    assert.match(description, /디지털노마드의 웹·앱 사업 구현을 돕는 NERO/);
+    assert.match(description, /외주개발 범위를 상담하세요/);
+    assert.doesNotMatch(description, /공식|제휴|선정|수행사|납품|수익|보장|신청 대행/);
+    assert.deepEqual(meta(html, 'property', 'og:description'), [description]);
+    const withoutDescriptions = html.replace(/<meta\b[^>]*(?:name="description"|property="og:description")[^>]*>/gi, '');
+    assert.doesNotMatch(withoutDescriptions, /모두의\s*창업|사주\s*앱|디지털\s*노마드/, 'no new body, title, link, schema or hidden keyword content');
+    const schema = JSON.parse(html.match(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/i)[1]);
+    assert.match(schema['@graph'].find((entity) => entity['@type'] === 'WebPage').description, /지원사업과 초기 검증에 필요한 MVP\/PoC/);
 });
 
 test('sitemap is XML containing exactly the 6 public indexable canonical 200 URLs', async () => {
